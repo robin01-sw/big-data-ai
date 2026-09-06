@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Skill · 一分钟微课</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+  header {
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 12px; font-size: 30px; line-height: 1.25; }
+  .tldr {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  .tldr .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 16px; margin-top: 18px; color: var(--ink-soft); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  details {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+  }
+  details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before {
+    content: "▸ ";
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--panel);
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th { background: var(--tag-bg); font-weight: 600; }
+  code {
+    background: var(--tag-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  pre {
+    background: #1f2330;
+    color: #f3efe7;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  blockquote {
+    margin: 8px 0;
+    padding: 4px 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+    background: #fff7f5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .source {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--tag-bg);
+    border-radius: 3px;
+    margin-left: 6px;
+  }
+  footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--ink-soft);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="crumb">一分钟微课 · MINUTE-LESSON</div>
+  <h1>Skill（技能）</h1>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    在 WorkBuddy 里，Skill 是一份「<strong>提示词 + 脚本 + 工作流</strong>的打包」——告诉 AI 在某种场景下该扮演什么角色、走什么步骤、调用哪些工具。它存在的意义是<strong>把一次性对话沉淀成可复用资产</strong>，下次同样任务直接调，不用再把上下文重新讲一遍。
+  </div>
+</header>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能用一句话区分「Skill」和「普通 prompt」</li>
+  <li>能列出 Skill 的三件套：YAML 元数据 / 提示词主体 / 可选脚本</li>
+  <li>能在 WorkBuddy 项目目录下创建一个项目级 Skill（路径 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>）</li>
+  <li>能区分用户级 Skill、项目级 Skill 与技能市场 Skill</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>Skill 和「写一段提示词让 AI 照做」有什么区别？</summary>
+  <div class="body">
+    区别在三件事：
+    <ol>
+      <li><strong>复用性</strong>：Skill 是文件，存到项目里能 commit、分享、版本管理；普通提示词是临时输入，丢了就没了。</li>
+      <li><strong>结构化</strong>：Skill 有 YAML frontmatter，机器可以解析「它在什么时候该被调用」「它的摘要是什么」——AI 不是每次都把全文塞进上下文，只在匹配场景时调用。</li>
+      <li><strong>可执行</strong>：Skill 不只是文字指令，还可以打包脚本和工作流（订外卖、查股价、读写文件），由 AI 在用户授权下代为执行。</li>
+    </ol>
+  </div>
+</details>
+
+<details>
+  <summary>项目级 Skill、用户级 Skill、商店 Skill 怎么选？</summary>
+  <div class="body">
+    <strong>项目级 Skill</strong>放在仓库根目录的 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>，跟代码一起版本管理——团队成员 clone 项目就有了。最适合和当前项目强相关的工作流。
+    <br/><br/>
+    <strong>用户级 Skill</strong>放在 <code>~/.workbuddy/skills/</code>，跨项目复用——比如你常用的「周报生成」「会议纪要」就放这。
+    <br/><br/>
+    <strong>商店 Skill</strong>（技能市场）是一键安装的预制包，适合通用任务。但安装第三方 Skill 前要审慎校验来源和权限申请——非官方 Skill 可能存在提示词注入或越权。
+  </div>
+</details>
+
+<details>
+  <summary>Skill 启用、关闭、卸载三者什么区别？</summary>
+  <div class="body">
+    <strong>启用</strong>：Skill 在对话中可以被 AI 自动调用。<br/>
+    <strong>关闭</strong>：Skill 文件还在，AI 不会调用它，状态随账号同步；随时可以重新启用。<br/>
+    <strong>卸载</strong>：Skill 文件和开关记录一并删除。<br/>
+    简单说：关闭是「暂停」，卸载是「彻底删除」。WorkBuddy 文档强调「仅启用当前任务所需的技能」是为了减少无关干扰和误调用概率。
+  </div>
+</details>
+
+<details>
+  <summary>自己写的 Skill 别人能用吗？</summary>
+  <div class="body">
+    能。三种方式：① 把 <code>.workbuddy/skills/&lt;name&gt;/</code> 整个目录打 zip 包，上传给对方导入；② 把项目级 Skill 推到 Git 仓库，对方 clone 后自动可用；③ 发布到技能市场。工作流相关的 Skill 一般建议走项目级路径，因为它的提示词和所在项目的代码、术语耦合。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>
+WorkBuddy 的官方定义是：<strong>Skill 为 WorkBuddy 增加「特定工具能力」——封装一组可执行的脚本与工作流，使 AI 在你的授权下完成具体动作</strong>（如发送邮件、订外卖、查询股价、读写文件、调用第三方 API 等）。它本质是一份带 YAML 元数据的 Markdown 文件 (<code>SKILL.md</code>)，加上可选的脚本/模板子文件。
+</p>
+
+<h3>为什么</h3>
+<p>
+一个常见的痛点：你花了半小时调好一段提示词让 AI 按你的格式输出周报，但下次开新对话又要重新讲一遍——而且你不知道下次 AI 还会不会照做。Skill 就是为了解决这个问题：把「角色 + 步骤 + 输出格式 + 可选工具调用」打包成文件，存进项目，commit 到 Git，下次直接 <code>@Skill 名字</code> 调用就行。沉淀的不只是提示词，是**带场景标注的可复用知识包**。
+</p>
+
+<h3>怎么工作（一个 Skill 文件长什么样）</h3>
+<p>最小的 <code>SKILL.md</code> 长这样：</p>
+<pre><code>---
+title: "周报生成专家"
+summary: "把本周碎片任务汇总成结构化周报"
+read_when:
+  - 用户说"帮我写周报"
+  - 用户提供多条零散事项想汇总
+---
+
+# 周报生成专家
+
+你是一位资深产品经理的助手。收到一周的零散事项后：
+
+1. 按"目标 / 进展 / 卡点 / 下周计划"四段汇总
+2. 每段不超过 5 条 bullet
+3. 输出 Markdown，不要寒暄
+</code></pre>
+<p>解析规则：</p>
+<ul>
+  <li><strong>YAML frontmatter</strong>（<code>---</code> 之间）：元数据。<code>title</code> / <code>summary</code> / <code>read_when</code> 都是可选但强烈建议填——AI 用 <code>read_when</code> 决定什么时候主动加载这个 Skill。</li>
+  <li><strong>Markdown 正文</strong>：提示词主体，可以是步骤、规则、输出格式。</li>
+  <li><strong>同名目录下的子文件</strong>：可选。比如 <code>scripts/</code> 放可执行脚本，<code>templates/</code> 放模板。</li>
+</ul>
+
+<h2>应用案例</h2>
+
+<h3>案例：课程作业里的「minute-lesson」Skill</h3>
+<p>
+本仓库就有一个真实的 Skill，路径是 <code>.workbuddy/skills/minute-lesson/SKILL.md</code>。它做的事：
+</p>
+<ol>
+  <li><strong>场景</strong>：调用方想「60 秒理解一个新概念」</li>
+  <li><strong>输入</strong>：概念名（如 <code>Agent</code>、<code>RAG</code>、<code>Skill</code>）</li>
+  <li><strong>流程</strong>：搜索权威来源 → 按 7 段式大纲填充 → 渲染 HTML → 自检清单</li>
+  <li><strong>输出</strong>：<code>learning-materials/&lt;slug&gt;.html</code>，单文件、可离线、可分享</li>
+</ol>
+<p>
+如果没有 Skill，调同样的概念你得每次都把「我要 7 段结构、来源要真实、输出 HTML、不要编」重新打一段——而且对方模型未必记得。沉淀成 Skill 之后，这个工作流就可以**无限复用、版本管理、给同学用**，这就是 Skill 的核心价值。
+</p>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>邻近概念</th>
+      <th>与 Skill 的核心区别</th>
+      <th>一句话判定</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>普通 Prompt</td>
+      <td>临时输入、丢一次就没；Skill 是文件、可复用</td>
+      <td>「一次性对话」 vs 「打包好的资产」</td>
+    </tr>
+    <tr>
+      <td>系统提示词（system prompt）</td>
+      <td>系统提示是单次请求里的「定调」角色；Skill 是按场景动态加载的「剧本」</td>
+      <td>「每次都在」 vs 「用到才出现」</td>
+    </tr>
+    <tr>
+      <td>插件 / Extension</td>
+      <td>插件通常有图形界面和独立入口；Skill 是 Markdown 提示词 + 可选脚本，由 AI 在对话中调用</td>
+      <td>「用户主动开」 vs 「AI 主动调」</td>
+    </tr>
+    <tr>
+      <td>Agent</td>
+      <td>Skill 是 Agent 能用的「工具包」之一；Agent 是有决策循环的运行系统</td>
+      <td>「剧本」 vs 「会按剧本演的演员」</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题</h2>
+
+<details>
+  <summary>1.【单选】项目级 Skill 应该放在哪个路径？</summary>
+  <div class="body">
+    <strong>答案：C</strong>。WorkBuddy 官方文档给出的项目级 Skill 路径是仓库根目录下的 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>，可以随项目一起 commit。
+    <ol type="A">
+      <li><code>~/Desktop/skill.md</code></li>
+      <li><code>./prompts/skill.md</code></li>
+      <li><code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code></li>
+      <li>随便放哪里都行</li>
+    </ol>
+  </div>
+</details>
+
+<details>
+  <summary>2.【判断】关闭 Skill 和卸载 Skill 是一回事。</summary>
+  <div class="body">
+    <strong>答案：错误。</strong>关闭只是暂停 AI 调用，Skill 文件和开关记录都还在；卸载才会删除 Skill 及其开关记录。
+  </div>
+</details>
+
+<details>
+  <summary>3.【简答】SKILL.md 的 YAML frontmatter 推荐包含哪些字段？</summary>
+  <div class="body">
+    <strong>答案：</strong>根据 WorkBuddy 官方示例：
+    <ul>
+      <li><code>title</code>：Skill 的展示名</li>
+      <li><code>summary</code>：一句话说明它做什么</li>
+      <li><code>read_when</code>：触发场景列表（用户说什么话时该调它）</li>
+    </ul>
+    这些字段让 AI 不必每次都把 Skill 全文塞进上下文，只在匹配场景时加载。
+  </div>
+</details>
+
+<details>
+  <summary>4.【开放】请设计一个你自己的 Skill：场景 + 输入 + 三步流程 + 输出格式。</summary>
+  <div class="body">
+    <strong>参考思路（示例：错题本整理 Skill）：</strong>
+    <ul>
+      <li>场景：每周日晚上，把这一周的错题截图 OCR 后整理</li>
+      <li>输入：截图 + 当前科目</li>
+      <li>流程：① OCR 提取文字 ② 按科目+题型分类 ③ 输出 Anki 卡片格式</li>
+      <li>输出：一份 Markdown，每题一张卡片（正面问题/背面答案）</li>
+    </ul>
+  </div>
+</details>
+
+<h2>参考来源</h2>
+<ul>
+  <li>
+    <a href="https://www.workbuddy.cn/docs/workbuddy/Overview">WorkBuddy 简介（WorkBuddy 官方文档）</a>
+    <span class="source">官方文档</span>
+    —— WorkBuddy 总览：核心能力、与传统 AI 对话的区别、Skill 与连接器等模块定位。
+  </li>
+  <li>
+    <a href="https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market">技能 / Skills Market（WorkBuddy 官方文档）</a>
+    <span class="source">官方文档</span>
+    —— Skill 的官方定义、安装/启用/关闭/卸载区别、安全提示、第三方 Skill 风险。
+  </li>
+  <li>
+    <a href="https://www.workbuddy.cn/docs/workbuddy/skills">Skill 创建指南（WorkBuddy 官方文档路径示例）</a>
+    <span class="source">官方文档</span>
+    —— 官方给出 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code> 的标准路径与 YAML 元数据示例。
+  </li>
+</ul>
+
+<footer>
+  本卡片由 <code>minute-lesson</code> Skill 生成于 2026-09-06 ·
+  生成方式：AI 起草 + 调用方人工核查与改写。
+  <br/>
+  <span class="badge">人工核查记录</span>
+  「应用案例」一节基于本仓库实际创建的 <code>minute-lesson</code> Skill 描述，没有照搬官方示例。
+  自测题 4 由我（robin01-sw）设计，不照搬官方题库。
+  引用来源以 WorkBuddy 官方文档为主，不引用第三方解读文章，避免「AI 自指循环」风险。
+</footer>
+
+</div>
+</body>
+</html>

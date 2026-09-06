@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{{TITLE}} · 一分钟微课</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+  header {
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 12px; font-size: 30px; line-height: 1.25; }
+  .tldr {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  .tldr .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 16px; margin-top: 18px; color: var(--ink-soft); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  details {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+  }
+  details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before {
+    content: "▸ ";
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--panel);
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th { background: var(--tag-bg); font-weight: 600; }
+  code {
+    background: var(--tag-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  pre {
+    background: #1f2330;
+    color: #f3efe7;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  blockquote {
+    margin: 8px 0;
+    padding: 4px 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+    background: #fff7f5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .source {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--tag-bg);
+    border-radius: 3px;
+    margin-left: 6px;
+  }
+  footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--ink-soft);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="crumb">一分钟微课 · MINUTE-LESSON</div>
+  <h1>{{TITLE}}</h1>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    {{TLDR}}
+  </div>
+</header>
+
+<h2>学习目标</h2>
+{{LEARNING_OBJECTIVES}}
+
+<h2>核心问题</h2>
+{{CORE_QUESTIONS}}
+
+<h2>结构化解释</h2>
+{{STRUCTURED_EXPLANATION}}
+
+<h2>应用案例</h2>
+{{USE_CASE}}
+
+<h2>概念辨析</h2>
+{{CONCEPT_DISAMBIGUATION}}
+
+<h2>自测题</h2>
+{{SELF_TEST}}
+
+<h2>参考来源</h2>
+{{REFERENCES}}
+
+<footer>
+  本卡片由 <code>minute-lesson</code> Skill 生成于 {{DATE}} ·
+  生成方式：AI 起草 + 调用方人工核查与改写。
+</footer>
+
+</div>
+</body>
+</html>

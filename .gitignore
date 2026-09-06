@@ -1,0 +1,73 @@
+# ===== 敏感信息（必须排除）=====
+.env
+.env.*
+*.env
+.envrc
+
+# API Key / Token / 凭据
+*.key
+*.pem
+*.p12
+credentials.json
+secrets.json
+**/secrets/
+**/credentials/
+
+# 个人隐私
+*.log
+*.bak
+*~
+*.swp
+.DS_Store
+Thumbs.db
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+.python-version
+
+# ===== Node / VS Code 临时 =====
+node_modules/
+.vscode/launch.json
+.vscode/tasks.json
+.history/
+
+# ===== 大数据/数据文件（仓库不该存原始数据）=====
+*.csv
+*.tsv
+*.parquet
+*.arrow
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+data/raw/
+data/interim/
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+*.ipynb
+
+# ===== OS =====
+.DS_Store
+desktop.ini
+
+# ===== 打包产物 =====
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+dist/
+build/

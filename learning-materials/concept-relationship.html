@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>三概念关系 · Agent / 上下文 / Skill · 一分钟微课</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --info: #1f5fa3;
+    --info-soft: #e6effa;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 32px 24px 80px; }
+  header {
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 12px; font-size: 30px; line-height: 1.25; }
+  .tldr {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  .tldr .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  h2 {
+    font-size: 22px;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 17px; margin-top: 22px; color: var(--ink-soft); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 5px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    background: var(--panel);
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th { background: var(--tag-bg); font-weight: 600; }
+  code {
+    background: var(--tag-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  pre {
+    background: #1f2330;
+    color: #f3efe7;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  blockquote {
+    margin: 8px 0;
+    padding: 8px 14px;
+    border-left: 3px solid var(--info);
+    color: var(--ink-soft);
+    background: var(--info-soft);
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .source {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--tag-bg);
+    border-radius: 3px;
+    margin-left: 6px;
+  }
+  .diagram {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+  .diagram h4 {
+    margin: 0 0 10px;
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .fallback {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--tag-bg);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .mermaid-render {
+    text-align: center;
+  }
+  footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--ink-soft);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="crumb">一分钟微课 · MINUTE-LESSON · 概念关系</div>
+  <h1>Agent、大模型的上下文、Skill —— 三角关系</h1>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <strong>Agent</strong> 是会行动的演员，<strong>上下文</strong> 是它当下能看到的全部台面，<strong>Skill</strong> 是它按场景取用的剧本。上下文决定 Agent 这一刻「知不知道、能用啥」，Skill 决定它「在什么场景该怎么演」。三者一起，才让 AI 从「回答问题」升级为「在合适的时机、按合适的方式、做出合适的事」。
+  </div>
+</header>
+
+<h2>一句话关系</h2>
+<blockquote>
+  <strong>Skill</strong> 告诉 Agent 「<em>在 X 场景下，按 Y 步骤，产出 Z 格式</em>」；
+  <strong>上下文</strong> 决定 Agent 「<em>这一步能不能看到所需的历史、工具、文档</em>」；
+  <strong>Agent</strong> 把它们串成一个能自主决策和执行的循环。
+</blockquote>
+
+<h2>概念对比表</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>维度</th>
+      <th>Agent（智能体）</th>
+      <th>大模型的上下文</th>
+      <th>Skill（技能）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>本质</td>
+      <td>一个能自主决策和执行的运行系统</td>
+      <td>一次请求中模型能看到的全部 token</td>
+      <td>一份带元数据的可复用提示词/脚本包</td>
+    </tr>
+    <tr>
+      <td>谁拥有它</td>
+      <td>通常由开发团队/Agent 框架搭建</td>
+      <td>由调用方每次请求构造</td>
+      <td>由 Skill 作者创建并提交到项目/用户/市场</td>
+    </tr>
+    <tr>
+      <td>解决什么问题</td>
+      <td>把判断和执行合到一起</td>
+      <td>把当下最相关的信息喂给模型</td>
+      <td>把一次性对话沉淀成可复用资产</td>
+    </tr>
+    <tr>
+      <td>出问题会怎样</td>
+      <td>死循环 / 工具调用失败 / 越权</td>
+      <td>关键信息被挤掉 / context rot</td>
+      <td>误调用 / 越权 / 提示词注入</td>
+    </tr>
+    <tr>
+      <td>类比</td>
+      <td>会按剧本演的演员</td>
+      <td>演员此刻能看到的台词和道具</td>
+      <td>一份按场景分类的剧本</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>关系图 1：Skill 如何挂到 Agent 上</h2>
+
+<div class="diagram">
+  <h4>Mermaid 图（不可见时读下面的文字描述）</h4>
+  <div class="mermaid-render">
+<pre class="mermaid">
+flowchart LR
+    User([用户]) -->|"@minute-lesson 学 RAG"| WB[WorkBuddy 对话]
+    WB -->|按 read_when 匹配| Skill{{"Skill：minute-lesson<br/>(SKILL.md)"}}
+    Skill -->|注入系统提示| Ctx[当次请求上下文]
+    Ctx -->|送入| Agent[Agent 决策循环]
+    Agent -->|调用 WebSearch / WebFetch| Tool1[外部工具]
+    Agent -->|调用 Write / Bash| Tool2[文件操作]
+    Tool1 -->|返回结果| Ctx
+    Tool2 -->|写入 HTML| Out[/learning-materials/rag.html/]
+    Out -->|交付| User
+
+    classDef skill fill:#fde8e4,stroke:#c0392b,stroke-width:2px,color:#1f2330
+    classDef ctx fill:#e6effa,stroke:#1f5fa3,stroke-width:2px,color:#1f2330
+    classDef agent fill:#fff4d6,stroke:#d4a017,stroke-width:2px,color:#1f2330
+    class Skill skill
+    class Ctx ctx
+    class Agent agent
+</pre>
+  </div>
+  <div class="fallback">
+    <strong>如果上面 Mermaid 图未渲染，看这里：</strong><br/>
+    用户说「用 minute-lesson 学 RAG」→ WorkBuddy 按 <code>read_when</code> 匹配到 <code>minute-lesson</code> Skill →
+    Skill 的提示词被注入当次请求的<strong>上下文</strong> → <strong>Agent</strong> 在这个上下文里运行决策循环 →
+    调用 WebSearch 查资料 / 调用 Write 写 HTML → 产物回到 <code>learning-materials/rag.html</code>。
+  </div>
+</div>
+
+<h2>关系图 2：上下文如何在 Agent 运行中流动</h2>
+
+<div class="diagram">
+  <h4>Mermaid 序列图（不可见时读下面的文字描述）</h4>
+  <div class="mermaid-render">
+<pre class="mermaid">
+sequenceDiagram
+    participant U as 用户
+    participant A as Agent
+    participant LLM as 大模型
+    participant T as 工具/文件
+
+    Note over A,LLM: 上下文预算：200K / 1M token
+    U->>A: 第 1 轮指令
+    A->>LLM: 请求（system prompt + 历史 0 token + 用户输入 + tool schemas）
+    LLM-->>A: 决定调用工具 T1
+    A->>T: 执行工具 T1
+    T-->>A: 返回结果（占 N1 token）
+    A->>LLM: 请求（system + 历史 + tool_result N1 + tool schemas）
+    LLM-->>A: 决定再调用 T2
+    A->>T: 执行 T2
+    T-->>A: 返回结果（占 N2 token）
+    Note right of A: 累计占用 = system + ΣN_i + tool_schemas + 本轮输出
+    A->>LLM: 请求（接近窗口上限 → 触发压缩/截断）
+    LLM-->>A: 输出最终答案
+    A-->>U: 交付
+</pre>
+  </div>
+  <div class="fallback">
+    <strong>如果上面 Mermaid 图未渲染，看这里：</strong><br/>
+    每一轮 Agent 都会把 <em>系统提示 + 历史消息 + 工具 schema + 工具返回</em> 重新打包送进模型。
+    随着工具调用次数增加，<strong>上下文窗口的占用线性增长</strong>。一旦接近上限，要么压缩早期内容、要么截断最早消息——这就是「上下文工程」在 Agent 里的核心动作。
+  </div>
+</div>
+
+<h2>重点 1：上下文如何影响 Agent 的工作</h2>
+
+<p>
+Agent 是个循环系统：观察 → 决策 → 行动 → 再观察。每一步都依赖「当下能看到的全部上下文」。所以上下文对 Agent 的影响体现在四个层面：
+</p>
+<ol>
+  <li>
+    <strong>决定决策质量</strong>：上下文里如果漏掉了关键工具返回，Agent 就会基于错误信息做下一步判断；如果塞了太多无关信息，又会触发 <em>context rot</em>，决策变差。Anthropic 2025 年的研究指出，「装得多」≠「记得好」，所以<strong>上下文的选择本身就是 Agent 工程质量的一部分</strong>。
+  </li>
+  <li>
+    <strong>决定可执行范围</strong>：Agent 能调用哪些工具、能读哪些文件，全都在系统提示和工具 schema 里——这些都占 token。工具集大 = 系统提示大 = 留给对话/历史的预算少。所以「工具设计」也是上下文工程。
+  </li>
+  <li>
+    <strong>决定成本与延迟</strong>：每次请求按 token 计费，1M 窗口的全量调用在 Anthropic 长上下文模型上比 200K 贵几倍，且长上下文首 token 延迟更高。Agent 一旦陷入「全量塞 → 重新问 → 全量塞」的循环，钱包和速度都吃不消。
+  </li>
+  <li>
+    <strong>决定可控性</strong>：工具结果、扩展思考块、对话历史——这些都是「可注入」到上下文的载体，也是提示词注入攻击的主要目标。所以 Agent 工程上需要做：① 工具输出做白名单/截断；② 系统提示和用户内容严格隔离；③ 关键操作前要求人类确认。
+  </li>
+</ol>
+
+<h2>重点 2：Skill 如何沉淀可复用的任务知识</h2>
+
+<p>
+如果说上下文是「一张白纸」，Agent 是「拿着白纸思考的演员」，那 Skill 就是「剧本集」。它的沉淀逻辑是：
+</p>
+
+<h3>沉淀什么</h3>
+<ul>
+  <li><strong>角色定义</strong>：你希望 AI 扮演谁、用什么口吻、关注什么</li>
+  <li><strong>步骤规则</strong>：固定的 3-5 步流程（如「先查 → 再算 → 再写」）</li>
+  <li><strong>输出格式</strong>：JSON 字段、Mermaid 图、HTML 模板</li>
+  <li><strong>边界护栏</strong>：不该做什么、遇到 X 该怎么办</li>
+  <li><strong>外部资源</strong>：可选的脚本、模板、引用文档</li>
+</ul>
+
+<h3>怎么沉淀</h3>
+<ol>
+  <li>把当前对话里调好的提示词整理成 <code>SKILL.md</code>（YAML 元数据 + Markdown 正文）。</li>
+  <li>放到 <code>.workbuddy/skills/&lt;name&gt;/</code>，连同脚本/模板一起 commit。</li>
+  <li>下次同类任务，AI 自动按 <code>read_when</code> 加载它；不再需要重写一遍提示词。</li>
+</ol>
+
+<h3>为什么是「Skill」而不是「prompt 文件」</h3>
+<blockquote>
+  普通 prompt 文件是一次性的——人记得住才能复用。Skill 多了一层「机器可读的元数据」：<code>read_when</code> 让 AI 知道什么时候调它，<code>summary</code> 让搜索能定位它，<code>title</code> 让 UI 能展示它。所以 Skill 更像「面向 AI 的 API 文档」，而 prompt 只是「人写给人看的备忘录」。
+</blockquote>
+
+<h2>我的个人判断（robin01-sw）</h2>
+
+<ul>
+  <li>
+    <strong>不要把 Skill 神化</strong>。一个好的 Skill 是把「我已经验证过的最佳实践」固化下来，不是把「也许有用的话术」写进 YAML。第一次写 Skill 时，通常你会反复迭代 3-5 次提示词才能稳定——这是正常的，别跳过这一步。
+  </li>
+  <li>
+    <strong>上下文是 Agent 最贵的资源</strong>。在 Agent 设计里，工具数量、系统提示长度、对话保留策略，每一项都要算 token 账。我倾向于「工具越少越好」「系统提示越短越好」「工具结果先在工具侧切片」，而不是「让模型自己筛选」。
+  </li>
+  <li>
+    <strong>三者的耦合点是人</strong>。Skill 写得再细，如果调用者不知道怎么把它放进上下文，Agent 也不会用。WorkBuddy 的项目级 Skill 路径就是把这个耦合点变成「仓库约定」——clone 项目的人自动获得这套工作流。
+  </li>
+</ul>
+
+<h2>参考来源</h2>
+<ul>
+  <li>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents（Anthropic, 2024-12）</a>
+    <span class="source">官方工程博客</span>
+    —— Agent / Workflow 区分；Agent 三件套 Model + Tools + Instructions。
+  </li>
+  <li>
+    <a href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows">Context windows（Anthropic 官方文档）</a>
+    <span class="source">官方文档</span>
+    —— 上下文窗口定义；请求中各项 token 计入规则；context rot 现象。
+  </li>
+  <li>
+    <a href="https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market">WorkBuddy 技能 / Skills Market</a>
+    <span class="source">官方文档</span>
+    —— Skill 定义；启用/关闭/卸载区别；项目级 Skill 路径。
+  </li>
+  <li>
+    <a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf">A practical guide to building agents（OpenAI 官方 PDF, 2025）</a>
+    <span class="source">官方文档</span>
+    —— Agent 三件套（Model / Tools / Instructions）的另一种官方说法。
+  </li>
+</ul>
+
+<footer>
+  本卡片由 <code>minute-lesson</code> Skill 生成于 2026-09-06 ·
+  生成方式：AI 起草 + 调用方人工核查与改写。
+  <br/>
+  <span class="badge">人工核查记录</span>
+  Mermaid 图为我（robin01-sw）手写并复核流程节点，未照搬任何教材图。
+  「我的个人判断」三段为本人观点，不引用 AI 对话原文。
+  表格与文字均基于上面 3 张概念卡片的论点做了交叉对应。
+</footer>
+
+</div>
+
+<!-- Mermaid CDN 加载；离线时降级为上方文字描述，不影响阅读 -->
+<script type="module">
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+  mermaid.initialize({ startOnLoad: true, securityLevel: "loose", theme: "default" });
+</script>
+</body>
+</html>

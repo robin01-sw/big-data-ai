@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>大模型的上下文 · 一分钟微课</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+  header {
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 12px; font-size: 30px; line-height: 1.25; }
+  .tldr {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  .tldr .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 16px; margin-top: 18px; color: var(--ink-soft); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  details {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+  }
+  details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before {
+    content: "▸ ";
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--panel);
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th { background: var(--tag-bg); font-weight: 600; }
+  code {
+    background: var(--tag-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  pre {
+    background: #1f2330;
+    color: #f3efe7;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  blockquote {
+    margin: 8px 0;
+    padding: 4px 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+    background: #fff7f5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .source {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--tag-bg);
+    border-radius: 3px;
+    margin-left: 6px;
+  }
+  footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--ink-soft);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="crumb">一分钟微课 · MINUTE-LESSON</div>
+  <h1>大模型的上下文（Context Window）</h1>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    大模型的「上下文」= <strong>单次请求里模型能「看到」的全部文本</strong>，包含系统提示、历史对话、工具结果、图片、文件、本轮的输出 token。它不是训练数据，而是模型的「工作内存」。窗口越大能装的越多，<strong>但装得多不等于记得好</strong>——超过一定长度后，准确率反而会下降（业内叫 <em>context rot</em>）。
+  </div>
+</header>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能用一句话说清「上下文窗口」和「训练数据」的区别</li>
+  <li>能列出构成一次请求上下文的 5 类内容（system prompt / messages / tool results / extended thinking / output）</li>
+  <li>能解释「context rot」是什么、为什么窗口不是越大越好</li>
+  <li>能给出至少 2 个把「上下文工程」落到实处的做法（缓存、压缩、截断）</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>上下文窗口和「模型的知识」是一回事吗？</summary>
+  <div class="body">
+    不是。模型的「知识」来自训练时见过的海量语料，这些权重是**冻结**的，不会因为你在对话里说了什么而改变。上下文窗口是模型在**这一次生成时**能参考的全部内容——更像是它当下的「工作台面」，而不是它的「记忆」。这张台面大小是有限的，按 token 算。
+  </div>
+</details>
+
+<details>
+  <summary>为什么窗口不是越大越好？</summary>
+  <div class="body">
+    Anthropic 在 2025 年的上下文工程指南里专门用一个词形容这种现象：<strong>context rot</strong>（上下文腐烂）——token 越多，模型对细节的召回和推理准确率反而会下降。可能的原因包括：信息淹没关键信号、长程依赖变弱、注意力分散。所以「把能塞的全塞进去」是常见误区，**「只放当下需要的」** 才是工程目标。
+  </div>
+</details>
+
+<details>
+  <summary>系统提示和对话历史都算上下文吗？</summary>
+  <div class="body">
+    都算。一次 API 请求里，模型要看的全部内容包括：system prompt（系统提示，定基调）、messages 数组里的全部历史轮次和工具返回结果、tool definitions（工具的 schema 描述本身也占 token）、extended thinking 的思考块（如果启用了思考）、以及本轮模型正在生成的输出 token。Anthropic 的官方文档明确说「everything in the request counts toward the context window」。
+  </div>
+</details>
+
+<details>
+  <summary>上下文满了会怎样？</summary>
+  <div class="body">
+    三种处理方式：① 直接报错（OpenAI 默认行为，要求你手动管理）；② 自动截断（OpenAI Responses API 设 <code>truncation=auto</code> 会从最早的消息开始丢）；③ 服务端压缩（Anthropic 把 server-side compaction 作为长对话和 Agent 场景的主要策略，本质上是把早期内容总结成更短的摘要）。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>
+「上下文窗口」（Context Window）是语言模型在单次生成时能引用的全部文本上限，按 <strong>token</strong> 计数。它和模型的训练数据不同——训练数据是冻结的「记忆」，上下文窗口是当下的「工作台」。Anthropic 给出的精确定义是：「the context window refers to all the text a language model can reference when generating a response, including the response itself」。
+</p>
+
+<h3>为什么</h3>
+<p>
+上下文窗口是 LLM 推理的根本约束——它决定了「一次能喂给模型多少信息」。窗口小，老长文档塞不下；窗口大，又要付出成本（每次请求按 token 计费）和质量代价（context rot）。所以从工程角度看，「上下文」不只是技术参数，更是 LLM 应用的核心资源——怎么把**当下最相关**的信息塞进去，本身就是一门工程学科，叫 <strong>context engineering</strong>（上下文工程）。
+</p>
+
+<h3>怎么工作（一次请求里都装了什么）</h3>
+<ol>
+  <li><strong>系统提示</strong>（system prompt / developer message）：定角色、定规则、定输出格式</li>
+  <li><strong>历史消息</strong>（messages）：多轮对话的 user / assistant 交替</li>
+  <li><strong>工具结果</strong>（tool results）：Agent 调用 API/查数据库/读文件的返回内容</li>
+  <li><strong>工具 schema 本身</strong>：可调用工具的描述、参数定义也占 token</li>
+  <li><strong>扩展思考</strong>（extended thinking）：如果模型有「思考块」，那部分 token 也计入窗口</li>
+  <li><strong>本轮输出</strong>：连模型自己这次说的话也算进去（生成到第 N 个 token 时，前 N 个都已经「在」上下文里）</li>
+</ol>
+<p>
+对当前主流模型来说，窗口大致分两档：200K token（如 Claude Sonnet 4.5、GPT-4o 类）和 1M token（如 Claude Opus 4.6+、Sonnet 4.6、Sonnet 5）。1M 已经是默认上限，不需要特殊请求头。
+</p>
+
+<h2>应用案例</h2>
+
+<h3>案例：长会议纪要 Agent</h3>
+<p>
+场景：让 Agent 读一份 4 小时会议的转录稿（约 6 万字、~150K token），输出结构化纪要：决议、待办、责任人、时间。
+</p>
+<ol>
+  <li>把转录稿按章节切片（每片 10K token），作为「文件」传给模型。</li>
+  <li>系统提示里写明纪要的字段格式（决议 / 待办 / 责任人 / 截止）。</li>
+  <li>第一轮让模型对每片输出要点（每片 ~2K token），累计放进 messages。</li>
+  <li>第二轮让模型把所有要点合并去重，输出最终纪要。</li>
+</ol>
+<p>
+这里几个上下文工程的细节都体现了：
+</p>
+<ul>
+  <li><strong>不是一次性把全文塞进去</strong>（避免 context rot），而是分片+摘要。</li>
+  <li><strong>工具结果占 token</strong>，所以每片只保留关键句，不留冗余。</li>
+  <li><strong>系统提示要短而明确</strong>，否则它就吃掉了大量预算。</li>
+  <li>如果开启 prompt caching，系统提示和工具 schema 是天然命中缓存的，复用越多越省钱。</li>
+</ul>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>邻近概念</th>
+      <th>与「上下文」的区别</th>
+      <th>一句话判定</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>训练数据 / 知识</td>
+      <td>权重里的世界，写死在模型参数里</td>
+      <td>「它的记忆」 vs 「它桌上摊开的纸」</td>
+    </tr>
+    <tr>
+      <td>会话状态（conversation state）</td>
+      <td>是客户端/服务端管理「消息列表」的方式；上下文窗口是这份列表能装多大</td>
+      <td>「会话」是流程概念，「上下文」是容量概念</td>
+    </tr>
+    <tr>
+      <td>Prompt</td>
+      <td>是上下文的一部分（系统提示 + 用户输入），不是全部</td>
+      <td>「提示」是输入面，「上下文」是整个工作面</td>
+    </tr>
+    <tr>
+      <td>RAG（检索增强生成）</td>
+      <td>RAG 是一种「按需把相关片段塞进上下文」的工程手段</td>
+      <td>「上下文」是被装的对象，「RAG」是往里装东西的方法</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题</h2>
+
+<details>
+  <summary>1.【单选】下面哪一项<strong>不</strong>计入一次请求的上下文窗口？</summary>
+  <div class="body">
+    <strong>答案：D</strong>。模型在预训练阶段见过的语料不进上下文窗口，只进权重。
+    <ol type="A">
+      <li>系统提示</li>
+      <li>工具 schema 定义</li>
+      <li>本轮模型自己生成的输出 token</li>
+      <li>模型预训练时见过的所有网页</li>
+    </ol>
+  </div>
+</details>
+
+<details>
+  <summary>2.【判断】上下文窗口越大，模型回答质量一定越好。</summary>
+  <div class="body">
+    <strong>答案：错误。</strong>窗口越大能装的信息越多，但装得多不等于用得好——Anthropic 把这种「长上下文准确率反而下降」的现象叫做 <em>context rot</em>。实践上更看重「塞什么」而不是「能塞多少」。
+  </div>
+</details>
+
+<details>
+  <summary>3.【简答】Agent 场景下，工具调用结果会怎样影响上下文窗口？</summary>
+  <div class="body">
+    <strong>答案：</strong>工具返回的内容会作为新的 <code>tool_result</code> 消息进入 messages 数组，全部计入上下文窗口。如果工具返回的是大文档（日志、长网页、表格），会迅速吃掉预算。所以工程上一般要：① 在工具侧先做摘要/切片；② 给大结果单独存到向量库，需要时按需检索。
+  </div>
+</details>
+
+<details>
+  <summary>4.【开放】请给一个具体例子，说明什么是「上下文工程」。</summary>
+  <div class="body">
+    <strong>参考思路：</strong>把一个 200 页的产品手册塞给模型做客服问答——朴素做法是「每次提问都把整本手册塞进上下文」，但窗口会爆、还引发 context rot。上下文工程的做法是：① 把手册拆成段落做向量检索，② 只把跟当前问题最相关的 3-5 段作为上下文，③ 系统提示里强调「只能基于下面提供的资料回答，不知道就说不知道」。
+  </div>
+</details>
+
+<h2>参考来源</h2>
+<ul>
+  <li>
+    <a href="https://docs.anthropic.com/en/docs/build-with-claude/context-windows">Context windows（Anthropic 官方文档）</a>
+    <span class="source">官方文档</span>
+    —— 给出上下文窗口的精确定义，列出 200K / 1M 两档容量、context rot 现象、请求中各项 token 的计入规则。
+  </li>
+  <li>
+    <a href="https://developers.openai.com/docs/guides/conversation-state">Conversation state（OpenAI 开发者文档）</a>
+    <span class="source">官方文档</span>
+    —— 解释「单次请求无状态、多轮靠 messages 传递」的工程做法、上下文窗口定义、以及 Responses API 的 <code>truncation</code> 自动截断策略。
+  </li>
+  <li>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents（Anthropic Engineering，2024-12）</a>
+    <span class="source">官方工程博客</span>
+    —— 说明在 Agent 场景下，「长上下文 + 多轮工具调用」带来的工程挑战，强调 server-side compaction 是主要管理手段。
+  </li>
+  <li>
+    <a href="https://en.wikipedia.org/wiki/Context_window">Context window（Wikipedia）</a>
+    <span class="source">百科</span>
+    —— 不同模型上下文窗口大小对比表，作为交叉验证。
+  </li>
+</ul>
+
+<footer>
+  本卡片由 <code>minute-lesson</code> Skill 生成于 2026-09-06 ·
+  生成方式：AI 起草 + 调用方人工核查与改写。
+  <br/>
+  <span class="badge">人工核查记录</span>
+  「应用案例」由我（robin01-sw）改写为「长会议纪要 Agent」，不照搬官方示例。
+  「结构化解释」里 5 项内容的清单是我根据 Anthropic 文档自行组织的总结，不是直接引用。
+  1M / 200K 窗口对应的具体模型来自 Anthropic 2025-10 文档，与官方同步。
+</footer>
+
+</div>
+</body>
+</html>

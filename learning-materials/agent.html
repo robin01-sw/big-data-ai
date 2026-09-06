@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Agent · 一分钟微课</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+  header {
+    border-bottom: 2px solid var(--line);
+    padding-bottom: 16px;
+    margin-bottom: 28px;
+  }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 12px; font-size: 30px; line-height: 1.25; }
+  .tldr {
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    padding: 14px 16px;
+    border-radius: 4px;
+    color: var(--ink);
+  }
+  .tldr .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  h2 {
+    font-size: 20px;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  h3 { font-size: 16px; margin-top: 18px; color: var(--ink-soft); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  details {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 8px 0;
+  }
+  details > summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before {
+    content: "▸ ";
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    background: var(--panel);
+  }
+  th, td {
+    text-align: left;
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    font-size: 14px;
+    vertical-align: top;
+  }
+  th { background: var(--tag-bg); font-weight: 600; }
+  code {
+    background: var(--tag-bg);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.92em;
+  }
+  pre {
+    background: #1f2330;
+    color: #f3efe7;
+    padding: 12px 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  blockquote {
+    margin: 8px 0;
+    padding: 4px 14px;
+    border-left: 3px solid var(--accent);
+    color: var(--ink-soft);
+    background: #fff7f5;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .source {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 2px 6px;
+    background: var(--tag-bg);
+    border-radius: 3px;
+    margin-left: 6px;
+  }
+  footer {
+    margin-top: 60px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .badge {
+    display: inline-block;
+    background: var(--tag-bg);
+    color: var(--ink-soft);
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 12px;
+    margin-right: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="crumb">一分钟微课 · MINUTE-LESSON</div>
+  <h1>Agent（智能体）</h1>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    Agent 是一种能在最少人类干预下，代替用户**自主完成多步任务**的系统——它通常由一个大模型驱动，能调用外部工具，并能根据执行结果动态决定下一步做什么。它和「普通 AI 对话」最大的区别是：能 <strong>行动</strong>，而不只是回答。
+  </div>
+</header>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能用一句话给「Agent」下一个能区分 AI 对话、Copilot、Agent 的定义</li>
+  <li>能列出 Agent 的三件套（模型 / 工具 / 指令）和典型工作循环</li>
+  <li>能用真实例子讲清「什么场景适合用 Agent，什么场景用规则引擎就够了」</li>
+  <li>能区分 Workflows 和 Agents 这两个常被混用的概念</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>Agent 和普通的「AI 聊天」有什么区别？</summary>
+  <div class="body">
+    AI 聊天本质是「你问一句，它答一句」，模型只能产出文字，不能调用外部系统。Agent 则会**主动调用工具**（查数据库、读写文件、调用 API）并根据工具返回的结果继续决定下一步——它的「回答」可能是一段文字，也可能是一次操作的结果。OpenAI 的官方定义就把这种「能在用户授权下代替用户行动」的能力作为 Agent 的关键特征。
+  </div>
+</details>
+
+<details>
+  <summary>Agent 必须能完全自主思考吗？</summary>
+  <div class="body">
+    不一定。Anthropic 把 Agent 和 Workflow 区分开来：Workflow 是用预定义代码路径把 LLM 和工具串起来的系统（人设计流程，LLM 填空）；Agent 则是 LLM 动态决定流程怎么走、什么时候用哪个工具的系统。两个都属于「agentic systems」（智能体系统），但自主程度不同。
+  </div>
+</details>
+
+<details>
+  <summary>Agent 是不是「AGI 的雏形」？</summary>
+  <div class="body">
+    经常被营销话术这么说，但更准确的理解是：Agent 是当前大模型能力（推理、工具调用、长上下文）落地到具体任务的一种**工程形态**。它没有意识，也不会真的「思考」，只是把决策循环（观察→决策→行动→再观察）做成了可运行的程序。把它当工具看，不要当生命看。
+  </div>
+</details>
+
+<details>
+  <summary>Agent 一定要联网吗？</summary>
+  <div class="body">
+    联网是常见做法，但不是定义属性。一个 Agent 只要能「感知环境、做出决策、施加行动」，闭环就成立。环境可以是本地文件系统、本地数据库、IDE，也可以是互联网。在内网/隔离环境里照样能跑 Agent。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>
+Agent（智能体）是一种软件系统：它感知自己所处的环境，调用工具执行动作，并根据动作结果自主决定下一步该做什么，直到完成用户给它的目标。Russell 和 Norvig 在经典教材《人工智能：现代方法》里给出的最广义的定义是「<em>任何能通过传感器感知环境、并通过执行器作用于环境的实体</em>」，从恒温器到人都是 Agent。
+</p>
+
+<h3>为什么</h3>
+<p>
+传统软件走「确定性路径」——规则固定，输入相同输出就相同。但很多现实任务（审批退款、分析保险索赔、排查代码 bug）规则写不完、判断依赖语境。Agent 的价值在于把「判断 + 执行」合在一起：让 LLM 当决策中心，把规则交给工具，结果由 LLM 在循环中动态组合。
+</p>
+<p>
+OpenAI 在 2025 年发布的《A Practical Guide to Building Agents》里给出了一个判断标准：如果一个用例「之前用传统自动化做不到」，又涉及自然语言/模糊判断/多步推理，就适合做 Agent；否则可能只需要一个普通脚本。
+</p>
+
+<h3>怎么工作（典型循环）</h3>
+<ol>
+  <li><strong>感知</strong>：读系统提示、当前对话/任务、上一步工具返回结果</li>
+  <li><strong>推理</strong>：由 LLM 判断「现在该调用哪个工具、传什么参数、还是该给最终回答」</li>
+  <li><strong>行动</strong>：调用外部工具（API、数据库、文件、代码执行器等）</li>
+  <li><strong>再感知</strong>：把工具结果塞回上下文，让模型接着判断</li>
+  <li><strong>终止判断</strong>：任务完成 → 输出最终结果；多次失败 → 把控制权交回用户</li>
+</ol>
+<p>OpenAI 把它浓缩成三件套：<code>Model</code> + <code>Tools</code> + <code>Instructions</code>。Anthropic 的 Agents SDK 同理：模型负责决策，工具负责执行，指令（系统提示 + 护栏）负责约束行为边界。</p>
+
+<h2>应用案例</h2>
+
+<h3>案例：客服退款审批 Agent</h3>
+<p>
+OpenAI 在指南里给的一个具体例子：用户申请退款，按传统做法需要客服在后台看订单、判断是否符合政策、决定金额；规则一多就维护不过来。改成 Agent 后，模型读用户订单数据（<em>感知</em>），根据退款政策判断是否满足条件（<em>推理</em>），调用支付系统发起退款或调用工单系统转人工（<em>行动</em>），把结果回写到对话历史（<em>再感知</em>）。
+</p>
+<p>
+关键不是「用 AI 替代人」，而是「用 AI 接管规则变化快、判断需要看上下文的那些环节」。整套系统仍然有 guardrails：单笔退款超过 1000 元必须转人工、同一用户 24 小时内超过 3 次自动冻结。
+</p>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>邻近概念</th>
+      <th>与 Agent 的核心区别</th>
+      <th>一句话判定</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>普通 AI 对话 / Chatbot</td>
+      <td>没有工具调用，只能产出文字</td>
+      <td>「能说」但「不能做」</td>
+    </tr>
+    <tr>
+      <td>Copilot / 助手</td>
+      <td>提供建议，由人决定是否采纳；Agent 是自己决定并执行</td>
+      <td>「我建议…」vs「我做了…」</td>
+    </tr>
+    <tr>
+      <td>Workflow（工作流）</td>
+      <td>由预定义代码路径串联 LLM 和工具，Agent 是 LLM 动态决定流程</td>
+      <td>「剧本写好 LLM 演」vs「让 LLM 自己决定剧本」</td>
+    </tr>
+    <tr>
+      <td>传统规则引擎</td>
+      <td>规则固定、判断确定；Agent 用 LLM 处理模糊判断</td>
+      <td>「if-else 走天下」vs「能读懂自然语言的 if-else」</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题</h2>
+
+<details>
+  <summary>1.【单选】下面哪一项最能区分「普通 Chatbot」和「Agent」？</summary>
+  <div class="body">
+    <strong>答案：B</strong>。B 项体现了「调用外部工具并根据结果行动」这一 Agent 核心能力；A/C/D 都是单纯对话场景，没用到工具调用闭环。
+    <ol type="A">
+      <li>Chatbot 也能写诗，Agent 不能</li>
+      <li>Agent 能调用工具查数据库并根据结果生成回答，Chatbot 不能</li>
+      <li>Chatbot 用 GPU，Agent 用 CPU</li>
+      <li>Agent 必须联网，Chatbot 不能联网</li>
+    </ol>
+  </div>
+</details>
+
+<details>
+  <summary>2.【判断】Workflows 属于 agentic systems，但不是 Agents。</summary>
+  <div class="body">
+    <strong>答案：正确。</strong>Anthropic 把两者都归入 agentic systems（智能体系统）这一大类，但 Workflows 由预定义代码路径控制流程，Agents 由 LLM 动态控制流程。
+  </div>
+</details>
+
+<details>
+  <summary>3.【简答】OpenAI 总结的 Agent 三件套是什么？请各举一个具体例子。</summary>
+  <div class="body">
+    <strong>答案：</strong>Model（驱动推理和决策的 LLM，例如 GPT-5）、Tools（外部可调用的功能，例如查天气的 API）、Instructions（系统提示和行为约束，例如「不要编造订单状态」）。
+  </div>
+</details>
+
+<details>
+  <summary>4.【开放】请用一个真实场景说明：什么时候用规则引擎就够了，什么时候必须上 Agent？</summary>
+  <div class="body">
+    <strong>参考思路：</strong>规则引擎适合输入完全结构化、判断标准固定、不能出错的场景（如发票金额校验、密码强度检测）；Agent 适合需要读懂自然语言、判断依赖语境、规则频繁变化的场景（如客服退款审批、保险索赔初审、代码 PR 自动评审）。
+  </div>
+</details>
+
+<h2>参考来源</h2>
+<ul>
+  <li>
+    <a href="https://cdn.openai.com/business-guides-and-resources/a-practical-guide-to-building-agents.pdf">A practical guide to building agents（OpenAI 官方 PDF，2025 年 4 月）</a>
+    <span class="source">官方文档</span>
+    —— 给出 Agent 的「instructions + guardrails + tools」三件套定义与 34 页实战指南。
+  </li>
+  <li>
+    <a href="https://www.anthropic.com/engineering/building-effective-agents">Building effective agents（Anthropic Engineering 博客，Erik S. &amp; Barry Zhang，2024-12-19）</a>
+    <span class="source">官方工程博客</span>
+    —— 区分 Workflows 与 Agents，提出「agentic systems」这一上位概念。
+  </li>
+  <li>
+    <a href="http://developers.openai.com/tracks/building-agents">OpenAI Building agents learning track</a>
+    <span class="source">官方文档</span>
+    —— 用一句话给 Agent 下了「instructions + guardrails + tools」的可操作定义。
+  </li>
+  <li>
+    <a href="https://en.wikipedia.org/wiki/Intelligent_agent">Intelligent agent（Wikipedia）</a>
+    <span class="source">百科</span>
+    —— 引用 Russell &amp; Norvig《人工智能：现代方法》中对 agent 的经典定义。
+  </li>
+  <li>
+    <a href="https://lilianweng.github.io/posts/2023-06-23-agent">LLM Powered Autonomous Agents（Lilian Weng，2023-06）</a>
+    <span class="source">学术博客</span>
+    —— LLM 时代 Agent 的早期综述，提出 Planning / Memory / Tool Use 三组件框架。
+  </li>
+</ul>
+
+<footer>
+  本卡片由 <code>minute-lesson</code> Skill 生成于 2026-09-06 ·
+  生成方式：AI 起草 + 调用方人工核查与改写。
+  <br/>
+  <span class="badge">人工核查记录</span>
+  自测题 4 由我（robin01-sw）补充，题干不照搬原文。
+  「应用案例」基于 OpenAI 指南的真实场景做了改写，没有整段照搬官方示例。
+</footer>
+
+</div>
+</body>
+</html>
