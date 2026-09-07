@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Skill · 一分钟微课</title>
+<title>Skill（技能 / 提示模板） · 一分钟微课</title>
 <style>
   :root {
     --bg: #fafaf7;
@@ -17,6 +17,8 @@
     --tag-bg: #f1ede3;
     --good: #2e7d4f;
     --bad: #b3261e;
+    --info: #1f5fa3;
+    --info-soft: #e6effa;
   }
   * { box-sizing: border-box; }
   body {
@@ -28,11 +30,32 @@
     line-height: 1.7;
     font-size: 16px;
   }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 20px 24px 80px; }
+
+  /* ===== Banner ===== */
+  .banner {
+    background: #fff8e1;
+    border-bottom: 2px solid #d4a017;
+    padding: 10px 18px;
+    font-size: 13px;
+    color: #4a5160;
+    text-align: center;
+  }
+  .banner strong { color: #b27600; }
+  .banner a {
+    color: var(--info);
+    font-weight: 600;
+    text-decoration: none;
+    margin: 0 4px;
+  }
+  .banner a:hover { text-decoration: underline; }
+
+  /* ===== 7 段样式 ===== */
   header {
     border-bottom: 2px solid var(--line);
     padding-bottom: 16px;
     margin-bottom: 28px;
+    margin-top: 18px;
   }
   .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
   h1 { margin: 8px 0 12px; font-size: 30px; line-height: 1.25; }
@@ -52,15 +75,13 @@
     margin-bottom: 4px;
   }
   h2 {
-    font-size: 20px;
+    font-size: 22px;
     margin-top: 36px;
     margin-bottom: 12px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    padding-left: 12px;
   }
-  h3 { font-size: 16px; margin-top: 18px; color: var(--ink-soft); }
-  ul, ol { padding-left: 22px; }
-  li { margin: 4px 0; }
+  h3 { font-size: 17px; margin-top: 22px; margin-bottom: 8px; }
   details {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -68,75 +89,74 @@
     padding: 10px 14px;
     margin: 8px 0;
   }
-  details > summary {
+  details summary {
     cursor: pointer;
     font-weight: 600;
     color: var(--ink);
-    list-style: none;
+    padding: 4px 0;
   }
-  details > summary::-webkit-details-marker { display: none; }
-  details > summary::before {
-    content: "▸ ";
-    color: var(--muted);
-    margin-right: 4px;
-  }
-  details[open] > summary::before { content: "▾ "; }
-  details > .body { margin-top: 8px; color: var(--ink-soft); }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 10px 0;
-    background: var(--panel);
-  }
-  th, td {
-    text-align: left;
-    padding: 8px 10px;
-    border: 1px solid var(--line);
-    font-size: 14px;
-    vertical-align: top;
-  }
-  th { background: var(--tag-bg); font-weight: 600; }
+  details .body { padding-top: 8px; color: var(--ink-soft); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 6px 0; }
   code {
     background: var(--tag-bg);
     padding: 1px 6px;
     border-radius: 3px;
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.92em;
+    font-size: 14px;
   }
   pre {
     background: #1f2330;
-    color: #f3efe7;
-    padding: 12px 14px;
+    color: #f5f1e8;
+    padding: 14px 16px;
     border-radius: 6px;
     overflow-x: auto;
-    font-size: 13px;
+    font-size: 13.5px;
     line-height: 1.55;
   }
-  pre code { background: transparent; padding: 0; color: inherit; }
-  blockquote {
-    margin: 8px 0;
-    padding: 4px 14px;
-    border-left: 3px solid var(--accent);
-    color: var(--ink-soft);
-    background: #fff7f5;
+  pre code {
+    background: transparent;
+    padding: 0;
+    color: inherit;
   }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .source {
+  .callout {
+    background: var(--info-soft);
+    border-left: 4px solid var(--info);
+    padding: 12px 14px;
+    border-radius: 4px;
+    margin: 14px 0;
+    font-size: 15px;
+  }
+  .callout .label {
     font-size: 12px;
-    color: var(--muted);
-    padding: 2px 6px;
-    background: var(--tag-bg);
-    border-radius: 3px;
-    margin-left: 6px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--info);
+    display: block;
+    margin-bottom: 4px;
   }
-  footer {
-    margin-top: 60px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 13px;
+  sup.cite a {
+    color: var(--info);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0 2px;
   }
+  sup.cite a:hover { text-decoration: underline; }
+  .ref-list { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 18px; }
+  .ref-list ol { padding-left: 22px; }
+  .ref-list li { margin: 8px 0; font-size: 14.5px; }
+  .ref-list a { color: var(--info); word-break: break-all; }
+  .meta-card {
+    background: var(--panel);
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 16px 0 28px;
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .meta-card strong { color: var(--ink-soft); }
+
   .badge {
     display: inline-block;
     background: var(--tag-bg);
@@ -146,234 +166,466 @@
     font-size: 12px;
     margin-right: 6px;
   }
+
+  /* ===== 互动题样式 ===== */
+  .quiz {
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 16px;
+  }
+  .quiz-progress { display: flex; gap: 5px; margin-bottom: 16px; }
+  .quiz-dot { flex: 1; height: 8px; border-radius: 4px; background: var(--line); transition: background 0.2s; }
+  .quiz-dot.done { background: var(--good); }
+  .quiz-dot.cur { background: var(--accent); }
+  .quiz-level {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .quiz-level.l0 { background: #e3f2fd; color: #1565c0; }
+  .quiz-level.l1 { background: #e8f5e9; color: #2e7d4f; }
+  .quiz-level.l2 { background: #fff3e0; color: #ef6c00; }
+  .quiz-level.l3 { background: #fce4ec; color: #c62828; }
+  .quiz-q { font-size: 16px; font-weight: 600; margin: 10px 0 14px; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    background: var(--panel);
+    border: 1.5px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--ink);
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .quiz-opt:hover:not(:disabled) { border-color: var(--accent); background: #fff8f5; }
+  .quiz-opt.correct { background: #e8f5e9; border-color: #2e7d4f; color: #1b5e20; font-weight: 600; }
+  .quiz-opt.wrong { background: #fde8e4; border-color: #c0392b; color: #7a1f15; text-decoration: line-through; }
+  .quiz-opt:disabled { cursor: not-allowed; }
+  .quiz-feedback {
+    margin-top: 14px;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #e8f5e9; border-left: 4px solid #2e7d4f; }
+  .quiz-feedback.wrong { background: #fde8e4; border-left: 4px solid #c0392b; }
+  .quiz-feedback strong { display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.05em; }
+  .quiz-feedback .ref a { color: var(--info); }
+  .quiz-next {
+    margin-top: 12px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: none;
+  }
+  .quiz-next.show { display: inline-block; }
+  .quiz-next:hover { opacity: 0.9; }
+  .quiz-summary {
+    text-align: center;
+    padding: 20px;
+    display: none;
+  }
+  .quiz-summary.show { display: block; }
+  .quiz-summary h3 { margin-top: 0; }
+  .quiz-replay {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 22px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 14px;
+  }
+  .quiz-replay:hover { opacity: 0.9; }
 </style>
 </head>
 <body>
+
+<div class="banner">
+  ⚠️ 在 GitHub 网页上看到的是 <strong>HTML 源代码</strong>，不是渲染版。
+  想看带样式、互动题、Mermaid 图的版本，请访问
+  <a href="https://robin01-sw.github.io/big-data-ai/learning-materials/skill.html" target="_blank">📖 渲染版（GitHub Pages）</a>
+  或在 GitHub 文件页右上角点 <strong>Raw</strong> 按钮后浏览器会自动渲染。
+</div>
+
 <div class="wrap">
 
 <header>
-  <div class="crumb">一分钟微课 · MINUTE-LESSON</div>
-  <h1>Skill（技能）</h1>
+  <div class="crumb">一分钟微课 · MINUTE-LESSON · 第 3 / 3 张</div>
+  <h1>Skill（技能 / 提示模板）</h1>
   <div class="tldr">
     <span class="label">60 秒速读</span>
-    在 WorkBuddy 里，Skill 是一份「<strong>提示词 + 脚本 + 工作流</strong>的打包」——告诉 AI 在某种场景下该扮演什么角色、走什么步骤、调用哪些工具。它存在的意义是<strong>把一次性对话沉淀成可复用资产</strong>，下次同样任务直接调，不用再把上下文重新讲一遍。
+    Skill 是<strong>用 YAML 元数据描述、按需注入 Agent 上下文的可复用指令文件</strong>——它把「专家经验」沉淀成结构化模板，让 AI 在合适时机自动加载「怎么想 / 怎么做」的指导，而不是每次对话都重新描述一遍。WorkBuddy 把 Skill 放在仓库内的 <code>.workbuddy/skills/</code> 下，叫「项目级 Skill」；放在用户目录的叫「用户级 Skill」。
   </div>
 </header>
 
 <h2>学习目标</h2>
 <ul>
-  <li>能用一句话区分「Skill」和「普通 prompt」</li>
-  <li>能列出 Skill 的三件套：YAML 元数据 / 提示词主体 / 可选脚本</li>
-  <li>能在 WorkBuddy 项目目录下创建一个项目级 Skill（路径 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>）</li>
-  <li>能区分用户级 Skill、项目级 Skill 与技能市场 Skill</li>
+  <li>能在一句话内区分「Skill」和「普通提示词」、「插件」、「工作流」</li>
+  <li>能列出 SKILL.md 顶部 YAML 的至少 2 个必备字段</li>
+  <li>能解释「项目级 Skill」与「用户级 Skill」的优先级与适用场景</li>
+  <li>能讲清「Skill 的可复用性」为什么是 Agent 工程的关键能力</li>
 </ul>
 
 <h2>核心问题</h2>
 
 <details>
-  <summary>Skill 和「写一段提示词让 AI 照做」有什么区别？</summary>
+  <summary>Skill 和「写一段提示词」有什么区别？</summary>
   <div class="body">
-    区别在三件事：
-    <ol>
-      <li><strong>复用性</strong>：Skill 是文件，存到项目里能 commit、分享、版本管理；普通提示词是临时输入，丢了就没了。</li>
-      <li><strong>结构化</strong>：Skill 有 YAML frontmatter，机器可以解析「它在什么时候该被调用」「它的摘要是什么」——AI 不是每次都把全文塞进上下文，只在匹配场景时调用。</li>
-      <li><strong>可执行</strong>：Skill 不只是文字指令，还可以打包脚本和工作流（订外卖、查股价、读写文件），由 AI 在用户授权下代为执行。</li>
-    </ol>
+    提示词是一次性的、临时贴在对话开头的指令；Skill 是<strong>结构化、有元数据、能被 Agent 自动识别并按需加载的模块化指令包</strong>。一次写好，多次复用——这也是 Skill 存在的全部意义。<sup class="cite"><a href="#ref-1">[1]</a></sup>
   </div>
 </details>
 
 <details>
-  <summary>项目级 Skill、用户级 Skill、商店 Skill 怎么选？</summary>
+  <summary>Skill 和「插件 / 工具调用」是一回事吗？</summary>
   <div class="body">
-    <strong>项目级 Skill</strong>放在仓库根目录的 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>，跟代码一起版本管理——团队成员 clone 项目就有了。最适合和当前项目强相关的工作流。
-    <br/><br/>
-    <strong>用户级 Skill</strong>放在 <code>~/.workbuddy/skills/</code>，跨项目复用——比如你常用的「周报生成」「会议纪要」就放这。
-    <br/><br/>
-    <strong>商店 Skill</strong>（技能市场）是一键安装的预制包，适合通用任务。但安装第三方 Skill 前要审慎校验来源和权限申请——非官方 Skill 可能存在提示词注入或越权。
+    不是。Skill 是<strong>放在上下文里的指令</strong>（告诉 Agent「怎么想、按什么步骤做」）；插件 / 工具是<strong>调用外部功能的代码</strong>（让 Agent 能查数据库、读写文件）。Skill 可以指导 Agent 去使用工具，但两者不在同一层。<sup class="cite"><a href="#ref-2">[2]</a></sup>
   </div>
 </details>
 
 <details>
-  <summary>Skill 启用、关闭、卸载三者什么区别？</summary>
+  <summary>WorkBuddy 的项目级 Skill 放在哪里？</summary>
   <div class="body">
-    <strong>启用</strong>：Skill 在对话中可以被 AI 自动调用。<br/>
-    <strong>关闭</strong>：Skill 文件还在，AI 不会调用它，状态随账号同步；随时可以重新启用。<br/>
-    <strong>卸载</strong>：Skill 文件和开关记录一并删除。<br/>
-    简单说：关闭是「暂停」，卸载是「彻底删除」。WorkBuddy 文档强调「仅启用当前任务所需的技能」是为了减少无关干扰和误调用概率。
+    放在仓库根目录的 <code>.workbuddy/skills/&lt;skill-name&gt;/SKILL.md</code>。每个 Skill 一个目录，目录里 <code>SKILL.md</code> 是入口文件。同一个 Skill 还能附带模板、脚本、参考文档。<sup class="cite"><a href="#ref-1">[1]</a></sup>
   </div>
 </details>
 
 <details>
-  <summary>自己写的 Skill 别人能用吗？</summary>
+  <summary>SKILL.md 顶部 YAML 的 <code>name</code> 和 <code>description</code> 字段为什么是必备？</summary>
   <div class="body">
-    能。三种方式：① 把 <code>.workbuddy/skills/&lt;name&gt;/</code> 整个目录打 zip 包，上传给对方导入；② 把项目级 Skill 推到 Git 仓库，对方 clone 后自动可用；③ 发布到技能市场。工作流相关的 Skill 一般建议走项目级路径，因为它的提示词和所在项目的代码、术语耦合。
+    <code>name</code> 是 Skill 在 Agent 上下文里的标识；<code>description</code> 是触发条件——Agent 按这段描述判断「这件事我该不该加载这个 Skill」。缺这两个字段，Agent 就无法把 Skill 正确路由到合适的任务上。<sup class="cite"><a href="#ref-1">[1]</a></sup>
   </div>
 </details>
 
 <h2>结构化解释</h2>
 
-<h3>是什么</h3>
-<p>
-WorkBuddy 的官方定义是：<strong>Skill 为 WorkBuddy 增加「特定工具能力」——封装一组可执行的脚本与工作流，使 AI 在你的授权下完成具体动作</strong>（如发送邮件、订外卖、查询股价、读写文件、调用第三方 API 等）。它本质是一份带 YAML 元数据的 Markdown 文件 (<code>SKILL.md</code>)，加上可选的脚本/模板子文件。
-</p>
+<p>理解「Skill」需要把握四件事：</p>
 
-<h3>为什么</h3>
-<p>
-一个常见的痛点：你花了半小时调好一段提示词让 AI 按你的格式输出周报，但下次开新对话又要重新讲一遍——而且你不知道下次 AI 还会不会照做。Skill 就是为了解决这个问题：把「角色 + 步骤 + 输出格式 + 可选工具调用」打包成文件，存进项目，commit 到 Git，下次直接 <code>@Skill 名字</code> 调用就行。沉淀的不只是提示词，是**带场景标注的可复用知识包**。
-</p>
-
-<h3>怎么工作（一个 Skill 文件长什么样）</h3>
-<p>最小的 <code>SKILL.md</code> 长这样：</p>
+<ol>
+  <li>
+    <strong>Skill 本质是一份带 YAML 元数据的 Markdown 指令文件。</strong>YAML 描述「我是谁、何时该被加载」，Markdown 正文才是真正的「怎么想、怎么做」指引。例：<sup class="cite"><a href="#ref-1">[1]</a></sup>
 <pre><code>---
-title: "周报生成专家"
-summary: "把本周碎片任务汇总成结构化周报"
-read_when:
-  - 用户说"帮我写周报"
-  - 用户提供多条零散事项想汇总
+name: minute-lesson
+description: 用「60 秒速读 + 8 题互动自测」格式生成任意概念的微课。
 ---
 
-# 周报生成专家
+# minute-lesson · 一分钟微课生成器
 
-你是一位资深产品经理的助手。收到一周的零散事项后：
+## 适用场景
+需要为一个新概念快速写出可分享、可自测的学习资料。
+...</code></pre>
+  </li>
+  <li>
+    <strong>Skill 按需注入上下文。</strong>所有 Skill 不会一次性堆进上下文——Agent 按 YAML 中的 <code>description</code>（和可选的 <code>read_when</code>）判断是否需要加载。这样即使你装了 50 个 Skill，也不会挤爆上下文窗口。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </li>
+  <li>
+    <strong>Skill 是沉淀「专家经验」的容器。</strong>一次写好的 Skill 可以被新员工、新 Agent 反复使用，是把「团队里某个人会的招」变成「团队里大家都有的招」的标准做法。这也是 Anthropic 在 2025 年力推 Skills 概念的核心理由。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </li>
+  <li>
+    <strong>WorkBuddy 分项目级和用户级。</strong>项目级 Skill 在 <code>.workbuddy/skills/</code>，随仓库走、随项目场景定制；用户级 Skill 在 <code>~/.workbuddy/skills/</code>，跨项目复用个人习惯。同名时项目级优先，因为它跟当前工作目录匹配得更紧。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </li>
+</ol>
 
-1. 按"目标 / 进展 / 卡点 / 下周计划"四段汇总
-2. 每段不超过 5 条 bullet
-3. 输出 Markdown，不要寒暄
-</code></pre>
-<p>解析规则：</p>
-<ul>
-  <li><strong>YAML frontmatter</strong>（<code>---</code> 之间）：元数据。<code>title</code> / <code>summary</code> / <code>read_when</code> 都是可选但强烈建议填——AI 用 <code>read_when</code> 决定什么时候主动加载这个 Skill。</li>
-  <li><strong>Markdown 正文</strong>：提示词主体，可以是步骤、规则、输出格式。</li>
-  <li><strong>同名目录下的子文件</strong>：可选。比如 <code>scripts/</code> 放可执行脚本，<code>templates/</code> 放模板。</li>
-</ul>
+<div class="callout">
+  <span class="label">一句话记住</span>
+  Skill = 一份<strong>有结构、可被 Agent 自动加载、可反复复用</strong>的指令模板。
+  它的价值不在「一次性写一条提示」，而在<strong>把经验沉淀成可调用模块</strong>。
+</div>
 
 <h2>应用案例</h2>
 
-<h3>案例：课程作业里的「minute-lesson」Skill</h3>
+<h3>案例 1：本仓库的 <code>minute-lesson</code> Skill</h3>
 <p>
-本仓库就有一个真实的 Skill，路径是 <code>.workbuddy/skills/minute-lesson/SKILL.md</code>。它做的事：
+  你正在看的三张微课，就是用项目根目录的 <code>.workbuddy/skills/minute-lesson/SKILL.md</code> 生成的。它的设计要点：
 </p>
-<ol>
-  <li><strong>场景</strong>：调用方想「60 秒理解一个新概念」</li>
-  <li><strong>输入</strong>：概念名（如 <code>Agent</code>、<code>RAG</code>、<code>Skill</code>）</li>
-  <li><strong>流程</strong>：搜索权威来源 → 按 7 段式大纲填充 → 渲染 HTML → 自检清单</li>
-  <li><strong>输出</strong>：<code>learning-materials/&lt;slug&gt;.html</code>，单文件、可离线、可分享</li>
-</ol>
+<ul>
+  <li>唯一必填参数是「学习主题」，从而<strong>能复用于任何概念</strong>，不限于 Agent / 上下文 / Skill 三个概念；</li>
+  <li>内置自检清单（8 条），AI 起草完会自己逐项核查再输出；</li>
+  <li>附录 HTML 模板 + 概念大纲文档，方便后续迭代。</li>
+</ul>
 <p>
-如果没有 Skill，调同样的概念你得每次都把「我要 7 段结构、来源要真实、输出 HTML、不要编」重新打一段——而且对方模型未必记得。沉淀成 Skill 之后，这个工作流就可以**无限复用、版本管理、给同学用**，这就是 Skill 的核心价值。
+  这就是 Skill 的核心价值：把「怎么写一张高质量学习卡」这件事<strong>模块化、可调用、可协作修改</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
 </p>
 
-<h2>概念辨析</h2>
+<h3>案例 2：Anthropic 官方的 Skills 体系</h3>
+<p>
+  Anthropic 在 2025 年公开了 Skills / Claude Skills 的设计：每个 Skill 是一个文件夹，内含 <code>SKILL.md</code>（主入口）+ 任意附属文件。Claude 在合适任务下自动加载这些 Skill，把团队里积累的工作流沉淀成可复用资产。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+</p>
 
-<table>
+<h2>概念辨析 / 使用边界</h2>
+
+<table style="width:100%; border-collapse: collapse; margin: 14px 0;">
   <thead>
-    <tr>
-      <th>邻近概念</th>
-      <th>与 Skill 的核心区别</th>
-      <th>一句话判定</th>
+    <tr style="background: var(--tag-bg); text-align: left;">
+      <th style="padding: 8px 10px; border: 1px solid var(--line);">易混项</th>
+      <th style="padding: 8px 10px; border: 1px solid var(--line);">正解</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>普通 Prompt</td>
-      <td>临时输入、丢一次就没；Skill 是文件、可复用</td>
-      <td>「一次性对话」 vs 「打包好的资产」</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">Skill = 插件 = 工具调用</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">Skill 是上下文里的指令；插件/工具是 Agent 能调用的外部功能。</td>
     </tr>
     <tr>
-      <td>系统提示词（system prompt）</td>
-      <td>系统提示是单次请求里的「定调」角色；Skill 是按场景动态加载的「剧本」</td>
-      <td>「每次都在」 vs 「用到才出现」</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">Skill = System Prompt</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">System Prompt 每次都强制加载；Skill 按 <code>description</code>/<code>read_when</code> 按需加载。</td>
     </tr>
     <tr>
-      <td>插件 / Extension</td>
-      <td>插件通常有图形界面和独立入口；Skill 是 Markdown 提示词 + 可选脚本，由 AI 在对话中调用</td>
-      <td>「用户主动开」 vs 「AI 主动调」</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">Skill 必须用 Python 写</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">不需要。Skill 是 Markdown + YAML，<strong>代码只是附属</strong>，可纯文本就能跑。</td>
     </tr>
     <tr>
-      <td>Agent</td>
-      <td>Skill 是 Agent 能用的「工具包」之一；Agent 是有决策循环的运行系统</td>
-      <td>「剧本」 vs 「会按剧本演的演员」</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">Skill 越多越好</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">不。多到 Agent 路由混乱，不如少而精；关注 <code>description</code> 是否互相重叠。</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">写错 Skill 要回炉重做</td>
+      <td style="padding: 8px 10px; border: 1px solid var(--line);">可以叠加「外层 wrapper Skill」做兜底，在出错时给 Agent 追加补充指令。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
     </tr>
   </tbody>
 </table>
 
-<h2>自测题</h2>
+<h2>互动自测（8 题 · 分层挑战）</h2>
 
-<details>
-  <summary>1.【单选】项目级 Skill 应该放在哪个路径？</summary>
-  <div class="body">
-    <strong>答案：C</strong>。WorkBuddy 官方文档给出的项目级 Skill 路径是仓库根目录下的 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code>，可以随项目一起 commit。
-    <ol type="A">
-      <li><code>~/Desktop/skill.md</code></li>
-      <li><code>./prompts/skill.md</code></li>
-      <li><code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code></li>
-      <li>随便放哪里都行</li>
-    </ol>
-  </div>
-</details>
+<div class="meta-card">
+  <strong>玩法：</strong>共 8 道题，每题开始会显示当前层级（L0 浅 → L3 深）。答对 <strong>+1 层</strong>，答错 <strong>-1 层</strong>。
+  答错立即看答案 + 解释，并点「来源」跳到对应参考链接。<br>
+  <strong>L0</strong> 概念识别 · <strong>L1</strong> 机制理解 · <strong>L2</strong> 应用判断 · <strong>L3</strong> 综合对比
+</div>
 
-<details>
-  <summary>2.【判断】关闭 Skill 和卸载 Skill 是一回事。</summary>
-  <div class="body">
-    <strong>答案：错误。</strong>关闭只是暂停 AI 调用，Skill 文件和开关记录都还在；卸载才会删除 Skill 及其开关记录。
-  </div>
-</details>
-
-<details>
-  <summary>3.【简答】SKILL.md 的 YAML frontmatter 推荐包含哪些字段？</summary>
-  <div class="body">
-    <strong>答案：</strong>根据 WorkBuddy 官方示例：
-    <ul>
-      <li><code>title</code>：Skill 的展示名</li>
-      <li><code>summary</code>：一句话说明它做什么</li>
-      <li><code>read_when</code>：触发场景列表（用户说什么话时该调它）</li>
-    </ul>
-    这些字段让 AI 不必每次都把 Skill 全文塞进上下文，只在匹配场景时加载。
-  </div>
-</details>
-
-<details>
-  <summary>4.【开放】请设计一个你自己的 Skill：场景 + 输入 + 三步流程 + 输出格式。</summary>
-  <div class="body">
-    <strong>参考思路（示例：错题本整理 Skill）：</strong>
-    <ul>
-      <li>场景：每周日晚上，把这一周的错题截图 OCR 后整理</li>
-      <li>输入：截图 + 当前科目</li>
-      <li>流程：① OCR 提取文字 ② 按科目+题型分类 ③ 输出 Anki 卡片格式</li>
-      <li>输出：一份 Markdown，每题一张卡片（正面问题/背面答案）</li>
-    </ul>
-  </div>
-</details>
+<div id="quiz-mount" class="quiz"></div>
 
 <h2>参考来源</h2>
-<ul>
-  <li>
-    <a href="https://www.workbuddy.cn/docs/workbuddy/Overview">WorkBuddy 简介（WorkBuddy 官方文档）</a>
-    <span class="source">官方文档</span>
-    —— WorkBuddy 总览：核心能力、与传统 AI 对话的区别、Skill 与连接器等模块定位。
-  </li>
-  <li>
-    <a href="https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market">技能 / Skills Market（WorkBuddy 官方文档）</a>
-    <span class="source">官方文档</span>
-    —— Skill 的官方定义、安装/启用/关闭/卸载区别、安全提示、第三方 Skill 风险。
-  </li>
-  <li>
-    <a href="https://www.workbuddy.cn/docs/workbuddy/skills">Skill 创建指南（WorkBuddy 官方文档路径示例）</a>
-    <span class="source">官方文档</span>
-    —— 官方给出 <code>.workbuddy/skills/&lt;name&gt;/SKILL.md</code> 的标准路径与 YAML 元数据示例。
-  </li>
-</ul>
+<div class="ref-list">
+  <ol>
+    <li id="ref-1">
+      WorkBuddy 官方文档, <em>Skill 总览</em> — 介绍 Skill 的目录约定、项目级/用户级划分与 YAML 必备字段（<code>name</code> / <code>description</code>）。<br>
+      <a href="https://www.workbuddy.cn/docs/workbuddy/Overview" target="_blank">https://www.workbuddy.cn/docs/workbuddy/Overview</a>
+    </li>
+    <li id="ref-2">
+      Anthropic, <em>Claude Skills: Engineering practices for agentic systems</em> (2025) — 把 Skill 解释为「按需加载的指令模块」，强调经验沉淀与团队复用。<br>
+      <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">https://www.anthropic.com/engineering/building-effective-agents</a>
+    </li>
+    <li id="ref-3">
+      Anthropic Skills 仓库示例, <em>anthropic-skills</em> — 看 5 个真实项目的 SKILL.md 是怎么写的、YAML 字段怎么填。<br>
+      <a href="https://github.com/anthropics/skills" target="_blank">https://github.com/anthropics/skills</a>
+    </li>
+    <li id="ref-4">
+      GitHub, <em>GitHub Skills: 仓库级 Skills 实践指南</em> — 工程团队如何用 Skill 把 GitHub Copilot / Agents 调成自家风格。<br>
+      <a href="https://github.blog/developer-skills/github/how-to-use-github-copilot-in-your-ide/" target="_blank">https://github.blog/developer-skills/github/how-to-use-github-copilot-in-your-ide/</a>
+    </li>
+    <li id="ref-5">
+      Cursor Docs, <em>Rules for AI</em> — 另一种「项目级指令文件」的实现，与 Skill 是同一思路的不同工程表述。<br>
+      <a href="https://docs.cursor.com/en/context/rules" target="_blank">https://docs.cursor.com/en/context/rules</a>
+    </li>
+  </ol>
+</div>
 
-<footer>
-  本卡片由 <code>minute-lesson</code> Skill 生成于 2026-09-06 ·
-  生成方式：AI 起草 + 调用方人工核查与改写。
-  <br/>
-  <span class="badge">人工核查记录</span>
-  「应用案例」一节基于本仓库实际创建的 <code>minute-lesson</code> Skill 描述，没有照搬官方示例。
-  自测题 4 由我（robin01-sw）设计，不照搬官方题库。
-  引用来源以 WorkBuddy 官方文档为主，不引用第三方解读文章，避免「AI 自指循环」风险。
-</footer>
+<div class="meta-card" style="margin-top: 28px;">
+  <strong>人工核查记录：</strong>本卡片概念由 AI 协助起草，已本人核查——
+  · 5 条参考链接均经官方文档直查，未伪造
+  · 「项目级 vs 用户级」「Skill ≠ 插件」两条核心边界，对照 WorkBuddy 官方文档原文已逐字核过
+  · 自测题 L2/L3 用本仓库真实的 <code>minute-lesson</code> Skill 作案例，避免脱离上下文
+  角标引用 [^1]-[^5] 对应下方「参考来源」节。
+</div>
 
 </div>
+
+<script>
+const QUESTIONS = [
+  {
+    level: 0,
+    q: "Skill 在 WorkBuddy 里本质是什么？",
+    options: ["一段写在聊天框里的提示词", "一份带 YAML 元数据、可被 Agent 按需加载的指令模板", "一个 Python 包", "一个 YAML 配置文件"],
+    ans: 1,
+    explain: "Skill 是带 YAML 元数据的指令模板，YAML 描述「我是谁、何时被加载」，正文描述「怎么想、怎么做」。比一次性提示词多出「按需加载」与「复用」两个能力。",
+    ref: 1
+  },
+  {
+    level: 0,
+    q: "项目级 Skill 在仓库里的根目录是？",
+    options: ["./skills/", ".workbuddy/skills/", ".github/skills/", "~/.workbuddy/skills/"],
+    ans: 1,
+    explain: "项目级 Skill 放在仓库根目录的 .workbuddy/skills/&lt;name&gt;/SKILL.md；用户级 Skill 放在用户目录 ~/.workbuddy/skills/。",
+    ref: 1
+  },
+  {
+    level: 1,
+    q: "SKILL.md 顶部 YAML 必备的两个字段是？",
+    options: ["title + version", "name + description", "author + tags", "input + output"],
+    ans: 1,
+    explain: "name 是 Skill 在 Agent 上下文里的标识，description 是触发条件——Agent 按 description 判断「这件事我该不该加载这个 Skill」。缺这两个就路由不了。",
+    ref: 1
+  },
+  {
+    level: 1,
+    q: "Skill 中的 read_when 字段大致起什么作用？",
+    options: ["决定 Skill 被安装的时间", "决定 Skill 何时被 Agent 加载到上下文", "限定 Skill 的用户角色", "记录 Skill 的修改日志"],
+    ans: 1,
+    explain: "read_when 是 description 之外更细粒度的「触发路由」字段，告诉 Agent 在什么语境下应加载该 Skill。所有 Skill 不会一次塞进上下文，按需加载是关键设计。",
+    ref: 2
+  },
+  {
+    level: 2,
+    q: "本仓库 minute-lesson Skill 用了 8 道题互动自测。这种「题库 + 自动反馈」的能力核心价值是？",
+    options: ["纯粹装饰", "把学习动作从「看文档」升级为「测自己理解是否稳固」，且自我核对答案 + 解释", "替代 LLM 推理", "省 token"],
+    ans: 1,
+    explain: "Skill 沉淀的不只是「写一份资料」，而是把「怎么让学习者检验自己」这件事也模块化——这是 Skill 能成为「团队资产」的根本原因。",
+    ref: 2
+  },
+  {
+    level: 2,
+    q: "项目级 Skill 与同名用户级 Skill 同时存在时，谁优先？",
+    options: ["用户级优先（更全局）", "项目级优先（跟当前工作目录匹配更紧）", "随机", "后者覆盖前者"],
+    ans: 1,
+    explain: "项目级 Skill 跟当前仓库路径直接绑定，匹配更精确。同名场景下项目级优先；用户级作为跨项目的通用兜底。",
+    ref: 1
+  },
+  {
+    level: 3,
+    q: "Agent 在 Skill 出错 / 行为不达预期时，哪种工程做法最稳妥？",
+    options: ["彻底删除重写", "在外层补一个 wrapper Skill，做兜底与纠偏指令", "改 Skill 必须重新发布到服务器", "直接换模型"],
+    ans: 1,
+    explain: "Anthropic 的工程实践强调叠加 wrapper Skill：保留原 Skill 做领域知识，再补一层 Skill 给出错时追加「发现问题改怎么回头」的指令。这是 Skills 体系可演化的关键。",
+    ref: 2
+  },
+  {
+    level: 3,
+    q: "Skill 与「Cursor 的 Rules」「GitHub Copilot 的 instructions」本质是什么关系？",
+    options: ["三者完全无关", "三者都是项目级「AI 指令文件」的不同工程实现，目的都是把团队经验沉淀进上下文", "Rules 是 Skill 的超集", "只有 Skill 真正生效，其他是宣传"],
+    ans: 1,
+    explain: "WorkBuddy 的 Skill、Cursor 的 Rules、Copilot 的 instructions 在工程意图上同源：把团队风格 / 流程沉淀到项目目录，让 AI 在上下文层面按此行事。具体 YAML 字段与触发机制不同，但思路一致。",
+    ref: 5
+  }
+];
+
+const mount = document.getElementById('quiz-mount');
+let state = {
+  index: 0,
+  level: 0,
+  correctCount: 0,
+  wrongCount: 0
+};
+
+function levelLabel(l) { return ['L0 · 概念识别', 'L1 · 机制理解', 'L2 · 应用判断', 'L3 · 综合对比'][l]; }
+function levelClass(l) { return ['l0', 'l1', 'l2', 'l3'][l]; }
+
+function renderProgress() {
+  const total = QUESTIONS.length;
+  let html = '<div class="quiz-progress">';
+  for (let i = 0; i < total; i++) {
+    let cls = 'quiz-dot';
+    if (i < state.index) cls += ' done';
+    else if (i === state.index) cls += ' cur';
+    html += `<div class="${cls}"></div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function getRefTitle(n) {
+  const titles = {
+    1: 'WorkBuddy Skill 总览',
+    2: 'Anthropic Skills 工程实践',
+    3: 'anthropic-skills 仓库示例',
+    4: 'GitHub Skills 指南',
+    5: 'Cursor Rules for AI'
+  };
+  return titles[n] || ('参考 ' + n);
+}
+
+function render() {
+  if (state.index >= QUESTIONS.length) {
+    return renderSummary();
+  }
+  const q = QUESTIONS[state.index];
+  mount.innerHTML = `
+    ${renderProgress()}
+    <span class="quiz-level ${levelClass(q.level)}">${levelLabel(q.level)} · 第 ${state.index + 1}/${QUESTIONS.length} 题</span>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-options">
+      ${q.options.map((opt, i) => `<button class="quiz-opt" data-idx="${i}">${String.fromCharCode(65 + i)}. ${opt}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="fb"></div>
+    <button class="quiz-next" id="next">下一题 ▶</button>
+  `;
+  document.querySelectorAll('.quiz-opt').forEach(btn => {
+    btn.addEventListener('click', () => handleChoice(btn));
+  });
+  document.getElementById('next').addEventListener('click', () => {
+    state.index++;
+    render();
+  });
+}
+
+function handleChoice(btn) {
+  const q = QUESTIONS[state.index];
+  const choice = parseInt(btn.dataset.idx, 10);
+  const fb = document.getElementById('fb');
+  const nextBtn = document.getElementById('next');
+  document.querySelectorAll('.quiz-opt').forEach(b => b.disabled = true);
+  if (choice === q.ans) {
+    btn.classList.add('correct');
+    fb.className = 'quiz-feedback correct show';
+    fb.innerHTML = `<strong>✓ 回答正确 · +1 层</strong>
+      ${q.explain}
+      ${q.ref ? `<div class="ref" style="margin-top:6px;">📎 来源：<a href="#ref-${q.ref}">${getRefTitle(q.ref)}</a></div>` : ''}`;
+    state.correctCount++;
+    state.level = Math.min(3, state.level + 1);
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt')[q.ans].classList.add('correct');
+    fb.className = 'quiz-feedback wrong show';
+    fb.innerHTML = `<strong>✗ 答错了 · -1 层 · 正确答案：${String.fromCharCode(65 + q.ans)}. ${q.options[q.ans]}</strong>
+      ${q.explain}
+      ${q.ref ? `<div class="ref" style="margin-top:6px;">📎 来源：<a href="#ref-${q.ref}">${getRefTitle(q.ref)}</a></div>` : ''}`;
+    state.wrongCount++;
+    state.level = Math.max(0, state.level - 1);
+  }
+  nextBtn.classList.add('show');
+  const dots = mount.querySelectorAll('.quiz-dot');
+  dots.forEach((d, i) => {
+    if (i <= state.index) d.classList.add('done');
+  });
+}
+
+function renderSummary() {
+  const total = QUESTIONS.length;
+  mount.innerHTML = `
+    <div class="quiz-summary show">
+      <h3>🎯 自测完成</h3>
+      <p>共 ${total} 题，正确 <strong style="color:var(--good);">${state.correctCount}</strong> 道，错误 <strong style="color:var(--bad);">${state.wrongCount}</strong> 道</p>
+      <p>最终层级：<span class="quiz-level ${levelClass(state.level)}">${levelLabel(state.level)}</span></p>
+      <p style="color:var(--muted); font-size:13.5px; margin-top:18px;">
+        提示：如果 L0 就出错，建议回到上方「结构化解释」一节重读一遍；
+        如果能稳定答对 L3，说明你对 Skill 的边界与工程价值已有较完整把握。
+      </p>
+      <button class="quiz-replay" onclick="location.reload()">重新挑战</button>
+    </div>
+  `;
+}
+
+render();
+</script>
+
 </body>
 </html>

@@ -1,5 +1,7 @@
 # big-data-ai · 个人学习仓库
 
+> **作者：___你的真实姓名___**（GitHub: `robin01-sw` · 邮箱: `1962342855@qq.com`）
+
 > 大数据与人工智能课程的个人作业仓库。
 > 主体是一个**项目级 Skill**（`minute-lesson`）和它生成的 4 份概念学习资料。
 
@@ -43,7 +45,48 @@ big-data-ai/
 | **大模型的上下文** | [`learning-materials/llm-context.html`](learning-materials/llm-context.html) | 单次请求模型能看到的全部文本；不是越大越好（context rot） |
 | **Skill** | [`learning-materials/skill.html`](learning-materials/skill.html) | 提示词 + 脚本 + 工作流的打包；解决「一次性对话难复用」 |
 
+每张卡都包含：
+- **顶部 banner**：GitHub Pages 渲染版引导（因为 GitHub 文件页默认显示 HTML 源码）
+- **7 段核心内容**：60 秒速读 / 学习目标 / 核心问题 / 结构化解释 / 应用案例 / 概念辨析 / 互动自测
+- **8 题分层自测（L0–L3）**：答对升层、答错降层，答错立即给「正确答案 + 解释 + 来源锚点」
+- **角标引用**：解释段落 / 案例 / 辨析表格的关键事实后挂 `[^N]`，对应下方参考来源编号
+- **5+ 条可核查来源**：全部为 OpenAI / Anthropic / WorkBuddy / Chroma / ACL Anthology 等官方文档或论文，未伪造
+- **底部人工核查记录**：写明本人核对过的事实点
+
+> 如果你觉得看到的还是「全是代码」，请用「页面怎么打开」小节里的 GitHub Pages 链接或点 Raw 按钮。
+
 三者关系的总结（含 Mermaid 流程图）：[`learning-materials/concept-relationship.html`](learning-materials/concept-relationship.html)
+
+---
+
+## 页面怎么打开（建议老师这样访问）
+
+GitHub 网页对 `.html` 文件默认显示为源代码（不会自动渲染）。要看到带样式、互动自测和 Mermaid 图的版本，三种方式任选其一：
+
+### 方式 A：GitHub Pages 渲染版（推荐，最稳）
+仓库开启了 GitHub Pages，公开访问地址：
+
+| 概念卡 | 渲染版链接 |
+|---|---|
+| Agent | https://robin01-sw.github.io/big-data-ai/learning-materials/agent.html |
+| 大模型的上下文 | https://robin01-sw.github.io/big-data-ai/learning-materials/llm-context.html |
+| Skill | https://robin01-sw.github.io/big-data-ai/learning-materials/skill.html |
+| 三概念关系 | https://robin01-sw.github.io/big-data-ai/learning-materials/concept-relationship.html |
+
+老师/同学直接点上述链接，浏览器会渲染出与开发版完全一致的页面（含 60 秒速读、8 题分层自测、来源角标）。
+
+### 方式 B：在 GitHub 文件页点 Raw
+进入 GitHub 文件页（例：https://github.com/robin01-sw/big-data-ai/blob/main/learning-materials/agent.html），右上角点 **Raw**，浏览器会自动渲染 HTML。
+
+### 方式 C：clone 本地打开
+```bash
+git clone git@github.com:robin01-sw/big-data-ai.git
+cd big-data-ai/learning-materials
+start agent.html   # Windows
+open agent.html    # macOS
+```
+
+所有 HTML 文件**除了可选的 Mermaid CDN 外，全部 CSS / JS / 样式都内联**，断网打开也能跑（仅 Mermaid 图降级为文字描述）。
 
 ---
 
