@@ -241,6 +241,30 @@
     font-size: 12px;
     margin-right: 6px;
   }
+
+  /* ===== 个人理解块 ===== */
+  .personal-callout {
+    background: #f0f7f4;
+    border-left: 4px solid #2e7d4f;
+    padding: 14px 16px;
+    border-radius: 4px;
+    margin: 18px 0;
+  }
+  .personal-callout .label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #2e7d4f;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .personal-callout p {
+    margin: 8px 0;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .personal-callout p:last-child { margin-bottom: 0; }
 </style>
 </head>
 <body>
@@ -262,6 +286,15 @@
     Agent 是一种能在最少人类干预下，代替用户<strong>自主完成多步任务</strong>的系统——它通常由一个大模型驱动，能调用外部工具，并能根据执行结果动态决定下一步做什么。它和「普通 AI 对话」最大的区别是：能 <strong>行动</strong>，而不只是回答。
   </div>
 </header>
+
+
+
+<div class="personal-callout">
+  <span class="label">🌱 我的理解</span>
+  <p>我一开始以为 Agent 就是 ChatGPT 加几个 API，后来才分清差别在 <strong>「会不会自己做决定」</strong>。ChatGPT 是你问一句它答一句，Agent 是你给它一个目标，它自己拆步骤、查资料、动手干。</p>
+  <p>最让我一秒 get 的比喻：聊天像你翻菜单点菜，Agent 像你跟朋友说「我饿了」，朋友自己决定点什么、要不要先去买菜、甚至决定叫外卖。</p>
+  <p>换句话说：聊天是把答案递给你；Agent 是把活儿接过来了。</p>
+</div>
 
 <h2>学习目标</h2>
 <ul>
