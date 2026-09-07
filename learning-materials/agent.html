@@ -291,9 +291,8 @@
 
 <div class="personal-callout">
   <span class="label">🌱 我的理解</span>
-  <p>我一开始以为 Agent 就是 ChatGPT 加几个 API，后来才分清差别在「会不会自己做决定」。ChatGPT 是你问一句、它答一句；Agent 是你给它一个目标，它自己拆步骤、查资料、动手做。</p>
-  <p>最让我一下子懂的比喻：聊天像你翻菜单点菜，Agent 像你跟朋友说「我饿了」，朋友自己决定点什么、要不要先去买菜、甚至干脆叫外卖。</p>
-  <p>换个说法：聊天是把现成答案递给你；Agent 是把活儿接过去，替你把事办了。</p>
+  <p>我一开始以为 Agent 就是 ChatGPT 加几个 API，后来才分清差别在会不会自己做决定：ChatGPT 是你问一句、它答一句；Agent 是你给它一个目标，它自己拆步骤、查资料、动手干。</p>
+  <p>最直观的比喻：聊天像翻菜单点菜，Agent 像跟朋友说「我饿了」，他决定吃什么。</p>
 </div>
 
 <h2>学习目标</h2>
@@ -359,9 +358,11 @@ OpenAI 在 2025 年发布的《A Practical Guide to Building Agents》里给出�
 </ol>
 <p>OpenAI 把它浓缩成三件套：<code>Model</code> + <code>Tools</code> + <code>Instructions</code>。Anthropic 的 Agents SDK 同理：模型负责决策，工具负责执行，指令（系统提示 + 护栏）负责约束行为边界。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
 
+<div class="callout" style="margin-top:14px;"><span class="label">⚠ 常见误区</span>把 Agent 等同于 Copilot 或单纯的「AI 自动化」是新人最易踩的坑，辨析详见 Lilian Weng 综述<sup class="cite"><a href="#ref-5">[5]</a></sup>。</div>
+
 <h2>应用案例</h2>
 
-<h3>案例：客服退款审批 Agent</h3>
+<h3>案例 1：客服退款审批 Agent</h3>
 <p>
 OpenAI 在指南里给的一个具体例子：用户申请退款，按传统做法需要客服在后台看订单、判断是否符合政策、决定金额；规则一多就维护不过来。改成 Agent 后，模型读用户订单数据（<em>感知</em>），根据退款政策判断是否满足条件（<em>推理</em>），调用支付系统发起退款或调用工单系统转人工（<em>行动</em>），把结果回写到对话历史（<em>再感知</em>）。<sup class="cite"><a href="#ref-1">[1]</a></sup>
 </p>
@@ -405,7 +406,7 @@ OpenAI 在指南里给的一个具体例子：用户申请退款，按传统做�
 
 <h2>互动自测（8 题 · 分层自适应）</h2>
 <p>共 8 道选择题，难度从 <strong>L0</strong>（基础识别）到 <strong>L3</strong>（综合辨析）逐步升级。答对升级一层，答错降一层。答错时立即给答案 + 解释 + 来源链接。层位只是引导，最终会显示你的答题轨迹。</p>
-<div class="quiz" id="quiz"></div>
+<div id="quiz-mount" class="quiz"></div>
 
 <h2>参考来源</h2>
 <ol class="ref-list">
@@ -559,9 +560,21 @@ const QUESTIONS = [
 
 const state = { level: 0, current: 0, history: [] };
 
+
+function getRefTitle(n) {
+  const titles = {
+    1: 'OpenAI《A Practical Guide to Building Agents》',
+    2: 'Anthropic《Building Effective Agents》',
+    3: 'OpenAI Agents 平台文档',
+    4: 'Russell &amp; Norvig《AIMA》智能体定义',
+    5: 'Lilian Weng《LLM Powered Autonomous Agents》'
+  };
+  return titles[n] || ('参考 ' + n);
+}
+
 function renderCurrent() {
   const q = QUESTIONS[state.current];
-  const container = document.getElementById('quiz');
+  const container = document.getElementById('quiz-mount');
   container.innerHTML = `
     <div class="quiz-progress">
       ${QUESTIONS.map((_, i) => {
@@ -607,9 +620,13 @@ function handleAnswer(idx) {
   const feedback = document.querySelector('.quiz-feedback');
   feedback.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
   feedback.style.display = 'block';
+  const refLink = q.ref != null
+    ? `<div class="ref" style="margin-top:8px; font-size:13.5px;">📎 来源：<a href="#ref-${q.ref}">${getRefTitle(q.ref)}</a></div>`
+    : '';
   feedback.innerHTML = `
     <div class="verdict">${correct ? '✅ 正确！' : '❌ 这道答错了，给你答案和解释'}</div>
     <div>${q.explain}</div>
+    ${refLink}
     <div class="level-change">层位变化：L${oldLevel} → L${state.level}${correct ? ' (升级)' : ' (降级)'}</div>
   `;
 
@@ -632,7 +649,7 @@ function handleAnswer(idx) {
 }
 
 function renderSummary() {
-  const container = document.getElementById('quiz');
+  const container = document.getElementById('quiz-mount');
   const total = state.history.length;
   const correctCount = state.history.filter(h => h.correct).length;
   const finalLevel = state.level;

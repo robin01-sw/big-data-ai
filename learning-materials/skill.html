@@ -298,7 +298,7 @@
   <h1>Skill（技能 / 提示模板）</h1>
   <div class="tldr">
     <span class="label">60 秒速读</span>
-    Skill 是<strong>用 YAML 元数据描述、按需注入 Agent 上下文的可复用指令文件</strong>——它把「专家经验」沉淀成结构化模板，让 AI 在合适时机自动加载「怎么想 / 怎么做」的指导，而不是每次对话都重新描述一遍。WorkBuddy 把 Skill 放在仓库内的 <code>.workbuddy/skills/</code> 下，叫「项目级 Skill」；放在用户目录的叫「用户级 Skill」。
+    Skill 是<strong>带 YAML 元数据、按需注入上下文的可复用指令模板</strong>——把专家经验沉淀成结构化文件，AI 在合适时机自动加载「怎么想/怎么做」，不必每次重新描述。WorkBuddy 放在仓库 <code>.workbuddy/skills/</code>。
   </div>
 </header>
 
@@ -307,7 +307,7 @@
 <div class="personal-callout">
   <span class="label">🌱 我的理解</span>
   <p>Skill 这个词我第一反应以为是「技能插件」那种装在电脑上的软件。其实 WorkBuddy 里的 Skill 更像一份「团队老员工的经验手册」——一次写好，AI 在合适的活儿上自己翻一翻、照着做。</p>
-  <p>打个比方：新员工（Agent）刚来时什么都不会，看一眼老员工留下的笔记，做事风格立刻就和老员工一样。这种「把经验存下来反复用」的能力，就是 Skill 真正值钱的地方。</p>
+  <p>新员工（Agent）刚来时看一眼老员工留下的笔记，做事风格立刻就和老员工一样。</p>
 </div>
 
 <h2>学习目标</h2>
@@ -445,6 +445,8 @@ description: 用「60 秒速读 + 8 题互动自测」格式生成任意概念�
 </div>
 
 <div id="quiz-mount" class="quiz"></div>
+
+<div class="callout"><span class="label">📚 延伸阅读</span>官方典型示例见 Anthropic <code>anthropics/skills</code> 仓库<sup class="cite"><a href="#ref-3">[3]</a></sup>；GitHub 工程团队对 Skill 的工程化实践<sup class="cite"><a href="#ref-4">[4]</a></sup>；Cursor 的 Rules-for-AI 可视为同一思路的不同实现<sup class="cite"><a href="#ref-5">[5]</a></sup>。</div>
 
 <h2>参考来源</h2>
 <div class="ref-list">
