@@ -2,7 +2,7 @@
 
 > **作者：刘晓燕**
 
-> 大数据与人工智能课程的个人作业仓库。
+> 大数据与人工智能课程的个人学习仓库。
 > 主体是一个**项目级 Skill**（`minute-lesson`）和它生成的 4 份概念学习资料。
 
 ---
@@ -61,7 +61,7 @@ big-data-ai/
 
 ---
 
-## 页面怎么打开（建议老师这样访问）
+## 页面怎么打开
 
 GitHub 网页对 `.html` 文件默认显示为源代码（不会自动渲染）。要看到带样式、互动自测和 Mermaid 图的版本，三种方式任选其一：
 
@@ -75,7 +75,7 @@ GitHub 网页对 `.html` 文件默认显示为源代码（不会自动渲染）�
 | Skill | https://robin01-sw.github.io/big-data-ai/learning-materials/skill.html |
 | 三概念关系 | https://robin01-sw.github.io/big-data-ai/learning-materials/concept-relationship.html |
 
-老师/同学直接点上述链接，浏览器会渲染出与开发版完全一致的页面（含 60 秒速读、8 题分层自测、来源角标）。
+点上述任一链接，浏览器会渲染出与开发版完全一致的页面（含 60 秒速读、8 题分层自测、来源角标）。
 
 ### 方式 B：在 GitHub 文件页点 Raw
 进入 GitHub 文件页（例：https://github.com/robin01-sw/big-data-ai/blob/main/learning-materials/agent.html），右上角点 **Raw**，浏览器会自动渲染 HTML。
@@ -139,7 +139,7 @@ Skill 执行后会在 `learning-materials/<slug>.html` 生成一份 7 段式学�
 
 1. 在对话里说「用 minute-lesson 学 XXX」
 2. 等 AI 搜索资料、生成 HTML
-3. **自己读一遍卡片**——这是作业要求里强制的人工核查步骤
+3. **自己读一遍卡片**——这是保证资料准确、可信的关键一步
 4. 不满意的地方直接让 AI 改，或者自己改 HTML
 5. `git add learning-materials/xxx.html && git commit -m "添加 XXX 学习卡" && git push`
 
@@ -161,7 +161,7 @@ Skill 执行后会在 `learning-materials/<slug>.html` 生成一份 7 段式学�
 
 ## 人工核查 & AI 使用规范
 
-按作业要求「必须阅读、理解并核查 AI 生成的内容；资料来源不得伪造，概念解释不得整段照搬 AI 对话结果」，我在这次作业里做了以下核查：
+本仓库里由 AI 协助整理的每一段内容，本人都阅读、理解并核查过。原则是：资料来源不得伪造，概念解释不得整段照搬 AI 对话结果。具体做了以下核查：
 
 ### 我做了什么核查
 - ✅ 每张概念卡的「参考来源」链接都是真实可访问的（OpenAI / Anthropic / WorkBuddy 官方文档 + Wikipedia），没有编造链接
@@ -194,7 +194,7 @@ Skill 执行后会在 `learning-materials/<slug>.html` 生成一份 7 段式学�
 
 ## 后续计划
 
-按作业里写的「后续课程项目可在此仓库基础上继续添加新的学习资料和个人 Skill」：
+这个仓库是一个持续迭代的自学系统，之后会继续扩充：
 
 - 用 `minute-lesson` 学更多概念（RAG、Prompt Engineering、Embedding、Function Calling…）
 - 增加新的 Skill（如「错题本整理」「周报生成」「论文摘要」）
