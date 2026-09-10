@@ -272,6 +272,19 @@
     line-height: 1.7;
   }
   .personal-callout p:last-child { margin-bottom: 0; }
+
+  /* ===== 概念可视化示意图 ===== */
+  .viz {
+    margin: 18px 0 22px;
+    padding: 16px 14px 12px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+  .viz svg { display: block; width: 100%; height: auto; }
+  .viz text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif; }
+  .viz .cap { margin-top: 10px; font-size: 13px; color: var(--muted); text-align: center; line-height: 1.6; }
+
 </style>
 </head>
 <body>
@@ -359,6 +372,33 @@
     <strong>位置重要，中间危险。</strong>Lost-in-the-Middle 现象已被多项独立研究复现，关键信息要尽量放开始或结尾，避免埋在中间。<sup class="cite"><a href="#ref-3">[3]</a></sup>
   </li>
 </ol>
+
+<div class="viz">
+  <svg viewBox="0 0 720 300" role="img" aria-label="上下文位置与回忆准确率示意图（Lost in the Middle）">
+    <path d="M80,58 C175,58 245,178 360,178 C475,178 545,58 640,58" fill="none" stroke="#1f5fa3" stroke-width="3"/>
+
+    <circle cx="80" cy="58" r="5" fill="#2e7d4f"/>
+    <circle cx="640" cy="58" r="5" fill="#2e7d4f"/>
+    <circle cx="360" cy="178" r="6" fill="#b3261e"/>
+
+    <text x="80" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="#2e7d4f">高</text>
+    <text x="640" y="42" text-anchor="middle" font-size="13" font-weight="700" fill="#2e7d4f">高</text>
+    <text x="360" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#b3261e">低</text>
+
+    <rect x="60" y="232" width="180" height="26" fill="#e8f3ec" stroke="#2e7d4f" stroke-width="1"/>
+    <rect x="240" y="232" width="240" height="26" fill="#fde8e4" stroke="#b3261e" stroke-width="1"/>
+    <rect x="480" y="232" width="180" height="26" fill="#e8f3ec" stroke="#2e7d4f" stroke-width="1"/>
+
+    <text x="150" y="250" text-anchor="middle" font-size="13" fill="#1f2330">开头</text>
+    <text x="360" y="250" text-anchor="middle" font-size="13" fill="#1f2330">中间</text>
+    <text x="570" y="250" text-anchor="middle" font-size="13" fill="#1f2330">结尾</text>
+
+    <text x="150" y="280" text-anchor="middle" font-size="12" fill="#4a5160">系统提示 / 早期关键信息</text>
+    <text x="360" y="280" text-anchor="middle" font-size="12" fill="#b3261e">关键信息放这里最易被忽略</text>
+    <text x="570" y="280" text-anchor="middle" font-size="12" fill="#4a5160">最近的信息</text>
+  </svg>
+  <div class="cap">图：Lost-in-the-Middle —— 关键信息放在上下文「中间」时，模型回忆准确率明显低于开头和结尾</div>
+</div>
 
 <h3>一组常见的工程缓解策略</h3>
 <ul>
