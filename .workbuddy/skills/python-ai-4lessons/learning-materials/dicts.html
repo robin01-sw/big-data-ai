@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>字典 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 1 课 · 序号 04 / 17</div>
+  <h1>字典</h1>
+  <div class="badges">
+    <span class="badge">概念卡 04</span>
+    <span class="badge">前置：变量与数据类型</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">7 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">字典用名字存数据，取值靠键，不靠位置。</p>
+    <p>花括号写，每项是「键: 值」一对。<code>d['标题']</code> 按键取值；键不存在会报 <code>KeyError</code>，
+       改用 <code>d.get()</code> 就不会。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+       <code>items()</code> 能一次拿到键和值。字典能装列表，列表也能装字典。</p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>字典像一张采访本上的信息卡：不是按「第几行」找内容，而是按栏目名找——写「标题」就翻到标题那一格。卡片上每一格都写着栏目名和内容，这就是「键」和「值」。好处是顺序怎么换都不影响，因为找东西靠的是名字。代价是栏目名不能重复：写两个「标题」，后面的会顶掉前面的。名字还得选不会变的，列表不能当键。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释"键值对"是什么意思，以及它和列表按位置取值的根本区别。</li>
+  <li>能区分 <code>d['键']</code> 与 <code>d.get('键')</code> 在键不存在时的不同结果。</li>
+  <li>能写出把一条稿件的标题、记者、日期、关键词存入一个字典的代码。</li>
+  <li>能判断一份数据该用列表装还是用字典装，并说出判断依据。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>用列表按位置取和用字典按键取，差别真有那么大吗？</summary>
+  <div class="body">
+    差别的核心是<strong>代码能不能自解释</strong>。<code>record[3]</code> 这样写，读过这段代码的人
+    必须回头去数字段顺序；<code>record['关键词']</code> 一眼就知道取的是什么。
+    更实际的是容错：字段顺序一换，按位置取的代码会悄悄取错值且不报错，
+    而按键取值完全不受影响。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>d['某某'] 报 KeyError 是怎么回事？</summary>
+  <div class="body">
+    说明这个键在字典里不存在。官方教程写得很清楚：通过下标操作提取不存在的键的值会引发
+    <code>KeyError</code>；要避免这种错误，可以改用 <code>get()</code> 方法，
+    它在键不存在时返回 <code>None</code>（或者你指定的默认值）。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    两种写法各有用途：<code>d['键']</code> 适合"这个键必须要，没有就是数据有问题"；
+    <code>d.get('键', '未知')</code> 适合"缺了就按缺的处理"。
+  </div>
+</details>
+
+<details>
+  <summary>keys()、values()、items() 分别拿到什么？</summary>
+  <div class="body">
+    <code>keys()</code> 拿到全部键，<code>values()</code> 拿到全部值，
+    <code>items()</code> 拿到全部"键值对"，可以一次拆成两个变量用。<sup class="cite"><a href="#ref-7">[7]</a></sup>
+    官方教程里打印电话簿的例子就写成
+    <code>for name, phone in table.items():</code>，
+    每一轮 <code>name</code> 得到键、<code>phone</code> 得到值。
+    另外，判断某个键在不在，直接写 <code>'记者' in d</code> 就行，
+    默认查的是键不是值。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>字典和列表能互相装吗？</summary>
+  <div class="body">
+    能，这是它们最有用的一点。字典里可以放列表，比如一条稿件的
+    <code>'关键词': ['改造', '竣工', '老旧小区']</code>；
+    列表里也可以放字典，比如 200 条稿件就是一个列表，每一项是一个字典。
+    这个组合正是概念 10"特征与标签"要用的形状：<strong>列表装多条样本，字典描述单条样本</strong>。
+    顺带说一句，列表不能当字典的键，因为它是可变对象。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>什么叫"结构化数据"，为什么它重要？</summary>
+  <div class="body">
+    结构化数据就是<strong>每个字段都有固定名字、固定含义的数据</strong>，
+    而不是一段需要人去读的整块文字。
+    一段 <code>'王某某，男，45岁'</code> 是文字；把它变成
+    <code>{'姓名': '王某某', '性别': '男', '年龄': 45}</code> 才是结构化数据。
+    重要性在于：只有结构化了，才能统计、比对、批量处理，也才能交给机器。
+    新闻行业早就在做这件事——IPTC 的 ninjs 标准用 JSON 表示一条新闻，
+    字段名固定为 <code>headlines</code>、<code>by</code>、<code>contentCreated</code>、<code>subjects</code> 等。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>字典是<strong>键值对</strong>的集合，用花括号写，逗号分隔。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   和以整数为索引的列表不同，字典是<strong>以键来索引</strong>的，
+   主要操作就是"用键存值、用键取值"。三条规则要记住：
+   键必须唯一（用已有的键再存一次，旧值会丢失）；
+   键必须是不可变对象（字符串、数字都可以，列表不行）；
+   键的存放顺序和取值无关，所以不能靠"第几项"去取。</p>
+
+<h3>为什么</h3>
+<p>三个原因。第一，<strong>代码要能自解释</strong>。<code>record['标题']</code> 和 <code>record[0]</code>
+   在功能上可能等价，但在三个月后回头读的时候完全不是一回事。
+   第二，<strong>容错</strong>：采访记录多了字段、少了字段、换了顺序，
+   按键取值的代码不需要改，按位置取值的代码会静默出错。
+   第三，<strong>这是通往机器学习的形状</strong>：概念 10 里的"一条样本 = 一组特征 + 一个标签"，
+   落地就是字典；一批样本就是列表里装字典。
+   换句话说，字典不只是"另一种容器"，它是把新闻变成数据的那个关键一步。</p>
+
+<h3>怎么工作</h3>
+<ol>
+  <li><strong>建字典</strong>：<code>record = {'标题': '……', '记者': '李某某'}</code>，空字典写作 <code>{}</code>。</li>
+  <li><strong>取值</strong>：<code>record['标题']</code> 直接取，键不存在报 <code>KeyError</code>；
+      <code>record.get('版次')</code> 键不存在时返回 <code>None</code>，
+      <code>record.get('版次', '未标')</code> 可以指定默认值。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>判断与增改</strong>：<code>'记者' in record</code> 判断键在不在；
+      <code>record['版次'] = 'A2'</code> 既可以是新增，也可以是修改
+      （键已存在时旧值被覆盖）。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>遍历</strong>：<code>record.keys()</code> 取全部键，<code>record.values()</code> 取全部值，
+      <code>record.items()</code> 一次取键和值。<sup class="cite"><a href="#ref-7">[7]</a></sup><sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>嵌套</strong>：值可以是列表（关键词），也可以是另一个字典（比如"来源"里再分"媒体名"和"链接"）。</li>
+  <li><strong>键的约束</strong>：字典靠键算出值的存放位置，所以键必须不可变；
+      用列表当键会报 <code>TypeError: unhashable type: 'list'</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup><sup class="cite"><a href="#ref-4">[4]</a></sup></li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th style="width:24%">对比项</th><th style="width:38%">列表：按位置取</th><th>字典：按键取</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>取值写法</td><td><code>record[0]</code>、<code>record[3]</code></td>
+        <td><code>record['标题']</code>、<code>record['记者']</code></td></tr>
+    <tr><td>字段顺序变了</td><td>全部取错，而且不报错——最难发现的错误</td>
+        <td>不受影响，照样取得到</td></tr>
+    <tr><td>新增一个字段</td><td>排在它后面的位置全部要重数一遍</td>
+        <td>多写一行就够</td></tr>
+    <tr><td>适合装什么</td><td>一列同类东西：一批标题、一批关键词</td>
+        <td>一条有多个字段的记录：一篇稿件、一位采访对象</td></tr>
+  </tbody>
+</table>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 392" role="img" aria-label="一条稿件表示成字典，以及按键取值与按位置取值的对比">
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">一条稿件就是一个字典：每个字段都有自己的名字</text>
+
+  <text x="20" y="46" font-size="12.5" font-weight="700" fill="#7b8294">① 键（字段名）与值（内容）成对出现</text>
+
+  <rect x="20" y="58" width="160" height="32" rx="6" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="100" y="79" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4a5160">'标题'</text>
+  <rect x="196" y="58" width="504" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="212" y="79" font-size="12.5" fill="#2c2c2a">'A小区改造工程今日竣工'</text>
+
+  <rect x="20" y="96" width="160" height="32" rx="6" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="100" y="117" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4a5160">'记者'</text>
+  <rect x="196" y="96" width="504" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="212" y="117" font-size="12.5" fill="#2c2c2a">'李某某'</text>
+
+  <rect x="20" y="134" width="160" height="32" rx="6" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="100" y="155" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4a5160">'日期'</text>
+  <rect x="196" y="134" width="504" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="212" y="155" font-size="12.5" fill="#2c2c2a">'2026-06-18'</text>
+
+  <rect x="20" y="172" width="160" height="32" rx="6" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="100" y="193" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4a5160">'关键词'</text>
+  <rect x="196" y="172" width="504" height="32" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="212" y="193" font-size="12.5" fill="#c0392b">['改造', '竣工', '老旧小区'] —— 值本身可以是列表</text>
+
+  <text x="20" y="232" font-size="12.5" font-weight="700" fill="#7b8294">② 同样的内容，两种取法</text>
+
+  <rect x="20" y="244" width="330" height="130" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="185" y="270" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2c2c2a">列表：按位置取</text>
+  <text x="185" y="298" text-anchor="middle" font-size="12" fill="#4a5160">record[0]</text>
+  <text x="185" y="324" text-anchor="middle" font-size="12.5" font-weight="700" fill="#7b8294">'李某某'</text>
+  <text x="185" y="348" text-anchor="middle" font-size="11.5" fill="#7b8294">得先记住第 0 位是哪个字段</text>
+  <text x="185" y="366" text-anchor="middle" font-size="11.5" fill="#7b8294">顺序一改就全乱，还不报错</text>
+
+  <rect x="370" y="244" width="330" height="130" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="535" y="270" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">字典：按键取</text>
+  <text x="535" y="298" text-anchor="middle" font-size="12" fill="#4a5160">record['记者']</text>
+  <text x="535" y="324" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">'李某某'</text>
+  <text x="535" y="348" text-anchor="middle" font-size="11.5" fill="#a8554a">取的是什么，写在代码里</text>
+  <text x="535" y="366" text-anchor="middle" font-size="11.5" fill="#a8554a">顺序怎么变都不受影响</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>第三周新增了一个字段，两百条记录的代码全部要改。</strong>
+   2026 年 6 月，某省报数据新闻组要把见报稿件录成一个文件，交给后面的选题分析用。
+   第一版用的是列表，一条稿件存成一个列表：
+   <code>['A小区改造工程今日竣工', '李某某', '2026-06-18', '城建']</code>。</p>
+
+<p>问题出现在第三周。编辑要求每条稿件再加一个"版次"字段，也就是从 4 项变成 5 项。
+   所有按位置取值的代码都要重数一遍；更麻烦的是，翻回两周前的代码，
+   没有人能立刻说清 <code>record[3]</code> 到底是"栏目"还是"关键词"。
+   按位置取值的最大风险就在这里：<strong>取错了也不会报错</strong>，
+   它只是安静地把另一个字段的值交给你。</p>
+
+<p>第二版改成字典之后，同样的问题不再出现：<code>record['标题']</code>、
+   <code>record['记者']</code>、<code>record['日期']</code>，字段换了顺序照样取得到；
+   新增"版次"也只是多写一行 <code>record['版次'] = 'A2'</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   三个月后另一位同事接手，读代码时不需要任何额外说明。</p>
+
+<div class="flag">
+  <span class="lbl">示意（推演场景，非公开报道）</span>
+  <p style="margin:6px 0 0">上面的单位、稿件与字段为教学推演。
+     但"用列表按位置存记录、后来加字段"是数据整理里最经典的一类返工，
+     真实项目中出现得非常频繁。这也是为什么行业标准会把字段名固定下来——
+     IPTC 的 ninjs 用 JSON 表示一条新闻，标题、署名、时间的字段名分别是
+     <code>headlines</code>、<code>by</code>、<code>contentCreated</code>，一写就用十几年。<sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>列表（概念 03）</strong></td>
+      <td>列表按<strong>位置</strong>索引，字典按<strong>键</strong>索引。
+          列表适合"一列同类东西"，字典适合"一条有多个字段的记录"。
+          两者可以互相嵌套，合起来才是真实数据的形状。</td>
+      <td>知道"第几位"就用列表，知道"叫什么"就用字典。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>JSON</strong></td>
+      <td>JSON 是<strong>写进文件或通过网络传输</strong>的一种文本格式，
+          长相和字典很像（花括号、键值对、双方括号的列表）；
+          字典是<strong>程序运行时的对象</strong>。两者可以互相转换。</td>
+      <td>字典是内存里的东西，JSON 是可以存下来、发出去的那份文本。</td>
+    </tr>
+    <tr>
+      <td><strong>键的唯一性<br />与不可变性</strong></td>
+      <td>同一个键只能出现一次，后面写的会覆盖前面的；键还必须是不可变对象，
+          所以字符串、数字可以，列表不行。原因在于字典靠键算出值的存放位置。</td>
+      <td>键既是"名字"，也是"门牌号"，所以不能重复、不能变。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>行业元数据标准<br />（ninjs）</strong></td>
+      <td>字典解决的是"一条记录在程序里怎么表示"，
+          ninjs 解决的是"整个行业约定这条记录该有哪些字段"。
+          它用 JSON 表示新闻，字段名固定为 <code>headlines</code>、<code>by</code>、
+          <code>contentCreated</code>、<code>subjects</code> 等，
+          2013 年发布，现在已是 3.0 版。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+      <td>字典是技术手段，元数据标准是行业约定：前者实现，后者定义"什么算完整的一条记录"。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>数据结构 · 5.5 字典（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/datastructures.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">字典是"键值对的集合"、键必须唯一、"如果你使用已存在的键进行存储，
+      则与该键相关联的旧值将丢失"、"通过下标操作提取不存在的键的值会引发 KeyError。
+      要避免……可改用 get() 方法"、"你不能使用列表作为键"——
+      本卡"是什么"与"怎么工作"两节的关键表述均出自此页。</span>
+  </li>
+  <li id="ref-2">
+    <strong>内置类型 · 映射类型 dict（Python 官方中文文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/stdtypes.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">字典及字典视图对象（<code>keys</code>、<code>values</code>、<code>items</code>）的权威定义页。
+      注意：核查时抓取到的只是该页被截断的前半段，dict 章节正文未取到，
+      详见文末「仍是缺口的地方」。本卡相关说明以来源 1、7 为主。</span>
+  </li>
+  <li id="ref-3">
+    <strong>使用 dict 和 set（廖雪峰 Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/basic/dict-set/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/basic/dict-set/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">用"查字典"的比喻讲清 dict 为什么快，并明确写出
+      "需要牢记的第一条就是 dict 的 key 必须是不可变对象……
+      因为 dict 根据 key 来计算 value 的存储位置"，
+      以及用列表当键会报 <code>TypeError: unhashable type: 'list'</code>。
+      本卡"键的约束"一条依据此页。</span>
+  </li>
+  <li id="ref-4">
+    <strong>术语对照表（Python 官方中文文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/glossary.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/glossary.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">immutable（不可变对象）的定义中明确提到：
+      "它们在需要常量哈希值的地方起着重要的作用，例如作为字典的键"。
+      这是"为什么只有不可变对象能当键"的官方解释。</span>
+  </li>
+  <li id="ref-5">
+    <strong>ninjs: News in JSON</strong> · IPTC（国际新闻电信理事会）<br />
+    <a href="https://iptc.org/standards/ninjs/" target="_blank" rel="noopener">https://iptc.org/standards/ninjs/</a>
+    <span class="badge">行业标准</span><br />
+    <span class="note">新闻行业的 JSON 标准。原页写明它"standardises the representation of news
+      in JSON"，2013 年 10 月批准发布，2024 年 10 月通过 3.0 版。
+      本卡把它作为非技术类来源：它证明"一条新闻应该有哪些字段"是行业早已约定的事，
+      而不只是程序里的技术选择。</span>
+  </li>
+  <li id="ref-6">
+    <strong>ninjs User Guide（ninjs 用户指南）</strong> · IPTC<br />
+    <a href="https://www.iptc.org/std/ninjs/userguide/" target="_blank" rel="noopener">https://www.iptc.org/std/ninjs/userguide/</a>
+    <span class="badge">行业标准</span><br />
+    <span class="note">逐条说明每个字段的含义：<code>headlines</code> 是标题对象数组、
+      <code>by</code>（1.x 版叫 <code>byline</code>）是内容创作者姓名、
+      <code>contentCreated</code> 是内容原始创建时间、
+      <code>subjects</code> 是主题对象数组。
+      本卡"结构化数据"一节引用的字段名均出自此页。</span>
+  </li>
+  <li id="ref-7">
+    <strong>输入与输出 · 7.1.1–7.1.2（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/inputoutput.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">教程中遍历字典的官方示例：<code>for name, phone in table.items():</code>，
+      以及用 <code>table.keys()</code> 取键的写法。
+      本卡"items() 一次拿到键和值"的说法依据此页，也用来补充来源 2 被截断的部分。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1 逐字核对</strong>：KeyError 与 get() 的那句话、
+        "使用已存在的键进行存储，则与该键相关联的旧值将丢失"、
+        "你不能使用列表作为键"三处均回到原文确认，未改写原意。</li>
+    <li><strong>来源 3 的哈希解释</strong>直接取自该页"再议不可变对象"与 dict 一节的原文，
+        没有用二手转述的"因为列表可变所以不能哈希"这类简化说法。</li>
+    <li><strong>来源 7 的 items() 示例</strong>在页面上实际可见，
+        本卡用它补上了来源 2 抓取被截断的部分。</li>
+    <li><strong>来源 5、6 已访问确认</strong>：2013 年 10 月发布、2024 年 10 月通过 3.0 版，
+        以及 <code>headlines</code>、<code>by</code>、<code>contentCreated</code>、
+        <code>subjects</code> 四个字段名与含义，均可在原文中找到。</li>
+    <li><strong>一处刻意的措辞调整</strong>：廖雪峰教程写"dict 内部存放的顺序和 key 放入的顺序
+        是没有关系的"，而 CPython 3.7 起字典已保证保留插入顺序。
+        本卡因此没有沿用"无序"这个说法，只保留官方教程中"不能靠第几项去取"的表述。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 2 未能逐字核实</strong>：该页体量极大，抓取时在 <code>str.isspace()</code>
+        处被截断，"映射类型 —— dict"章节正文未取到，
+        <code>keys()</code>、<code>values()</code>、<code>items()</code> 与字典视图对象的
+        官方定义<strong>未从该页直接读到</strong>。本卡的说明依据来源 7 的示例与来源 1 的教程，
+        正式引用前建议自己打开该页核对一次。</li>
+    <li><strong>"列表与字典的顺序保证"未展开</strong>：这是 Python 版本相关的细节，
+        对零基础读者容易造成混淆，本卡刻意留到后面讲。</li>
+    <li><strong>JSON 与字典的互相转换（dumps / loads）</strong>没有展开，
+        它属于第 2 课文件读写的内容，本卡只在概念辨析里点出区别。</li>
+    <li><strong>"应用案例"标明为示意</strong>：单位、稿件与字段均为教学推演，
+        不是真实项目记录。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 字典 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 4 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '下面哪个写法创建的是一个字典？',
+      options: [
+        'd = [\'标题\', \'正文\']',
+        'd = (\'标题\', \'正文\')',
+        'd = {\'标题\': \'A\', \'记者\': \'B\'}',
+        'd = {\'标题\' \'记者\'}'],
+      answer: 2,
+      why: '字典用花括号包住一串「键: 值」对。方括号是列表，圆括号是元组，最后一项缺少冒号和值，都不是字典。',
+      ref: 1, refText: '来源 [1] 字典的创建方式' },
+
+    { level: 0, text: 'd = {\'标题\': \'A\', \'记者\': \'B\'}，那么 d[\'记者\'] 得到什么？',
+      options: ['\'A\'', '\'B\'', '0', '会报错，因为字典不能这样取值'],
+      answer: 1,
+      why: '字典用键取值，d[\'记者\'] 取到的是这个键对应的值。键的位置在字典里不重要，靠的是名字。',
+      ref: 1, refText: '来源 [1] 通过键来存储和提取值' },
+
+    { level: 1, text: 'd = {\'标题\': \'A\'}，执行 print(d[\'日期\']) 会发生什么？',
+      options: ['输出 None', '输出空字符串', '引发 KeyError', '输出 0'],
+      answer: 2,
+      why: '通过下标操作提取不存在的键的值会引发 KeyError。如果希望缺键时得到 None 或一个默认值，应该改用 d.get(\'日期\') 或 d.get(\'日期\', \'未标\')。',
+      ref: 1, refText: '来源 [1] KeyError 与 get() 的说明' },
+
+    { level: 1, text: '写 d = {\'日期\': \'6月\', \'日期\': \'7月\'}，那么 d[\'日期\'] 是什么？',
+      options: ['\'6月\'', '\'7月\'', '两个值都保留，取出来是一个列表', '会报错，键不能重复'],
+      answer: 1,
+      why: '字典的键必须唯一。用已经存在的键再存一次，旧值会被新值覆盖，所以只剩下「7月」。这个特性在合并两份数据时经常带来意外，值得记住。',
+      ref: 1, refText: '来源 [1] 键唯一、旧值会被覆盖' },
+
+    { level: 2, text: '读别人的代码时看到 record[3]，不知道第 3 位是什么字段。最该做的是什么？',
+      options: [
+        '先猜一个，跑起来看会不会报错',
+        '把这条记录改成字典，用 record[\'字段名\'] 取值，让代码自己说明取的是什么',
+        '在原处加一行注释「第 3 位是栏目」就算解决',
+        '把 record 打印出来人工数一遍位置'],
+      answer: 1,
+      why: '按位置取值最大的问题是取错了也不报错。加注释只是把风险写下来，换个数据源注释就过期了；打印出来数一次也只能解决这一次。改成按键取值，是让代码本身具备可读性和容错性，一次改到位。',
+      ref: 1, refText: '来源 [1] 字典按键存储与提取' },
+
+    { level: 2, text: '要遍历一个字典，每一轮同时拿到键和值，应该用哪个方法？',
+      options: ['d.keys()', 'd.values()', 'd.items()', 'd.get()'],
+      answer: 2,
+      why: 'items() 返回键值对，可以一次拆成两个变量，官方教程的写法就是 for name, phone in table.items()。keys() 只给键、values() 只给值，get() 是按键取一个值，不是遍历用的。',
+      ref: 7, refText: '来源 [7] 官方教程中遍历字典的示例' },
+
+    { level: 3, text: '一批稿件，每条字段完全相同，要交给后面的分析用。下面哪种数据结构最合适？',
+      options: [
+        '用列表装全部稿件，每条稿件本身再用字典描述；「一批」和「一条的字段」都各有对应',
+        '用一个巨大的字典，键是 0、1、2，值是各条稿件',
+        '把所有内容拼成一个大字符串，需要时再切分',
+        '每条稿件单独存成一个变量，用 200 个变量名区分'],
+      answer: 0,
+      why: '列表装多条、字典描述单条，正是概念 10「一条样本 = 一组特征 + 一个标签」的落地形状。用数字当字典的键是把字典当列表用，白白丢掉了字段名；拼成大字符串就无法再可靠地拆回来；200 个变量名则彻底无法批量处理。',
+      ref: 1, refText: '来源 [1] 字典可以嵌套，键通常是字符串' },
+
+    { level: 3, text: '为什么列表不能当字典的键，而字符串可以？',
+      options: [
+        '因为列表通常太长，装不进键里',
+        '因为字典要根据键算出值的存放位置，键必须不可变；列表可以原地修改，算出来的位置就不稳定了',
+        '因为列表里不能放字符串，所以不能当键',
+        '因为 Python 还没有实现这个功能，以后版本会支持'],
+      answer: 1,
+      why: '字典靠键计算值的存放位置（这个算法叫哈希）。如果键能变，同一个键两次算出的位置就可能不同，字典内部就乱了。列表是可变对象，所以不能当键；字符串、数字是不可变对象，可以放心使用。',
+      ref: 3, refText: '来源 [3] dict 的 key 必须是不可变对象' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

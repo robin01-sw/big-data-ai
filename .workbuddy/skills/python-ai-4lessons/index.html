@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>新闻传播专业 · Python 与 AI 四节课学习地图</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --warn-bg: #fdf6e6;
+    --warn-line: #e0c98a;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 24px 80px; }
+
+  header { border-bottom: 2px solid var(--line); padding-bottom: 18px; margin-bottom: 24px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge {
+    display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+    padding: 3px 10px; border-radius: 99px; font-size: 12.5px;
+  }
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr p { margin: 6px 0 0; }
+
+  nav.toc { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+            padding: 12px 16px; margin: 0 0 8px; font-size: 14px; }
+  nav.toc span { color: var(--muted); margin-right: 8px; font-size: 13px; }
+  nav.toc a { color: var(--ink-soft); margin-right: 14px; white-space: nowrap; }
+
+  h2 { font-size: 20px; margin-top: 40px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 22px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .pre { display: inline-block; margin-top: 5px; padding: 2px 7px; border-radius: 99px;
+         background: #fde8e4; border: 1px solid #f0d5cd; color: #a8554a;
+         font-size: 11px; line-height: 1.45; text-align: center; white-space: nowrap; }
+  .box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+         padding: 12px 18px; margin: 12px 0; }
+  .pit { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 6px;
+         padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .pit .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .pit ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 660px; height: auto; font-family: inherit; }
+
+  .concept-cell code { font-size: 12px; }
+  .done { color: var(--good); font-weight: 700; }
+
+  .progress-bar { height: 8px; background: var(--tag-bg); border-radius: 99px; overflow: hidden;
+                  margin: 10px 0 16px; }
+  .progress-bar i { display: block; height: 100%; width: 0; background: var(--accent);
+                    border-radius: 99px; transition: width .25s ease; }
+  .progress-txt { font-size: 13px; color: var(--muted); }
+  .track { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 14px 0; }
+  .track h4 { margin: 14px 0 4px; font-size: 14px; color: var(--accent); }
+  h4 { margin: 20px 0 6px; font-size: 15px; color: var(--accent); }
+  .track h4:first-child { margin-top: 0; }
+  .track label { display: flex; gap: 9px; align-items: flex-start; font-size: 14.5px;
+                 padding: 4px 0; cursor: pointer; }
+  .track input[type="checkbox"] { margin-top: 5px; flex: 0 0 auto; width: 15px; height: 15px;
+                                  accent-color: var(--accent); cursor: pointer; }
+  .track input:checked + span { color: var(--muted); text-decoration: line-through; }
+
+  footer { margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 660px) {
+    .wrap { padding: 22px 15px 60px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+  @media print {
+    nav.toc, .progress-bar, .track { display: none; }
+    table { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="crumb">学习地图 · PYTHON + AI FOR JOURNALISM &amp; COMMUNICATION</div>
+  <h1>新闻传播专业 · Python 与 AI 四节课学习地图</h1>
+  <div class="badges">
+    <span class="badge">4 节课</span>
+    <span class="badge">每节 90 分钟（上下各 45）</span>
+    <span class="badge">零基础 · 不要求数学</span>
+    <span class="badge">17 张概念学习卡</span>
+    <span class="badge">第 3 课起概念卡作课前预习</span>
+  </div>
+  <div class="tldr">
+    <span class="label">30 秒总览</span>
+    <p>四节课走一条链：<strong>让电脑记住东西 → 让电脑重复劳动 → 让电脑学会归类 → 让电脑判断情绪</strong>。</p>
+    <p>前两节课是 Python 核心语法，后两节课用这套语法去做 AI 的文本任务——<strong>情感分析与文本分类共用同一套技术栈</strong>，
+       所以两节课能互相省时间。四节课共用一份数据：第 2 课洗出来的干净语料，就是第 3、4 课的输入。</p>
+    <p><strong>第 3 课起，概念卡改在课前读</strong>，课堂时间从"讲概念"挪到"练判断"——
+       否则第 3 课要在一节课里塞进约 3.5 小时的内容。</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <span>目录</span>
+  <a href="#why">为什么学</a>
+  <a href="#map">路线图</a>
+  <a href="#lessons">课程详解</a>
+  <a href="#skip">不教清单</a>
+  <a href="#concepts">概念库</a>
+  <a href="#who">谁在做决定</a>
+  <a href="#ethics">四条红线</a>
+  <a href="#tools">工具与资源</a>
+  <a href="#rhythm">学习节奏</a>
+  <a href="#track">打卡表</a>
+</nav>
+
+<h2 id="why">一、为什么新闻传播专业要学 Python 和 AI</h2>
+
+<p>不是因为以后要写软件，而是因为新闻生产的三个环节正在被"会一点代码和 AI"的人重新分配：
+   <strong>找线索</strong>（从数据里发现问题）、<strong>核实</strong>（能复现自己的统计口径）、
+   <strong>呈现</strong>（在截止时间前做出图）。Python 在这三件事上成本最低；而 AI 的文本能力，
+   刚好落在新闻人每天打交道的东西上——评论、稿件、标题、弹幕。</p>
+
+<table>
+  <thead>
+    <tr><th style="width:26%">真实工作场景</th><th style="width:36%">不会的做法</th><th>会了之后</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>200 条读者留言想知道大家在说什么</td>
+      <td>一条条看，一下午只做一半，结论靠印象</td>
+      <td>分词 + 词频，几分钟得到整体概览，再人工复核重点</td>
+    </tr>
+    <tr>
+      <td>判断舆论"是骂还是夸"</td>
+      <td>翻评论区找几条典型，容易以偏概全</td>
+      <td>情感分析给出比例，同时看清模型错在哪、为什么错</td>
+    </tr>
+    <tr>
+      <td>几百篇稿件要按题材归档</td>
+      <td>人工读标题分类，慢且标准会漂移</td>
+      <td>训练一个分类器，先分好大类，人只处理边界情况</td>
+    </tr>
+    <tr>
+      <td>一份 10 万行的数据表</td>
+      <td>Excel 打开卡死，改一次口径重做一遍</td>
+      <td>几行代码出结果，改口径只改一行</td>
+    </tr>
+    <tr>
+      <td>编辑问"这个数字怎么来的"</td>
+      <td>回忆操作步骤，说不清，无法复现</td>
+      <td>代码本身就是方法记录，任意时刻可重跑验证</td>
+    </tr>
+    <tr>
+      <td>用 AI 生成的内容要不要署名</td>
+      <td>没有明确标准，容易踩线</td>
+      <td>知道哪些环节必须人工复核、哪些内容不能算自己原创</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="map">二、学习路线图</h2>
+
+<p>四节课是单向递进的链，上一节的产出就是下一节的原材料。第 1 课处理"一条文本"，
+   第 2 课处理"一大批文本"，第 3 课把文本变成数字并让机器学规律，第 4 课把学到的规律用到具体的
+   情感与分类任务上。<strong>跳过任何一节，后面都会卡住。</strong></p>
+
+<p>另有一条使用方式的调整：<strong>从第 3 课起，概念学习卡改在课前读，课堂不再从零讲概念</strong>——
+   原因见第三节末尾的「课前预习怎么用」。前两节语法课不适用这条，变量和循环必须当场带着敲。</p>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 500" role="img" aria-label="四节课学习路线图，每节分上下两个 45 分钟">
+  <defs>
+    <linearGradient id="spine2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c0392b" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#c0392b" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <text x="20" y="20" font-size="15" font-weight="700" fill="#1f2330">四节课 · 每节 90 分钟 = 上半 45′ + 下半 45′</text>
+  <text x="20" y="40" font-size="12" fill="#7b8294">灰色 = 概念与语法 ｜ 红色 = 动手与产出 ｜ 第 3 课起，概念改由课前预习卡承担，课堂以动手为主</text>
+
+  <line x1="100" y1="66" x2="100" y2="470" stroke="#e6e3dc" stroke-width="4" stroke-linecap="round"/>
+  <line x1="100" y1="66" x2="100" y2="470" stroke="url(#spine2)" stroke-width="4"
+        stroke-linecap="round" stroke-dasharray="3 9"/>
+
+  <circle cx="100" cy="90" r="16" fill="#c0392b"/>
+  <text x="100" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">1</text>
+  <text x="128" y="86" font-size="12.5" font-weight="700" fill="#1f2330">Python 起步</text>
+  <text x="128" y="104" font-size="11.5" fill="#7b8294">把新闻素材变成数据</text>
+
+  <circle cx="100" cy="192" r="16" fill="#c0392b"/>
+  <text x="100" y="197" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">2</text>
+  <text x="128" y="188" font-size="12.5" font-weight="700" fill="#1f2330">Python 核心逻辑</text>
+  <text x="128" y="206" font-size="11.5" fill="#7b8294">从处理一条到处理一万条</text>
+
+  <circle cx="100" cy="294" r="16" fill="#c0392b"/>
+  <text x="100" y="299" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">3</text>
+  <text x="128" y="290" font-size="12.5" font-weight="700" fill="#1f2330">AI 基础与文本分类</text>
+  <text x="128" y="308" font-size="11.5" fill="#7b8294">让机器学会给稿件归类</text>
+
+  <circle cx="100" cy="396" r="16" fill="#c0392b"/>
+  <text x="100" y="401" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">4</text>
+  <text x="128" y="392" font-size="12.5" font-weight="700" fill="#1f2330">AI 应用：情感分析与大模型</text>
+  <text x="128" y="410" font-size="11.5" fill="#7b8294">把模型结果变成可核查的结论</text>
+
+  <rect x="300" y="60" width="196" height="84" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="312" y="80" font-size="11" font-weight="700" fill="#7b8294">上半 45′｜概念</text>
+  <text x="312" y="100" font-size="12" fill="#4a5160">环境跑通 · 变量与数据类型</text>
+  <text x="312" y="117" font-size="12" fill="#4a5160">字符串：切片 / 替换 / f-string</text>
+  <text x="312" y="134" font-size="12" fill="#4a5160">坑：中英文标点混用</text>
+  <rect x="508" y="60" width="196" height="84" rx="8" fill="#fdf0ec" stroke="#f0d5cd"/>
+  <text x="520" y="80" font-size="11" font-weight="700" fill="#c0392b">下半 45′｜动手</text>
+  <text x="520" y="100" font-size="12" fill="#4a5160">列表 list、字典 dict</text>
+  <text x="520" y="117" font-size="12" fill="#4a5160">if / else 条件判断</text>
+  <text x="520" y="134" font-size="12" font-weight="700" fill="#c0392b">产出：新闻素材结构化器</text>
+
+  <rect x="300" y="162" width="196" height="84" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="312" y="182" font-size="11" font-weight="700" fill="#7b8294">上半 45′｜概念</text>
+  <text x="312" y="202" font-size="12" fill="#4a5160">for 循环与缩进规则</text>
+  <text x="312" y="219" font-size="12" fill="#4a5160">函数 def：参数、return</text>
+  <text x="312" y="236" font-size="12" fill="#4a5160">坑：= 与 == 混用</text>
+  <rect x="508" y="162" width="196" height="84" rx="8" fill="#fdf0ec" stroke="#f0d5cd"/>
+  <text x="520" y="182" font-size="11" font-weight="700" fill="#c0392b">下半 45′｜动手</text>
+  <text x="520" y="202" font-size="12" fill="#4a5160">读写文件 + 遍历文件夹</text>
+  <text x="520" y="219" font-size="12" fill="#4a5160">列表推导式、词频统计</text>
+  <text x="520" y="236" font-size="12" font-weight="700" fill="#c0392b">产出：干净语料.csv</text>
+
+  <rect x="300" y="264" width="196" height="84" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="312" y="282" font-size="11" font-weight="700" fill="#7b8294">上半 45′｜检查 + 标注</text>
+  <text x="312" y="301" font-size="12" fill="#4a5160">考卡 09–14：互相解释 + 纠偏</text>
+  <text x="312" y="318" font-size="12" fill="#4a5160">共创标签体系与判定规则</text>
+  <text x="312" y="335" font-size="12" font-weight="700" fill="#c0392b">标注 300 条 → 交叉复核算一致率</text>
+  <rect x="508" y="264" width="196" height="84" rx="8" fill="#fdf0ec" stroke="#f0d5cd"/>
+  <text x="520" y="284" font-size="11" font-weight="700" fill="#c0392b">下半 45′｜动手</text>
+  <text x="520" y="304" font-size="12" fill="#4a5160">sklearn 跑通：TF-IDF → 贝叶斯</text>
+  <text x="520" y="321" font-size="12" fill="#4a5160">读混淆矩阵 + 5 个错例归因</text>
+  <text x="520" y="338" font-size="12" font-weight="700" fill="#c0392b">产出：分类器 + 评估报告</text>
+
+  <rect x="300" y="366" width="196" height="84" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="312" y="386" font-size="11" font-weight="700" fill="#7b8294">上半 45′｜动手为主</text>
+  <text x="312" y="406" font-size="12" fill="#4a5160">动手 A：snownlp 跑新闻评论</text>
+  <text x="312" y="423" font-size="12" fill="#4a5160">错误归因：领域不匹配、反讽</text>
+  <text x="312" y="440" font-size="12" fill="#4a5160">三条路线见卡 15，课上只做取舍</text>
+  <rect x="508" y="366" width="196" height="84" rx="8" fill="#fdf0ec" stroke="#f0d5cd"/>
+  <text x="520" y="386" font-size="11" font-weight="700" fill="#c0392b">下半 45′｜动手</text>
+  <text x="520" y="406" font-size="12" fill="#4a5160">调用大模型 API，解析 JSON</text>
+  <text x="520" y="423" font-size="12" fill="#4a5160">与动手 A 对照，找分歧点</text>
+  <text x="520" y="440" font-size="12" font-weight="700" fill="#c0392b">产出：一页纸舆情简报</text>
+</svg>
+</div>
+
+<h2 id="lessons">三、四节课详解</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:10%">课次</th>
+      <th style="width:30%">上半 45 分钟</th>
+      <th style="width:30%">下半 45 分钟</th>
+      <th>课堂产出物</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>1</strong><br /><span class="note">Python<br />起步</span></td>
+      <td><strong>0–10</strong> 环境跑通（打开笔记本、跑通 <code>print</code>）<br />
+          <strong>10–25</strong> 变量与数据类型（int/float/str/bool、<code>type()</code>）<br />
+          <strong>25–40</strong> 字符串（拼接、切片、<code>.replace/.split/.strip</code>、f-string）<br />
+          <strong>40–45</strong> 小结与坑：中英文标点混用</td>
+      <td><strong>0–5</strong> 回顾<br />
+          <strong>5–20</strong> 列表 list（索引、<code>.append</code>）<br />
+          <strong>20–35</strong> 字典 dict：把"一条新闻"表示成键值对<br />
+          <strong>35–43</strong> <code>if / else</code> 条件判断与布尔<br />
+          <strong>43–45</strong> 产出提交</td>
+      <td><strong>新闻素材结构化器</strong><br />把标题 + 导语解析成
+          <code>{标题, 来源, 时间, 关键词}</code>，并按规则判断是否为本地新闻</td>
+    </tr>
+    <tr>
+      <td><strong>2</strong><br /><span class="note">Python<br />核心</span></td>
+      <td><strong>0–5</strong> 动机：10 万条评论没法手动改<br />
+          <strong>5–25</strong> for 循环（遍历、<code>range()</code>、缩进规则）<br />
+          <strong>25–42</strong> 函数 <code>def</code>：把"清洗一条文本"封装起来<br />
+          <strong>42–45</strong> 坑：<code>=</code> 与 <code>==</code>、<code>IndentationError</code></td>
+      <td><strong>0–15</strong> 读写文本文件（<code>open</code> / <code>with</code> / <code>encoding</code>）<br />
+          <strong>15–30</strong> 遍历文件夹（<code>pathlib.Path().glob</code>）<br />
+          <strong>30–42</strong> 列表推导式 + 词频统计<br />
+          <strong>42–45</strong> 产出提交</td>
+      <td><strong>干净语料.csv</strong><br />整文件夹的原始文本 → 去空格 / 去重 / 去停用词 → 合并成一张表。
+          <strong>这份文件是后两课的输入</strong></td>
+    </tr>
+    <tr>
+      <td><strong>3</strong><br /><span class="note">AI 理论<br />+ 分类</span><br /><span class="pre">课前读<br />卡 09–14</span></td>
+      <td><strong>0–8</strong> 概念确认：学员用自己的话互相解释「特征 / 标签 / 训练集」，
+          老师只纠偏，不讲定义<br />
+          <strong>8–20</strong> 共创标签体系：当堂一起写定类别定义与判定规则（<strong>这一步必须老师带</strong>）<br />
+          <strong>20–38</strong> 人工标注：每人 60 条标题，合并成 300+ 条数据集<br />
+          <strong>38–45</strong> 交叉复核 30 条，当场算一致率——引出概念 17</td>
+      <td><strong>0–25</strong> sklearn 跑通：<code>TfidfVectorizer</code> → 朴素贝叶斯 → 混淆矩阵
+          <span class="note">（装库放到课前，课上不修环境）</span><br />
+          <strong>25–38</strong> 读混淆矩阵：准确率为什么骗人 + 5 个错例归因<br />
+          <strong>38–45</strong> 产出提交</td>
+      <td><strong>分类器 + 评估报告</strong><br />一个可用的标题分类器，
+          含混淆矩阵与 5 个典型错例分析</td>
+    </tr>
+    <tr>
+      <td><strong>4</strong><br /><span class="note">AI 应用<br />与伦理</span><br /><span class="pre">课前读<br />卡 15–17</span></td>
+      <td><strong>0–6</strong> 回看第 3 课错例：这批错误里哪些是可以修的<br />
+          <strong>6–28</strong> 动手 A：跑一批新闻评论，标出错误集中区<br />
+          <strong>28–40</strong> 错误归因：领域不匹配 / 反讽 / 双重否定<br />
+          <strong>40–45</strong> 小结：模型输出是概率，不是事实</td>
+      <td><strong>0–18</strong> 调用大模型 API（key 管理、<code>requests</code>、解析 JSON，
+          复用第 2 课的函数与字典）<br />
+          <strong>18–32</strong> 动手 B：让大模型对同一批评论做「情感 + 理由」，与 A 对照找分歧点<br />
+          <strong>32–42</strong> 撰写一页纸简报<br />
+          <strong>42–45</strong> 结课：四条红线 + 概念 17 收束</td>
+      <td><strong>一页纸舆情简报</strong><br />正负比例 + 高频议题 + 3 条原文 +
+          一段"本方法的局限"</td>
+    </tr>
+  </tbody>
+</table>
+
+<p class="note">时间分配说明：每节 90 分钟里，讲授不超过 40%，其余时间全部留给动手。
+   下半场固定留 2–5 分钟做产出提交与复盘。<strong>第 3、4 课的「讲」压缩到 10 分钟以内</strong>，
+   概念由课前预习承担。</p>
+
+<div class="pit">
+  <span class="lbl">课前预习怎么用（第 3、4 课）</span>
+  <p style="margin:4px 0 8px">这个机制不是"提前自学"，而是把课堂时间从「讲概念」挪到「练判断」。
+     <strong>它是为解决一个具体的排课问题而设的</strong>：第 3 课原来要在一节课里讲完机器学习六个概念、
+     分词、词袋、TF-IDF，再现场标注、跑模型——实测这大概是 3.5 小时的内容，塞在 1.5 小时里
+     只能念定义，学生跟不上。概念卡本来就是为自学做的（有速读、有比喻、有自测、有来源、断网可读），
+     正好拿去承担这部分。</p>
+  <ul style="margin:0">
+    <li><strong>课前 30 分钟</strong>：读当节对应的概念卡并做完 8 道自测。
+        读不懂不要紧，<strong>把卡住的词记下来带来</strong>——课上第一件事就是解决它们。</li>
+    <li><strong>课前顺手装库</strong>：<code>jieba</code>、<code>scikit-learn</code>、<code>snownlp</code>。
+        环境问题最吃课堂时间，必须在进教室前解决。</li>
+    <li><strong>不预习的后果是具体的</strong>：第 3 课下半场要从向量化直接跳到调用分类器，
+        没读过卡 12 的人会在这一步完全跟不上，而课上不会再有时间补。</li>
+    <li><strong>概念 17 例外</strong>：它是枢纽概念，课上会在标注环节自然带出，
+        但完整读一遍仍建议放在第 4 课之后。</li>
+  </ul>
+</div>
+
+<div class="pit">
+  <span class="lbl">第 4 课动手 A 会故意出错</span>
+  <p style="margin:4px 0 0">snownlp 的官方说明里写明，它的情感训练语料主要是电商评价，用在新闻评论上会明显跑偏。
+     让学员亲眼看到"领域不匹配"的后果，比讲十遍原理都管用——这是第 4 课最核心的一次教学设计。</p>
+</div>
+
+<h2 id="skip">四、不教清单（同样重要）</h2>
+
+<p>只有 6 小时，减法是设计的一部分。下面这些内容本课一律不碰，遇到了就讲一句"这是字典，先跳过"：</p>
+
+<table>
+  <thead>
+    <tr><th style="width:34%">不教的内容</th><th>为什么不教</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>类与面向对象、装饰器、生成器进阶</td><td>写数据处理脚本用不上，理解成本极高，会挤掉动手时间</td></tr>
+    <tr><td>异常处理体系、并发、GUI</td><td>同上；遇到报错时教"怎么读报错信息"就够了</td></tr>
+    <tr><td>爬虫框架（Scrapy 等）</td><td>合规风险高，且新闻场景下更需要的是"拿到数据怎么分析"</td></tr>
+    <tr><td>深度学习框架（PyTorch 等）</td><td>6 小时不可能；只需知道"大模型是同一套流程的放大版"</td></tr>
+    <tr><td>数学推导（梯度下降、矩阵求导）</td><td>本课目标是建立判断力，不是实现算法</td></tr>
+  </tbody>
+</table>
+
+<p><strong>但下面这些必须教</strong>：变量与类型、字符串、列表、字典、条件判断、for 循环、函数、文件读写、
+   <code>import</code> 与库的安装调用、分词、文本向量化、模型评估。</p>
+
+<h2 id="concepts">五、概念库（17 个概念 · 配套学习卡）</h2>
+
+<p>四节课的知识点拆成 17 个概念，每个概念一张自包含的学习卡（60 秒速读、通俗理解、结构化解释、
+   机制示意图、应用案例、概念辨析、8 道分层自测、参考来源、人工核查记录）。
+   <strong>完整的概念地图与概念间关系，见
+   <a href="learning-materials/index.html">概念目录页 →</a></strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:7%">序号</th>
+      <th style="width:17%">概念</th>
+      <th style="width:9%">课次</th>
+      <th style="width:24%">前置概念</th>
+      <th>一句话说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>01</td><td><a href="learning-materials/variables-and-types.html">变量与数据类型</a></td><td>第 1 课</td><td class="note">—</td><td>给数据起名字，并知道它是什么"种类"</td></tr>
+    <tr><td>02</td><td><a href="learning-materials/strings.html">字符串</a></td><td>第 1 课</td><td>变量与数据类型</td><td>文本在程序里的存储与切分方式</td></tr>
+    <tr><td>03</td><td><a href="learning-materials/lists.html">列表</a></td><td>第 1 课</td><td>字符串、变量与数据类型</td><td>一列东西按顺序放在一起</td></tr>
+    <tr><td>04</td><td><a href="learning-materials/dicts.html">字典</a></td><td>第 1 课</td><td>变量与数据类型</td><td>用"名字"而不是"位置"取数据</td></tr>
+    <tr><td>05</td><td><a href="learning-materials/conditionals.html">条件判断</a></td><td>第 2 课</td><td>变量与数据类型</td><td>让程序按规则分流</td></tr>
+    <tr><td>06</td><td><a href="learning-materials/for-loops.html">for 循环</a></td><td>第 2 课</td><td>列表、条件判断</td><td>把同一件事对一批数据做一遍</td></tr>
+    <tr><td>07</td><td><a href="learning-materials/functions.html">函数</a></td><td>第 2 课</td><td>条件判断、for 循环</td><td>把一段逻辑打包，反复使用</td></tr>
+    <tr><td>08</td><td><a href="learning-materials/file-io.html">文件读写</a></td><td>第 2 课</td><td>字符串、for 循环、函数</td><td>让程序进出磁盘，处理一整批文件</td></tr>
+    <tr><td>09</td><td><a href="learning-materials/machine-learning.html">机器学习</a></td><td>第 3 课</td><td>函数、文件读写</td><td>从"人写规则"到"机器从例子里学规律"</td></tr>
+    <tr><td>10</td><td><a href="learning-materials/features-and-labels.html">特征与标签</a></td><td>第 3 课</td><td>机器学习、字典</td><td>机器学习到底在学什么</td></tr>
+    <tr><td>11</td><td><a href="learning-materials/chinese-segmentation.html">中文分词</a></td><td>第 3 课</td><td>字符串、列表</td><td>中文没有空格，机器怎么断句</td></tr>
+    <tr><td>12</td><td><a href="learning-materials/text-vectorization.html">文本向量化</a></td><td>第 3 课</td><td>中文分词、特征与标签</td><td>把一段话变成一串数字（词袋 / TF-IDF）</td></tr>
+    <tr><td>13</td><td><a href="learning-materials/text-classification.html">文本分类</a></td><td>第 3 课</td><td>文本向量化、特征与标签</td><td>让机器自动给文本贴标签</td></tr>
+    <tr><td>14</td><td><a href="learning-materials/model-evaluation.html">模型评估</a></td><td>第 3 课</td><td>文本分类、特征与标签</td><td>准确率会骗人，怎么判断模型行不行</td></tr>
+    <tr><td>15</td><td><a href="learning-materials/sentiment-analysis.html">情感分析</a></td><td>第 4 课</td><td>文本分类、中文分词、模型评估</td><td>判断一段话是夸还是骂，以及为什么它很难</td></tr>
+    <tr><td>16</td><td><a href="learning-materials/llm-and-prompting.html">大模型与提示</a></td><td>第 4 课</td><td>函数、文件读写、情感分析</td><td>用 API 调用大模型，以及怎么写清楚要求</td></tr>
+    <tr><td>17</td><td><a href="learning-materials/annotation-consistency.html">标注一致性</a></td><td>跨课连接</td><td>文本分类、模型评估、情感分析</td><td>机器打的标签凭什么可信——靠和人工标注比对，而不是只报一个准确率</td></tr>
+  </tbody>
+</table>
+
+<p class="note">读法：第 1–2 课的 8 张卡是「课上随查 + 课后复习」，语法必须当场带着敲。
+   <strong>第 3 课的 09–14 与第 4 课的 15、16 共 8 张卡是「课前必读」</strong>，课上不再从零讲。
+   概念 17 是枢纽，放在第 4 课之后读（课上会在标注环节先自然带出）。</p>
+
+<h2 id="who">六、一次文本 AI 分析里，谁在真正做决定</h2>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 400" role="img" aria-label="机器执行与人的判断对照图">
+  <text x="20" y="22" font-size="15" font-weight="700" fill="#1f2330">机器执行 vs 人的判断</text>
+  <text x="20" y="42" font-size="12" fill="#7b8294">左边四步代码可以替你做完，右边四步只能由人来做</text>
+
+  <text x="20" y="70" font-size="12.5" font-weight="700" fill="#7b8294">机器执行</text>
+  <text x="380" y="70" font-size="12.5" font-weight="700" fill="#c0392b">人的判断（决定结论对错）</text>
+
+  <rect x="20" y="84" width="320" height="66" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="34" y="108" font-size="13" font-weight="700" fill="#4a5160">清洗与分词</text>
+  <text x="34" y="130" font-size="12" fill="#7b8294">切词、去停用词、统一全半角</text>
+  <rect x="380" y="84" width="320" height="66" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="394" y="108" font-size="13" font-weight="700" fill="#c0392b">先定口径</text>
+  <text x="394" y="130" font-size="12" fill="#a8554a">哪些评论算有效？什么算正面？</text>
+
+  <rect x="20" y="158" width="320" height="66" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="34" y="182" font-size="13" font-weight="700" fill="#4a5160">文本向量化</text>
+  <text x="34" y="204" font-size="12" fill="#7b8294">词袋 / TF-IDF，文本变数字矩阵</text>
+  <rect x="380" y="158" width="320" height="66" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="394" y="182" font-size="13" font-weight="700" fill="#c0392b">再定标注</text>
+  <text x="394" y="204" font-size="12" fill="#a8554a">谁贴标签、贴得一致吗</text>
+
+  <rect x="20" y="232" width="320" height="66" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="34" y="256" font-size="13" font-weight="700" fill="#4a5160">训练或调用模型</text>
+  <text x="34" y="278" font-size="12" fill="#7b8294">从已标注的数据里学规律</text>
+  <rect x="380" y="232" width="320" height="66" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="394" y="256" font-size="13" font-weight="700" fill="#c0392b">然后抽样核查</text>
+  <text x="394" y="278" font-size="12" fill="#a8554a">抽 30 条人工对一遍，找错例</text>
+
+  <rect x="20" y="306" width="320" height="66" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="34" y="330" font-size="13" font-weight="700" fill="#4a5160">输出标签与概率</text>
+  <text x="34" y="352" font-size="12" fill="#7b8294">0.87 是概率，不是事实</text>
+  <rect x="380" y="306" width="320" height="66" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="394" y="330" font-size="13" font-weight="700" fill="#c0392b">最后写成结论</text>
+  <text x="394" y="352" font-size="12" fill="#a8554a">报告方法与局限，标清来源</text>
+</svg>
+</div>
+
+<p>右边这四件事，代码替不了：定口径、定标注规则、核对标注一致性、写清方法局限——
+   它们决定最后那句结论站不站得住。一次文本分析最常见的失败，不是模型跑不通，
+   而是这四步里某一步没交代清楚。<strong>概念 17
+   <a href="learning-materials/annotation-consistency.html">标注一致性</a>
+   专门讲的就是后两步。</strong></p>
+
+<h2 id="ethics">七、四条红线</h2>
+
+<p>第 4 课最后 3 分钟讲，同时也写进产出物的评分标准：</p>
+
+<ol>
+  <li><strong>模型输出是概率，不是事实。</strong>对外发布必须人工复核，并由你署名负责。</li>
+  <li><strong>标注有主观性。</strong>必须报告标注规则与一致性，不能只报一个百分比。</li>
+  <li><strong>数据采集与使用要合规。</strong>平台条款、个人信息保护，采集前先问"这个数据是否本就公开"。</li>
+  <li><strong>AI 生成的文字不冒充自己的原创。</strong>AI 协助的部分要如实标注，人工核查做了哪些事要能说清。</li>
+</ol>
+
+<h2 id="tools">八、工具与资源</h2>
+
+<h3>环境</h3>
+<div class="box">
+  <p><strong>方案 A（本课默认）：Miniconda / Anaconda + Jupyter Notebook</strong><br />
+     图形化界面、装库省事、笔记与代码混排，适合第一次接触编程的人。</p>
+  <p><strong>方案 B：VS Code + Python 官方安装包</strong><br />
+     更接近真实工作环境，需要自己配解释器、装库。</p>
+  <p>按课次装库，不必一次装完：</p>
+  <pre><code>第 1–2 课：无需额外库（标准库够用）
+第 3 课：pip install jieba pandas scikit-learn openpyxl
+第 4 课：pip install snownlp requests</code></pre>
+</div>
+
+<h3>目录结构</h3>
+<pre><code>python-ai-4lessons/
+├── index.html                      # 本文件，学习地图
+├── python-ai-4-lessons-map.md      # 同一份地图的 Markdown 版
+├── learning-materials/
+│   ├── index.html                  # 概念目录页（概念地图 + 交叉链接）
+│   └── 17 张概念学习卡.html
+├── data/                           # 课上用的数据
+├── 语料/                            # 第 2 课要批处理的原始文本
+├── output/                         # 所有产出物（语料、图、报告、简报）
+└── 课件/                            # 第 3 课的人工标注表</code></pre>
+
+<h3>学习资源（链接均已核查可访问）</h3>
+<ol>
+  <li><a href="https://docs.python.org/zh-cn/3/tutorial/" target="_blank" rel="noopener">Python 官方中文教程</a>
+      <span class="badge">官方文档</span><br />
+      <span class="note">语法权威参考。官方明确说明它写给"有其他语言基础的人"，纯新手当字典查更合适。</span></li>
+  <li><a href="https://liaoxuefeng.com/books/python/introduction/index.html" target="_blank" rel="noopener">廖雪峰的 Python 教程</a>
+      <span class="badge">中文入门教程</span><br />
+      <span class="note">零起点、全中文、有完整示例，适合作为第 1、2 课的主线教材。</span></li>
+  <li><a href="https://github.com/fxsjy/jieba" target="_blank" rel="noopener">jieba 中文分词</a>
+      <span class="badge">开源项目</span><br />
+      <span class="note">第 3 课分词。安装方式与四种分词模式说明都在 README 里。</span></li>
+  <li><a href="https://scikit-learn.org/stable/" target="_blank" rel="noopener">scikit-learn 官方文档</a> ·
+      <a href="https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html" target="_blank" rel="noopener">文本数据教程</a>
+      <span class="badge">官方文档</span><br />
+      <span class="note">第 3 课核心参考。提醒：stable 版下这篇教程的路径已调整，带版本号的链接是永久有效的。</span></li>
+  <li><a href="https://github.com/isnowfy/snownlp" target="_blank" rel="noopener">snownlp</a>
+      <span class="badge">开源项目</span><br />
+      <span class="note">第 4 课动手 A。它的 README 明确写了情感训练语料以电商评价为主，正好用来演示领域不匹配。</span></li>
+  <li><a href="https://github.com/SophonPlus/ChineseNlpCorpus" target="_blank" rel="noopener">ChineseNlpCorpus 中文语料集</a>
+      <span class="badge">数据集</span><br />
+      <span class="note">含 10 万条微博情感标注、36 万条四类情感数据、7000 条酒店评论；第 3、4 课的备选数据来源。</span></li>
+  <li><a href="https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html" target="_blank" rel="noopener">Bing Liu：Opinion Mining &amp; Sentiment Analysis</a>
+      <span class="badge">学术资源</span><br />
+      <span class="note">情感分析领域奠基者的综述主页。第 4 课"为什么情感分析难"的权威依据从这里来。</span></li>
+  <li><a href="https://github.com/Warren1212/DLUT-Emotionontology" target="_blank" rel="noopener">大连理工大学情感词汇本体库</a>
+      <span class="badge">学术资源</span><br />
+      <span class="note">7 大类 21 小类的中文情感词典，情感词典路线的代表资源。注意许可协议：仅限学术研究。</span></li>
+  <li><a href="https://datajournalism.com/read/handbook/one" target="_blank" rel="noopener">The Data Journalism Handbook</a>
+      <span class="badge">行业手册</span><br />
+      <span class="note">英文，建议挑读 "Understanding data" 与 "Delivering data" 两章，讲的是结论背后的判断标准。</span></li>
+</ol>
+
+<h2 id="rhythm">九、学习节奏</h2>
+
+<h4>第 1–2 课 · 语法课（必须当场带着敲）</h4>
+<table>
+  <thead>
+    <tr><th style="width:22%">阶段</th><th style="width:16%">时长</th><th>做什么</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>课前预习</td><td>15 分钟</td><td>翻一遍当节对应的概念卡，把不会的词记下来</td></tr>
+    <tr><td>上半场：讲</td><td>20 分钟</td><td>只讲当节概念，每个概念配一个新闻场景</td></tr>
+    <tr><td>上半场：练</td><td>25 分钟</td><td>跟着敲案例代码，<strong>不许复制粘贴</strong></td></tr>
+    <tr><td>下半场：讲</td><td>10 分钟</td><td>承接上半场，说清下半场要解决什么问题</td></tr>
+    <tr><td>下半场：动手</td><td>25 分钟</td><td>独立完成当节产出物，卡住了先看报错</td></tr>
+    <tr><td>下半场：产出</td><td>10 分钟</td><td>提交产出物并当堂展示一次</td></tr>
+    <tr><td>课后</td><td>30 分钟</td><td>合上教程，凭记忆把案例代码再敲一遍</td></tr>
+  </tbody>
+</table>
+
+<h4>第 3–4 课 · AI 课（概念移到课前，课堂以动手为主）</h4>
+<table>
+  <thead>
+    <tr><th style="width:22%">阶段</th><th style="width:16%">时长</th><th>做什么</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>课前预习<br /><span class="note">新增，且不可省</span></td><td><strong>30 分钟</strong></td>
+        <td>读完当节的概念卡并做完 8 道自测；顺手装好 <code>jieba</code>、
+            <code>scikit-learn</code>、<code>snownlp</code>。
+            <strong>读不懂不要紧，把卡住的词记下来带来</strong>——课上第一件事就是解决它们</td></tr>
+    <tr><td>上半场：纠偏</td><td>≤10 分钟</td><td>只做概念确认与规则共创，<strong>不再从零讲定义</strong></td></tr>
+    <tr><td>上半场：动手</td><td>35 分钟</td><td>做当节的核心动作：第 3 课是标注与交叉复核，第 4 课是跑模型与找错例</td></tr>
+    <tr><td>下半场：动手</td><td>35 分钟</td><td>跑通工具链 / 两种方法对照 / 撰写产出</td></tr>
+    <tr><td>下半场：讨论</td><td>6 分钟</td><td>看错例而不是看数字——错的那几条，是数据问题还是规则问题</td></tr>
+    <tr><td>产出提交</td><td>4 分钟</td><td>当堂展示</td></tr>
+    <tr><td>课后</td><td>30 分钟</td><td>把标注规则、错例分析、方法局限补进产出物（这部分不能靠 AI 代写）</td></tr>
+  </tbody>
+</table>
+
+<p class="note">第 3–4 课的课后任务与第 1–2 课不同：语法课练的是手感，所以课后是"再敲一遍"；
+   AI 课的产出物里有一半是不写进代码的判断（口径、规则、局限），只能课后自己补。</p>
+
+<div class="pit">
+  <span class="lbl">关于"看懂了但敲不出来"</span>
+  <ul>
+    <li>编程是肌肉记忆。看懂和敲出之间的差距比想象中大得多，唯一的解法是重复敲。</li>
+    <li>报错是常态，不是失败信号。学会读最后一行报错信息，比背语法重要。</li>
+    <li>遇到卡壳，先把报错原文贴给 AI 并说明你想做什么——这本身就是一项要练的技能。</li>
+  </ul>
+</div>
+
+<h2 id="track">十、学习进度打卡</h2>
+
+<p class="progress-txt">已勾选 <strong id="done-count">0</strong> / <strong id="total-count">0</strong> 项。
+   进度记录保存在本机浏览器中，换设备或清缓存会重置。</p>
+<div class="progress-bar"><i id="progress-fill"></i></div>
+
+<div class="track">
+  <h4>课前一课准备</h4>
+  <label><input type="checkbox" data-task="pre-1" /><span>装好 Python 环境，能运行 <code>print("hello")</code></span></label>
+  <label><input type="checkbox" data-task="pre-2" /><span>建好目录结构（data / 语料 / output / 课件）</span></label>
+
+  <h4>第 1 课 · Python 起步</h4>
+  <label><input type="checkbox" data-task="l1-1" /><span>看完概念 01–04 的学习卡</span></label>
+  <label><input type="checkbox" data-task="l1-2" /><span>能说出字符串、列表、字典的区别，并各举一个新闻例子</span></label>
+  <label><input type="checkbox" data-task="l1-3" /><span>完成「新闻素材结构化器」</span></label>
+
+  <h4>第 2 课 · Python 核心逻辑</h4>
+  <label><input type="checkbox" data-task="l2-1" /><span>看完概念 05–08 的学习卡</span></label>
+  <label><input type="checkbox" data-task="l2-2" /><span>不看笔记写出「for + if」筛选逻辑</span></label>
+  <label><input type="checkbox" data-task="l2-3" /><span>完成「干净语料.csv」并确认后两课能用</span></label>
+
+  <h4>第 3 课 · AI 基础与文本分类</h4>
+  <label><input type="checkbox" data-task="l3-1" /><span><strong>课前</strong>读完概念 09–14 的学习卡，并做完每张的 8 道自测</span></label>
+  <label><input type="checkbox" data-task="l3-2" /><span><strong>课前</strong>装好 jieba 与 scikit-learn，能跑通一行 import</span></label>
+  <label><input type="checkbox" data-task="l3-3" /><span>参与共创标签体系，完成 60 条标题标注并交叉复核 30 条</span></label>
+  <label><input type="checkbox" data-task="l3-4" /><span>完成「分类器 + 评估报告」，含 5 个错例分析</span></label>
+
+  <h4>第 4 课 · AI 应用与伦理</h4>
+  <label><input type="checkbox" data-task="l4-1" /><span><strong>课前</strong>读完概念 15、16 的学习卡并做完自测</span></label>
+  <label><input type="checkbox" data-task="l4-2" /><span>亲手找出 snownlp 在新闻评论上的 3 个典型错误，并说清是哪一类问题</span></label>
+  <label><input type="checkbox" data-task="l4-3" /><span>完成「一页纸 AI 辅助舆情简报」，含局限说明</span></label>
+
+  <h4>收尾</h4>
+  <label><input type="checkbox" data-task="end-1" /><span>第 4 课之后读完概念 17「标注一致性」，能说清 AI 打标签与人工标注的关系</span></label>
+  <label><input type="checkbox" data-task="end-2" /><span>把 4 件产出物整理进 output/，写清数据来源与方法</span></label>
+</div>
+
+<footer>
+  学习地图生成于 2026-09-17 · 面向新闻传播专业的 Python 与 AI 零基础四课时方案 ·<br />
+  配套 17 张概念学习卡（<a href="learning-materials/index.html">概念目录</a>）·
+  另见 <a href="python-ai-4-lessons-map.md">本页的 Markdown 版</a>（便于编辑与打印）·<br />
+  课时与知识范围可按实际教学进度增删，但<strong>四节课的先后顺序不建议调换</strong>。<br />
+  2026-09-17 修订：第 3、4 课改为「概念卡课前预习」，概念 13、14 从第 4 课移回第 3 课。17 张卡内容未改。
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var boxes = document.querySelectorAll('.track input[type="checkbox"][data-task]');
+  var fill = document.getElementById('progress-fill');
+  var doneEl = document.getElementById('done-count');
+  var totalEl = document.getElementById('total-count');
+  var PREFIX = 'pyai-map:';
+
+  totalEl.textContent = boxes.length;
+  function key(box) { return PREFIX + box.dataset.task; }
+  function save(box) { try { localStorage.setItem(key(box), box.checked ? '1' : '0'); } catch (e) {} }
+  function load(box) { try { return localStorage.getItem(key(box)) === '1'; } catch (e) { return false; } }
+  function refresh() {
+    var done = 0;
+    boxes.forEach(function (b) { if (b.checked) done++; });
+    doneEl.textContent = done;
+    fill.style.width = boxes.length ? (done / boxes.length * 100) + '%' : '0%';
+  }
+  boxes.forEach(function (box) {
+    if (load(box)) box.checked = true;
+    box.addEventListener('change', function () { save(box); refresh(); });
+  });
+  refresh();
+})();
+</script>
+</body>
+</html>

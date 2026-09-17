@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>机器学习 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 3 课 · 序号 09 / 17</div>
+  <h1>机器学习</h1>
+  <div class="badges">
+    <span class="badge">概念卡 09</span>
+    <span class="badge">前置：函数 · 文件读写</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">机器学习是让机器从例子里自己总结规律，而不是人把规则写死。</p>
+    <p>人写规则靠不断追加关键词黑名单，对方换个说法就失效，规则还会互相打架。
+       机器学习换成从已标注例子里找统计规律，固化成可调用的函数；
+       训练集与测试集要分开，数据有偏它就学到偏。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>机器学习像教一个从没进过编辑部的实习生认稿子。没人给他讲什么是广告，只是把三千篇稿子摊开，标出其中哪些是广告。看得多了，自己摸出一套说不清的直觉。这和写校对手册不同：手册是人事先想好所有情况，一页页写下来；实习生是从例子里反推。手册碰到没写过的情况会卡住，实习生遇到没见过的稿子也会猜错。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能举例说明"人写规则"与"机器从例子里学规律"的区别，并指出规则法为什么脆弱。</li>
+  <li>能区分监督学习与无监督学习，判断一项具体任务属于哪一类。</li>
+  <li>能解释训练集与测试集为什么必须分开，并说明分开之后分数才可信。</li>
+  <li>能写出三条机器学习做不到的事，并各给一个新闻场景里的例子。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>为什么不直接写规则，非要让机器自己学？</summary>
+  <div class="body">
+    因为语言的实际用法是开放的。写一份关键词黑名单过滤广告评论，对方把"微信"写成"薇信"、
+    在词中间插一个空格、或者干脆换成一个新词，规则就失效。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    想覆盖所有变体，规则会越加越多，而且互相冲突——"转让"这个词既出现在引流广告里，
+    也出现在正常的二手房讨论里，一条规则堵住一边就误伤另一边。
+    规则法能处理你想得到的情况，机器学习能处理你想不到的情况。
+  </div>
+</details>
+
+<details>
+  <summary>监督学习和无监督学习，差别到底在哪？</summary>
+  <div class="body">
+    差别只在一件事：有没有标准答案。监督学习的每一条训练数据都带一个已知的结果（标签），
+    模型学的是"从输入到答案"的对应关系，比如给它九百条标好"广告/真实留言"的评论。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    无监督学习的数据里没有任何答案，模型自己去找数据里的分组或结构，
+    比如把两千条留言按用词的相似程度聚成几堆，再让人去读这几堆分别是什么。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>为什么要留一部分数据不拿来训练？</summary>
+  <div class="body">
+    因为模型在见过的数据上表现好，说明不了任何事。就像考前把练习题做过一遍，
+    再做同一份题自然分高；真正的水平要看没见过的卷子。
+    把三百条从没参与训练的数据留出来当"正式考卷"，测出来的分数才是这套方法在真实评论上的表现。
+    如果拿测试数据反过来调模型，信息就漏进了训练过程，
+    得出的成绩会虚高。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>模型到底是个什么东西？</summary>
+  <div class="body">
+    可以先把它理解成一个"从数据里学出来的函数"：输入一组特征——这条评论用了哪些词、
+    有没有链接、有多长——输出一个判断。它不像人写的规则那样能读出来，
+    内部是一堆从数据里调出来的数字。
+    它的本事只覆盖它见过的数据范围，出了这个范围，它给出的答案就是在猜。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>机器学习有什么是做不到的？</summary>
+  <div class="body">
+    至少四件事。它不能替你判断口径对不对——"广告"包不包括机构自荐、招聘信息，
+    得由你定义；它不会自己发明标签，标签永远是人给的；
+    数据有偏它就学到偏，训练样本全来自一个频道，换到别的频道就会系统性出错<sup class="cite"><a href="#ref-5">[5]</a></sup>；
+    它给出的是概率，不是事实，所以不能直接当结论写进稿子。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>机器学习（machine learning）是让程序从数据里自动找出规律，而不是由人把判断规则一条条写进去。
+   在 scikit-learn 里，这些算法被统称为估计器（estimator）：用 <code>fit</code> 把数据喂给它，
+   它把学到的规律存下来，再用 <code>predict</code> 对新数据给出结果。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   注意一个容易被忽略的措辞：官方文档说的是"从数据里<em>估计</em>出一个模型"，
+   估计意味着它是近似，不是真理。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+<h3>为什么</h3>
+<p>两个原因。第一是<strong>规则写不完</strong>：新说法每天都在冒出来，
+   一份写死的规则只能覆盖写它的那一刻想到的情况。第二是<strong>规则会互相打架</strong>：
+   为了堵一个漏洞加一条规则，常常误伤另一批正常内容，规则集越大越难维护。
+   机器学习换了个思路——不去预判所有情况，而是从大量已经判断过的例子里，
+   把"人是怎么判断的"这件事的统计痕迹提取出来。
+   这里有一个前置条件必须说清：分类的判断标准本身仍然是人的决定，
+   数据也不是中立地被摆在那里的，它是被某个机构为了某个目的收集起来的。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<h3>怎么工作</h3>
+<p>监督学习的流程可以拆成三步：</p>
+<ol>
+  <li><strong>准备带答案的样本。</strong>每一条样本包含"输入"和"已知的正确答案"两部分。
+      scikit-learn 把输入矩阵叫 <code>X</code>，把答案叫 <code>y</code>——
+      分类任务的 <code>y</code> 是离散的类别编号。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>训练（fit）。</strong>把 <code>X</code> 和 <code>y</code> 一起交给算法，
+      它调出一组内部数字，使得"从输入推答案"这件事在训练数据上尽量准。
+      训练完之后，这组数字就是模型，可以反复使用，不需要重训。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>评估与使用。</strong>在一批从没参与训练的数据上看表现，
+      这一步的分数才算数。评估用的数据永远不能反过来影响模型的选择。<sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 366" role="img" aria-label="规则法与机器学习法的流程对比，以及训练集与测试集为什么要分开">
+  <defs>
+    <marker id="marrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">两种做法：人写规则 vs 机器从例子里学规律</text>
+
+  <text x="20" y="46" font-size="12.5" font-weight="700" fill="#7b8294">① 规则法 · 透明，但只能覆盖已经想到的情况</text>
+  <rect x="20" y="56" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">一条评论</text>
+  <text x="95" y="96" text-anchor="middle" font-size="11" fill="#7b8294">原始中文文本</text>
+  <path d="M174 84L186 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="190" y="56" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">关键词黑名单</text>
+  <text x="265" y="96" text-anchor="middle" font-size="11" fill="#7b8294">人一条条写进去</text>
+  <path d="M344 84L356 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="360" y="56" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="435" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">命中就判广告</text>
+  <text x="435" y="96" text-anchor="middle" font-size="11" fill="#7b8294">没命中就放过</text>
+  <path d="M514 84L526 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="530" y="56" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="605" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">换个说法就漏</text>
+  <text x="605" y="96" text-anchor="middle" font-size="11" fill="#a8554a">薇信 / 私 聊 / 新词</text>
+
+  <text x="20" y="140" font-size="12.5" font-weight="700" fill="#7b8294">② 学习法 · 规律从标注样本里长出来</text>
+  <rect x="20" y="150" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">已标注样本</text>
+  <text x="95" y="190" text-anchor="middle" font-size="11" fill="#7b8294">评论 + 广告/非广告</text>
+  <path d="M174 178L186 178" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="190" y="150" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">训练 fit</text>
+  <text x="265" y="190" text-anchor="middle" font-size="11" fill="#7b8294">调内部的一组数字</text>
+  <path d="M344 178L356 178" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="360" y="150" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="435" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">模型</text>
+  <text x="435" y="190" text-anchor="middle" font-size="11" fill="#a8554a">学出来的那个函数</text>
+  <path d="M514 178L526 178" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="530" y="150" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="605" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">预测 predict</text>
+  <text x="605" y="190" text-anchor="middle" font-size="11" fill="#7b8294">新评论 → 广告概率</text>
+
+  <text x="20" y="234" font-size="12.5" font-weight="700" fill="#7b8294">③ 为什么要先分成两份 · 练习卷不能当考卷</text>
+  <rect x="20" y="244" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="266" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">先切一刀</text>
+  <text x="95" y="284" text-anchor="middle" font-size="11" fill="#7b8294">切完再做任何处理</text>
+  <path d="M174 272L186 272" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="190" y="244" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="266" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">训练集 900 条</text>
+  <text x="265" y="284" text-anchor="middle" font-size="11" fill="#7b8294">复习用的练习题</text>
+  <path d="M344 272L356 272" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="360" y="244" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="435" y="266" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">测试集 300 条</text>
+  <text x="435" y="284" text-anchor="middle" font-size="11" fill="#7b8294">从没见过的正式卷</text>
+  <path d="M514 272L526 272" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#marrow)"/>
+  <rect x="530" y="244" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="605" y="266" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">这分数才算数</text>
+  <text x="605" y="284" text-anchor="middle" font-size="11" fill="#a8554a">测试数据不参与选择</text>
+
+  <text x="20" y="332" font-size="11.5" fill="#7b8294">关键点：测试集只用来打分，永远不参与"选哪个模型、调哪些参数"的决定，否则成绩会虚高。</text>
+  <text x="20" y="352" font-size="11.5" fill="#7b8294">机器学习换掉的是"规则怎么来"，没换掉的是"口径由人定、标签由人给、数据有偏就学到偏"。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一个客户端运营组的两次尝试。</strong>
+   2023 年秋天，某地方媒体客户端的评论区里涌进一批引流留言。
+   运营组的第一版做法是写关键词黑名单：把"加微信""私聊""低价转让"等四十多个词列进一段脚本，
+   命中就自动折叠。上线第一周效果不错，第二周开始失灵——对方把"微信"写成"薇信""V 信""威信"，
+   把"私聊"写成"私 聊"，还不断换新词。
+   黑名单涨到两百多条之后开始互相冲突：为了拦住"转让"，连正常的二手房讨论也被误伤折叠，
+   一周内接到了十几起读者投诉。</p>
+
+<p>第二版换了做法。他们从过去半年里人工折叠过的留言中挑出 1200 条，
+   由两名运营编辑各自标注"广告 / 真实留言"，标注不一致的两百多条直接剔除，
+   剩下的切成训练集和测试集两部分。用训练集训出分类器，在测试集上看表现。
+   测试集上的准确率不到八成，误判主要集中在带调侃语气的真实留言上。
+   编辑部据此得出的结论很朴素：这东西可以当筛子，用来把可疑留言排到审核队列前面；
+   不能当判决，不能直接折叠，更不能用来统计"广告占比"。</p>
+
+<div class="flag">
+  <span class="lbl">课堂推演案例（示意，非公开报道）</span>
+  <p style="margin:6px 0 0">上例的机构、时间与数字是为说明流程而推演的，
+     不是对某家媒体的实证描述。可核查的部分是流程本身：
+     <code>fit</code> 把训练数据学成模型、<code>predict</code> 对新数据给出结果、
+     测试数据不参与任何模型选择——这三条写在 scikit-learn 的官方文档里。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup>
+     另需注意：编辑部自订的标注规则会直接决定模型学到什么，
+     这与"事先定好的标签口径决定最终结果"是同一件事。<sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>规则系统 / 专家系统</strong></td>
+      <td>规则系统的判断规则由人写死，遇到没写到的情况就失效；机器学习的判断规则从数据里长出来，人只提供例子和答案。</td>
+      <td>规则法只能处理你想得到的情况，学习法能处理你想不到的。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>无监督学习<br />（聚类、降维）</strong></td>
+      <td>无监督学习的数据没有标签，模型自己去发现分组或结构；监督学习每条数据都带一个已知答案，学的是输入到答案的对应。</td>
+      <td>有标准答案的叫监督学习，没有的叫无监督学习。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>大模型 / 预训练模型</strong></td>
+      <td>本卡讲的是"自己准备标注样本、训一个模型"；大模型已经在海量文本上预训练过，多数任务靠提示词直接调用，不必自己训练。</td>
+      <td>一个是自己喂数据练一个，一个是拿现成的换调用方式。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的规则表</strong></td>
+      <td>人工标注由受过训练的标注员依据规则表给材料贴标签；AI 分类由模型执行同一套判定标准，标准同样由人写进标签定义里。</td>
+      <td>换的是执行者，不是"必须先有标注规则、必须报告一致性"这个前提。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Getting Started（scikit-learn 官方入门）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/getting_started.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">本卡"估计器 / fit / predict"、"X 是样本矩阵、y 是目标值"、
+      "把模型拟合到数据并不等于它在新数据上也能预测好"、
+      以及训练集与测试集划分的写法，均出自此页。</span>
+  </li>
+  <li id="ref-2">
+    <strong>Glossary of Common Terms and API Elements（scikit-learn 术语表）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/glossary.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/glossary.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">监督学习与无监督学习的定义原文出自此页：监督学习"每个样本在拟合模型时都有期望的预测
+      （标签或真值）"，无监督学习"在拟合模型时没有期望的预测"。
+      "模型是被估计出来的"这一措辞也来自此页对 estimator 的定义。</span>
+  </li>
+  <li id="ref-3">
+    <strong>Common pitfalls and recommended practices（常见陷阱与推荐做法）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/common_pitfalls.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/common_pitfalls.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">数据泄漏（data leakage）的原始说明：不该在预测时可得的信息被用来建模，
+      会得到过于乐观的表现估计；并明确"测试数据永远不应用来对模型做选择""一般规则是永远不要对测试数据调用
+      fit"。本卡"测试集不参与选择"的依据。</span>
+  </li>
+  <li id="ref-4">
+    <strong>Unsupervised learning（scikit-learn 用户指南第 2 章）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/unsupervised_learning.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/unsupervised_learning.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">无监督学习的任务清单：聚类、流形学习、降维、异常检测、密度估计等。
+      本卡"把两千条留言按用词相似度聚成几堆"指的是其中的聚类（clustering）。</span>
+  </li>
+  <li id="ref-5">
+    <strong>Putting data back into context（把数据放回语境）</strong> · Catherine D'Ignazio · DataJournalism.com<br />
+    <a href="https://datajournalism.com/read/longreads/putting-data-back-into-context" target="_blank" rel="noopener">https://datajournalism.com/read/longreads/putting-data-back-into-context</a>
+    <span class="badge">新闻行业资源</span><br />
+    <span class="note">面向数据新闻从业者的长文，明确写道：数据从来不是中立的"给定物"，
+      而总是处在特定语境中、为特定目的而收集；并主张为数据集写"数据传记"，
+      说明来源、收集者与收集方式，以理解数据能测什么、不能测什么。
+      本卡"数据有偏就学到偏""分类标准本身仍是人的决定"的依据。</span>
+  </li>
+  <li id="ref-6">
+    <strong>新闻审校"四必看""四必查"</strong> · 王平（河南日报全媒体编辑部）· 中国记协网<br />
+    <a href="https://www.zgjx.cn/2024-04/01/c_1310769706.htm" target="_blank" rel="noopener">https://www.zgjx.cn/2024-04/01/c_1310769706.htm</a>
+    <span class="badge">新闻行业规范</span><br />
+    <span class="note">新闻编辑的差错核查清单。本卡借它说明一件事：
+      新闻生产本来就靠"人写的规则 + 人做的核对"，规则清单会越来越长、
+      条目之间会互相牵扯——这正是把规则法换成学习法时要付的代价与要保留的纪律。
+      文末"有疑问处必查""经手必核"也是本卡对模型输出态度的来源。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>逐条打开了来源 1–6</strong>，确认页面存在且内容与引用一致。
+        其中来源 2 的监督/无监督定义、来源 3 的"测试数据不参与模型选择"，
+        均回到原页面逐句核对。</li>
+    <li><strong>来源 5 的"数据不是中立的给定物"</strong>不采信二手转述，
+        核对的是 datajournalism.com 上 Catherine D'Ignazio 原文。</li>
+    <li><strong>来源 6 的机构名称差错段落</strong>已核对原文，
+        确认"稿件中第一次出现的机构或单位的名称，原则上应该用全称"等表述确实存在。</li>
+    <li><strong>训练集与测试集的分工</strong>在来源 1（train_test_split 示例）
+        与来源 3（数据泄漏）之间交叉比对一致。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>"应用案例"一节标明为<strong>示意</strong>：机构、时间与准确率数字均为推演，
+        未对应任何可公开查证的真实案例，不得作为事实引用。</li>
+    <li>本卡未展开交叉验证、精确率与召回率等评估细节，
+        这些留到第 4 课"模型评估"卡，避免在概念卡里堆术语。</li>
+    <li>scikit-learn 文档的版本号随发布变动（核查时为 1.9.1），
+        正文引用的是 stable 路径，若日后页面结构调整，以站点当前内容为准。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 机器学习 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 09 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '机器学习与"人写规则"最根本的区别是什么？',
+      options: [
+        '机器学习让程序从例子里自己总结规律，而不是由人把规则一条条写进去',
+        '机器学习的运行速度一定比规则脚本更快',
+        '机器学习完全不需要人参与，可以自己定义要判断什么',
+        '机器学习不需要数据，只需要一个算法'],
+      answer: 0,
+      why: '两者的分界线在"规律从哪来"：规则法由人写死，学习法从标注过的例子里提取统计规律。速度和是否用数据都不是分界线，而且标签始终由人来定义。',
+      ref: 1, refText: '来源 [1] 估计器与 fit/predict 的基本流程' },
+
+    { level: 0, text: '下面哪一项属于监督学习任务？',
+      options: [
+        '把两千条评论按用词相似度聚成几组，事先不定义任何类别',
+        '用九百条已经标好"广告 / 真实留言"的评论训练一个分类器',
+        '把一段中文文本切成一个个词',
+        '把一篇文本转成词频向量'],
+      answer: 1,
+      why: '监督学习的每条训练数据都带一个已知答案（标签）。只给文本、不给答案地寻找分组，属于无监督学习；分词与向量化都还只是预处理步骤，不是学习任务。',
+      ref: 2, refText: '来源 [2] 术语表中监督学习的定义' },
+
+    { level: 1, text: '关键词黑名单这种规则法，为什么容易失效？',
+      options: [
+        '因为计算机算力不够，处理不了长文本',
+        '因为对方换个说法、加个空格或用同音字就能绕开，而规则只能覆盖已经想到的情况',
+        '因为中文没有空格，没法分词',
+        '因为黑名单里的词没有附带标签'],
+      answer: 1,
+      why: '规则法的问题在覆盖面，不在算力。语言的实际用法是开放的，写规则的人只能堵住自己想到的变体；而规则越加越多时，条目之间还会互相冲突、误伤正常内容。',
+      ref: 1, refText: '来源 [1] 关于规则与 fit/predict 的关系' },
+
+    { level: 1, text: '把数据分成训练集和测试集，最直接的原因是什么？',
+      options: [
+        '数据太多，一次跑不完，需要分批处理',
+        '模型在见过的数据上表现好，说明不了它能不能对付没见过的数据',
+        '测试集可以用来反复调参数，把分数调得更好看',
+        '训练集用来评估效果，测试集用来训练模型'],
+      answer: 1,
+      why: '在训练数据上表现好，只说明它记住了这批数据。留出一批从没参与训练的数据当"考卷"，测出来的分数才代表它在真实新数据上的表现。用测试集反过来调模型属于数据泄漏，分数会虚高。',
+      ref: 3, refText: '来源 [3] 数据泄漏与测试数据的使用禁忌' },
+
+    { level: 2, text: '你要判断五万条新闻评论里哪些是广告，要求可复现、单条成本低、能反复跑同样的口径。哪种做法最合适？',
+      options: [
+        '写一份尽可能全的关键词黑名单，一次写完长期使用',
+        '人工标注一批样本训练一个分类器，再跑全量数据，并在留出的测试集上看表现',
+        '每条都交给大模型判断，因为它最懂语境',
+        '随机抽两百条人工看完，剩下的不做处理'],
+      answer: 1,
+      why: '五万条这个量级，成本与可复现性是硬约束。本地分类器训一次可以反复跑、结果稳定；大模型逐条成本高且结论可能有波动；黑名单只看字面会系统性漏判；只抽两百条则无法支撑"占比"这类结论。',
+      ref: 1, refText: '来源 [1] 用标注样本训练再预测新数据的流程' },
+
+    { level: 2, text: '一个模型在训练集上准确率 99%。下面哪种判断是站得住的？',
+      options: [
+        '说明这套方法可靠，可以直接上线使用',
+        '要先在留出的测试集上看表现，训练集上的高分可能只是记住了这批数据',
+        '说明数据量不够，再加一倍数据准确率就会更高',
+        '说明标签一定没有标错'],
+      answer: 1,
+      why: '训练集上的分数是"做过练习题的分数"，不能代表真实水平。要判断能不能用，必须看从没参与训练的测试集上的表现，并检查错误是否集中在某一类现象上。',
+      ref: 3, refText: '来源 [3] 为什么不能只看训练集表现' },
+
+    { level: 3, text: '关于"机器学习能做到什么、做不到什么"，下面哪一项判断是站得住的？',
+      options: [
+        '只要数据足够多，模型可以自己定义什么叫"广告"',
+        '模型能给出概率，但"广告"的口径与标签的定义必须由人来定',
+        '模型可以自动纠正训练数据里存在的偏差',
+        '模型在训练集所在的频道上表现好，在别的频道上也一定好'],
+      answer: 1,
+      why: '标签与口径永远由人定义，模型只学统计数据里的对应关系。数据有偏它就学到偏，换到用词习惯不同的频道会系统性出错；这一点在数据新闻的方法讨论里被反复强调。',
+      ref: 5, refText: '来源 [5] 数据不是中立的给定物，需先弄清它测什么' },
+
+    { level: 3, text: '编辑部想在报道里说明"我们用机器学习把读者留言分成了广告与真实留言"。要让这句站得住，最该补的是哪一步？',
+      options: [
+        '在稿子里注明"本分析由 AI 完成"就足够了',
+        '先写清"广告"的判定标准，再用一批人工标注的样本与模型结果比对，报告一致性',
+        '把模型的分类结果再喂给另一个模型交叉验证一次',
+        '换一个更大的模型重跑一遍，只要准确率更高就行'],
+      answer: 1,
+      why: '人工标注的做法要求先有明确的标注规则、再报告标注员之间的一致性；换成自动标注，换掉的只是执行者，这两项要求都不能省。两个模型互相验证只会得到两个都可能错的结果。',
+      ref: 6, refText: '来源 [6] 新闻核对的纪律：口径先写清、经手必核' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>变量与数据类型 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 1 课 · 序号 01 / 17</div>
+  <h1>变量与数据类型</h1>
+  <div class="badges">
+    <span class="badge">概念卡 01</span>
+    <span class="badge">前置：本课起点</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">变量就是给一条数据贴上一个名字，之后可以反复用它。</p>
+    <p>数据有四种类型：int 整数、float 小数、str 文字、bool 真假，<code>type()</code> 可查。
+       名字可以改贴到别的数据，旧值被覆盖。Python 不必先声明类型，类型属于数据。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>把变量想成一张不干胶标签。写下 title = '老旧小区改造'，就是拿起写着 title 的标签，贴在稿子上。标签不是稿子本身；撕下来贴到别处，原稿不变，标签也不再指它。数据也有身份：手机号写成 13800，加了引号就是文字，不是数字，加法也做不了。所以先弄清贴的是什么，再谈拿它做什么。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释变量名和数据本身是两回事：名字可以换，数据不会因为换名字而改变。</li>
+  <li>能区分 int、float、str、bool 四种基本类型，并说出每种在新闻稿件里对应哪类字段。</li>
+  <li>能写出把一条稿件的标题、字数、是否配图分别存进变量的代码，并用 <code>type()</code> 检查每一个。</li>
+  <li>能判断一个变量名是否合法，并说出为什么不能用 list、type、print 当变量名。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>变量是不是一个"盒子"，把数据装进去？</summary>
+  <div class="body">
+    不是盒子，更像不干胶标签。Python 执行 <code>title = '……'</code> 时，先造出右边那条数据，
+    再让左边的名字指向它。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+    后面再写一次 <code>title = '……'</code>，是换一张标签贴到新数据上，不是把盒子里的旧东西倒出来。
+    理解这一点，才能解释为什么两个名字可以同时指向同一条数据。
+  </div>
+</details>
+
+<details>
+  <summary>为什么有的"数字"不能做加法？</summary>
+  <div class="body">
+    因为引号里的数字是文字。<code>'45' + '5'</code> 得到 <code>'455'</code>，
+    那不是相加，是把两段文字粘起来。要算数，得先确认它真的是 int 或 float——
+    从表格、网页、Excel 里读进来的数据，经常是带引号的。
+    拿不准就先 <code>type()</code> 看一眼，这是最省事的一步。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>为什么 Python 不用像 Java 那样先写 int x = 1？</summary>
+  <div class="body">
+    因为类型挂在数据上，不挂在名字上。名字只是一个指向，可以先指整数、后指文字。
+    这类语言叫<strong>动态语言</strong>，Java 那一类叫静态语言。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+    代价是：类型不匹配的错误不会在写代码时就报出来，而要等程序跑到那一行才报。
+  </div>
+</details>
+
+<details>
+  <summary>名字取成 list 或 type 会怎样？</summary>
+  <div class="body">
+    会把 Python 自带的名字盖掉。之后写 <code>list('abc')</code> 时，调用的其实是你那个变量，
+    程序会报 <code>TypeError</code>。所以命名规则除了"不能用数字开头、不能用关键字"，
+    还有一条：别用内置名。PEP 8 给的替代办法是加一个尾下划线，比如 <code>class_</code>。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>重新赋值以后，原来的值去哪了？</summary>
+  <div class="body">
+    如果已经没有任何名字指向它，Python 之后会把它回收，你就再也取不到了。
+    但如果之前写过 <code>old = title</code>，那 <code>old</code> 仍然指着旧数据。
+    所以"覆盖"覆盖的是名字的指向，不是那条数据本身。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>变量是<strong>名字指向数据</strong>这件事本身。Python 里的等号是赋值语句：
+   先把右边的值算出来，再让左边的名字指过去。它和数学里的等号不是一回事——
+   数学上 <code>x = x + 2</code> 不成立，程序里却是最常见的写法：算出 <code>x + 2</code>，再让名字指向这个新结果。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+   数据类型则是数据自带的身份，决定了这条数据能做什么、不能做什么。</p>
+
+<h3>为什么</h3>
+<p>两个原因。第一，<strong>类型决定运算的含义</strong>。<code>'12' + '3'</code> 是拼接得到 <code>'123'</code>，
+   而 <code>12 + 3</code> 是相加得到 <code>15</code>；同一个加号，结果完全不同。
+   新闻里最常见的坑就在这：从外部文件读来的数字，往往是文字形式。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   第二，<strong>名字决定代码能不能读</strong>。同一段处理流程要在几十篇稿件上重复用，
+   叫 <code>title</code>、<code>word_count</code> 的名字，三个月后自己还看得懂；
+   叫 <code>a</code>、<code>b</code>、<code>c</code> 的名字，等于给自己埋坑。PEP 8 把这条写得很直接：
+   代码被阅读的次数远多于被编写。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<h3>怎么工作</h3>
+<ol>
+  <li>算出等号右边：如果是一个表达式，先算出结果。</li>
+  <li>在内存里创建这条数据（一个对象）。</li>
+  <li>让等号左边的名字指向它。整数值是 <code>int</code>，带小数的是 <code>float</code>，
+      引号里的文字是 <code>str</code>，只有 <code>True</code> 和 <code>False</code> 两个取值的是 <code>bool</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li>再赋一次值，就是让同一个名字改指另一条数据。旧数据不会因为改指而消失，只是失去了名字。</li>
+  <li>想确认名字现在指着什么，用 <code>type(名字)</code> 查；想要有几个字符或几项，用 <code>len(名字)</code> 查。<sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th style="width:16%">类型</th><th style="width:30%">写法举例</th><th>新闻场景里的对应字段</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>int</code> 整数</td><td><code>486</code>、<code>-3</code>、<code>2026</code></td>
+        <td>字数、年份、阅读量、留言条数</td></tr>
+    <tr><td><code>float</code> 小数</td><td><code>3.14</code>、<code>0.62</code>、<code>486.0</code></td>
+        <td>平均字数、占比、增长率。注意：除法 <code>/</code> 总是返回 float，<code>9 / 3</code> 得到 <code>3.0</code></td></tr>
+    <tr><td><code>str</code> 文字</td><td><code>'第一现场'</code>、<code>'486'</code></td>
+        <td>标题、正文、记者署名、日期。<code>'486'</code> 与 <code>486</code> 是两条不同的数据</td></tr>
+    <tr><td><code>bool</code> 真假</td><td><code>True</code>、<code>False</code></td>
+        <td>是否配图、是否通过校验、是否含敏感词。注意大小写，<code>true</code> 写法会报错</td></tr>
+  </tbody>
+</table>
+
+<blockquote>
+  命名规则四条：只能用字母、数字、下划线；不能用数字开头；不能用关键字（if、for、class 等）；
+  别用内置名（list、type、print 等）。PEP 8 另外建议全小写加下划线，并且不要用单个字母
+  <code>l</code>、<code>O</code>、<code>I</code> 当名字，因为某些字体里它们和 1、0 分不清。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+</blockquote>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 352" role="img" aria-label="变量是名字指向数据对象，以及重新赋值改变指向的示意图">
+  <defs>
+    <marker id="v1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="v2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#c0392b" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">变量：名字指向数据，不是把数据装进盒子</text>
+
+  <text x="20" y="48" font-size="12.5" font-weight="700" fill="#7b8294">① 一个名字指向一条数据，数据自带类型</text>
+
+  <rect x="20" y="62" width="180" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="110" y="83" text-anchor="middle" font-size="12.5" fill="#4a5160">title</text>
+  <path d="M204 78L224 78" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#v1)"/>
+  <rect x="228" y="62" width="270" height="32" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="363" y="83" text-anchor="middle" font-size="12.5" fill="#2c2c2a">'老旧小区改造'</text>
+  <rect x="526" y="62" width="174" height="32" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="613" y="83" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">str 文字</text>
+
+  <rect x="20" y="100" width="180" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="110" y="121" text-anchor="middle" font-size="12.5" fill="#4a5160">word_count</text>
+  <path d="M204 116L224 116" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#v1)"/>
+  <rect x="228" y="100" width="270" height="32" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="363" y="121" text-anchor="middle" font-size="12.5" fill="#2c2c2a">486</text>
+  <rect x="526" y="100" width="174" height="32" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="613" y="121" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">int 整数</text>
+
+  <rect x="20" y="138" width="180" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="110" y="159" text-anchor="middle" font-size="12.5" fill="#4a5160">avg_words</text>
+  <path d="M204 154L224 154" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#v1)"/>
+  <rect x="228" y="138" width="270" height="32" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="363" y="159" text-anchor="middle" font-size="12.5" fill="#2c2c2a">162.0</text>
+  <rect x="526" y="138" width="174" height="32" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="613" y="159" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">float 小数</text>
+
+  <rect x="20" y="176" width="180" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="110" y="197" text-anchor="middle" font-size="12.5" fill="#4a5160">has_photo</text>
+  <path d="M204 192L224 192" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#v1)"/>
+  <rect x="228" y="176" width="270" height="32" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="363" y="197" text-anchor="middle" font-size="12.5" fill="#2c2c2a">True</text>
+  <rect x="526" y="176" width="174" height="32" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="613" y="197" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">bool 真假</text>
+
+  <text x="20" y="238" font-size="12.5" font-weight="700" fill="#7b8294">② 重新赋值：同一个名字，改指另一条数据</text>
+
+  <text x="20" y="275" font-size="11.5" fill="#7b8294">赋值前</text>
+  <rect x="96" y="254" width="96" height="32" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="144" y="275" text-anchor="middle" font-size="12.5" fill="#4a5160">title</text>
+  <path d="M196 270L216 270" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#v1)"/>
+  <rect x="220" y="254" width="180" height="32" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="310" y="275" text-anchor="middle" font-size="12" fill="#2c2c2a">'三年前开工'</text>
+
+  <text x="20" y="321" font-size="11.5" fill="#7b8294">赋值后</text>
+  <rect x="96" y="300" width="96" height="32" rx="6" fill="#ffffff" stroke="#c0392b"/>
+  <text x="144" y="321" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">title</text>
+  <path d="M196 316L216 316" fill="none" stroke="#c0392b" stroke-width="1.6" marker-end="url(#v2)"/>
+  <rect x="220" y="300" width="180" height="32" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="310" y="321" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">'今年六月竣工'</text>
+
+  <path d="M404 270L432 302" fill="none" stroke="#b8b2a6" stroke-width="1.2" stroke-dasharray="3 3"/>
+  <rect x="436" y="258" width="264" height="76" rx="8" fill="#f7f5f0" stroke="#b8b2a6"
+        stroke-dasharray="4 3"/>
+  <text x="450" y="283" font-size="12" fill="#4a5160">'三年前开工'这条数据还在内存里，</text>
+  <text x="450" y="302" font-size="12" fill="#4a5160">但已经没有名字指向它，</text>
+  <text x="450" y="321" font-size="12" fill="#7b8294">后面的代码再也取不到它了。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一次录稿，被一个空格卡住。</strong>
+   2026 年 3 月，某都市报数据组要把 30 篇「老旧小区改造」系列稿录进表格，统计平均字数。
+   实习生小林刚开始只写了一个变量 <code>text</code>，每篇整段塞进去，回头再数——数到第 7 篇就放弃了。
+   改成三个变量之后，流程立刻清楚了：<code>title</code> 存标题、<code>word_count</code> 存字数、
+   <code>has_photo</code> 存是否配图，每录完一条就把三个变量打印在同一行里，30 篇十分钟录完。
+   这一步看起来只是起了几个名字，做的却是数据新闻里最基础的一件事：
+   动手分析之前，先把信息整理成一行一条、一列一义的表格。<sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+
+<p><strong>真正的坑出现在第 12 篇。</strong>
+   那篇的字数在源表格里带着一个空格，写作 <code>' 486'</code>。数字看上去没问题，
+   但它是带引号的文字，类型是 <code>str</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   一算平均字数程序就报错，小林打印 <code>type(word_count)</code> 才发现问题所在——
+   把 <code>' 486'</code> 换成 <code>486</code>，程序就好了。
+   这类"看起来是数字、其实是文字"的情况，是处理外部数据时最常见的一类事故。</p>
+
+<div class="flag">
+  <span class="lbl">示意（推演场景，非公开报道）</span>
+  <p style="margin:6px 0 0">上面的人物与稿件内容是教学推演，用来演示类型不一致的实际后果。
+     真实的处理办法不只有手工清理：第 2 课的 <code>int()</code> 转换与第 2 课的字符串
+     <code>.strip()</code> 会把这类脏数据一次性处理干净。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>常量</strong></td>
+      <td>常量是"不打算改"的量，Python 没有任何机制阻止你改，
+          只用全大写的名字（如 <code>MAX_WORDS = 800</code>）表示这是一个约定；
+          变量则随时可以改指向。</td>
+      <td>常量靠约定约束，变量靠"随时可改"定义。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>数据类型</strong></td>
+      <td>类型是数据自带的身份，名字只是指向。同一个名字今天指 <code>str</code>、
+          明天指 <code>int</code>，类型会跟着数据走，不会跟着名字走。</td>
+      <td>换名字不改变类型，换数据才改变类型。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>列表与字典<br />（概念 03、04）</strong></td>
+      <td>一个变量装一条数据；列表和字典是"容器"，把很多条数据装在一起，
+          让一个名字指向一整批。容器本身也是数据，也有类型。</td>
+      <td>变量问"这条叫什么"，容器问"这一批怎么放"。</td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的规则表</strong></td>
+      <td>规则表规定待标注的每个字段是什么意思、怎么记、取值范围是什么；
+          程序里的变量名，就是那张表落到代码里的样子。两者都要先定义再使用，
+          但规则表属于标注前的约定，变量名属于内存里的名字。</td>
+      <td>规则表管"这个变量在标注口径里代表什么"，代码变量管"这条数据在内存里叫什么"。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Python 速览（Python 官方中文教程 第 3 章）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/introduction.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">第 3.1 节用"把 Python 当计算器"的方式介绍了数字、文本与列表。
+      本卡"整数是 int、带小数部分是 float""除法总是返回浮点数"
+      "引号中的数字也是字符串"三处表述均出自此页。</span>
+  </li>
+  <li id="ref-2">
+    <strong>术语对照表（Python 官方中文文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/glossary.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/glossary.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">immutable（不可变对象）与 mutable（可变对象）两条术语的官方定义。
+      本卡用它说明"类型是数据自带的身份，决定了能做什么"。</span>
+  </li>
+  <li id="ref-3">
+    <strong>内置函数（Python 官方中文文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/functions.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note"><code>type()</code> 与 <code>len()</code> 的官方签名与示例。
+      注意：本卡核查时抓取到的页面前半部分未包含这两个函数的完整中文说明，
+      只见到函数签名，详见文末「仍是缺口的地方」。</span>
+  </li>
+  <li id="ref-4">
+    <strong>数据类型和变量（廖雪峰 Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/basic/data-types/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/basic/data-types/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">讲清了"变量名必须大小写英文、数字和 _ 的组合，且不能用数字开头"、
+      "Python 是动态语言"、以及赋值后名字改指向而旧数据不影响其他名字。
+      本卡的通俗理解一节依据的就是这一页对变量与内存关系的图示。</span>
+  </li>
+  <li id="ref-5">
+    <strong>PEP 8 – Style Guide for Python Code</strong> · Guido van Rossum, Barry Warsaw, Alyssa Coghlan<br />
+    <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">https://peps.python.org/pep-0008/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">函数名与变量名应为小写、必要时用下划线分隔；绝不用单个字符
+      <code>l</code>、<code>O</code>、<code>I</code> 作变量名；参数名与关键字冲突时加一个尾下划线
+      （如 <code>class_</code>）。本卡命名规则的依据。</span>
+  </li>
+  <li id="ref-6">
+    <strong>The Data Journalism Handbook 1</strong> · European Journalism Centre（欧洲新闻中心）<br />
+    <a href="https://datajournalism.com/read/handbook/one" target="_blank" rel="noopener">https://datajournalism.com/read/handbook/one</a>
+    <span class="badge">行业资源</span><br />
+    <span class="note">面向新闻编辑室的公开手册，其中「Basic Steps in Working with Data」
+      一节讲的是同一件事：动手分析之前，先把散落的信息整理成一行一条、一列一义的表格。
+      本卡把它作为非技术类来源，说明"给数据起名字"是新闻工作本身的要求，而不只是编程要求。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1、4 逐条打开核对</strong>，确认页面存在且内容与引用一致。
+        "引号中的数字也是字符串"（<code>'1975'</code>）一句回到来源 1 的 3.1.2 节原文确认。</li>
+    <li><strong>来源 4 的命名规则</strong>不采信二手转述，核对的是该页"变量"一节的原文：
+        "变量名必须是大小写英文、数字和 _ 的组合，且不能用数字开头"。</li>
+    <li><strong>来源 5 的三条命名建议</strong>（小写下划线、避免 l/O/I、尾下划线）逐条回到 PEP 8 原文确认。</li>
+    <li><strong>来源 2 的术语定义</strong>与来源 4 的表述交叉比对一致：字符串与数字是不可变对象，
+        列表是可变对象。</li>
+    <li><strong>来源 6 已访问确认</strong>，页面为欧洲新闻中心维护的公开手册，章节列表可见。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 3 未能逐字核实全部内容</strong>：该页（内置函数）体量很大，
+        抓取时只返回了前半部分，<code>type()</code> 与 <code>len()</code> 只见函数签名，
+        未见完整的中文定义段落。本卡对这两个函数的用法描述属于通行常识，
+        但正式引用前建议自行打开该页搜索 <code>type</code>、<code>len</code> 核对一次。</li>
+    <li><strong>"应用案例"一节标明为示意</strong>。其中的人物、稿件数字与报错情形均为教学推演，
+        不是任何公开报道或真实事故记录；如需写入正式材料，请先自己跑一遍复现。</li>
+    <li>四种基本类型里没有列 <code>None</code>、<code>Decimal</code>、复数等。
+        这是刻意的取舍：本卡面向零基础读者，只保留第 1 课会反复用到的四种。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 变量与数据类型 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 1 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '在 Python 里，type(\'486\') 会返回下面哪一个？',
+      options: ['int（整数）', 'str（字符串）', 'float（浮点数）', 'bool（布尔值）'],
+      answer: 1,
+      why: '加了引号就是文字。官方教程里写得很直接：引号中的数字也是字符串（示例 \'1975\'）。要让它变成整数，得先转换类型。',
+      ref: 1, refText: '来源 [1] 第 3.1.2 节 文本' },
+
+    { level: 0, text: '下面哪个变量名在 Python 里是合法的？',
+      options: ['3_title', 'news-type', 'news_type', 'type'],
+      answer: 2,
+      why: '3_title 以数字开头，不合法；news-type 里的连字符不是允许的字符；type 是内置名，用它会盖掉 Python 自带的 type()。只有 news_type 合法。',
+      ref: 4, refText: '来源 [4] 变量命名规则' },
+
+    { level: 1, text: '先写 word_count = 486，接着又写 word_count = 512。下面哪种说法是对的？',
+      options: [
+        '会报错，同一个变量不能赋值两次',
+        '486 仍然保存在 word_count 里，512 被忽略',
+        '名字改为指向 512，486 那条数据不再被这个名字指向',
+        '两个值会相加，word_count 变成 998'],
+      answer: 2,
+      why: '赋值是让名字改指向，不是往盒子里塞东西。重新赋值后 word_count 指向 512，486 那条数据只是失去了这个名字；如果之前写过 old = word_count，old 依然指着它。',
+      ref: 4, refText: '来源 [4] 变量与内存中对象的指向关系' },
+
+    { level: 1, text: '为什么 \'12\' + \'3\' 得到 \'123\'，而 12 + 3 得到 15？',
+      options: [
+        '加号的含义由左右两边数据的类型决定：文字是拼接，数字是相加',
+        '引号只是显示效果，不影响运算结果',
+        '因为字符串优先级更高，数字会被自动转成文字',
+        '因为 Python 认不出带引号的数字，只能当文字处理'],
+      answer: 0,
+      why: '同一条 + 号，作用在字符串上是首尾相接，作用在数字上才是算术相加。这不是显示效果问题，是类型问题——这也是把外部数据读进来以后第一件要确认的事。',
+      ref: 1, refText: '来源 [1] 数字与文本两节' },
+
+    { level: 2, text: '要从一条稿件里分别记住标题、字数和是否配图，下面哪种写法最合适？',
+      options: [
+        '三个值都存成字符串，反正打印出来看起来一样',
+        'title 存 str、word_count 存 int、has_photo 存 bool',
+        '三个值都存成 int，需要时再转',
+        '只用一个变量，依次往下存三个值'],
+      answer: 1,
+      why: '类型应该跟着数据的用途走：标题是文字、字数是用来算的整数、是否配图只有真假两种取值。全存成字符串，后面算平均字数时会报错；全存成整数，标题根本存不进去。',
+      ref: 1, refText: '来源 [1] int / float / str 的类型区分' },
+
+    { level: 2, text: '五篇稿件平均 486.4 字，你打算用 // 把它写成 486，这样好吗？',
+      options: [
+        '好，整数看起来干净，也不会影响结论',
+        '不好。// 是地板除，会直接丢掉小数部分；平均值保留一位小数更有信息量',
+        '好不好无所谓，Python 自己会判断该不该保留小数',
+        '好，因为字数本来就是整数，不该出现小数'],
+      answer: 1,
+      why: '// 是向下取整除法，用它处理平均值等于主动丢信息，而且五篇和五千篇的平均值丢掉的量级完全不同。要保留小数就用 / ，它总是返回 float。',
+      ref: 1, refText: '来源 [1] 除法运算总是返回浮点数' },
+
+    { level: 3, text: '同事把一个计数变量命名为 list，之后程序报 TypeError: \'list\' object is not callable。最合理的解释是？',
+      options: [
+        'Python 不允许使用 list 这个词，只能换成 list_1',
+        '这个名字指向的数据盖住了内置的 list()，之后想调用它，实际上调用的是一个整数',
+        '变量名必须以大写字母开头才不会被占用',
+        '缺少 import list 这一行，需要先导入'],
+      answer: 1,
+      why: '内置名不是保留字，可以被覆盖，但覆盖之后就拿不回来了。PEP 8 建议的做法是在与关键字或内置名冲突时加一个尾下划线（如 class_），而不是改拼写或加数字。',
+      ref: 5, refText: '来源 [5] PEP 8 关于命名冲突的建议' },
+
+    { level: 3, text: '关于"Python 不用先声明类型"，下面哪种理解是站得住的？',
+      options: [
+        'Python 里的数据其实没有类型，随便怎么用都行',
+        '类型属于数据本身，不属于名字；名字可以先指整数再指文字，所以不必提前声明',
+        'Python 会在运行时替你选一个类型，选定之后就固定下来',
+        '只有写函数的时候才需要声明类型，其他场合不用'],
+      answer: 1,
+      why: '声明类型的语言是把类型绑在名字上，Python 是把类型绑在数据上。所以不是"没有类型"，而是"类型跟着数据走"。代价是类型不匹配的错误要到运行到那一行才报出来。',
+      ref: 4, refText: '来源 [4] 动态语言与静态语言的区别' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>标注一致性 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 跨课连接 · 序号 17 / 17</div>
+  <h1>标注一致性</h1>
+  <div class="badges">
+    <span class="badge">概念卡 17</span>
+    <span class="badge">枢纽概念</span>
+    <span class="badge">前置：文本分类 · 模型评估 · 情感分析</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">9 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">机器打的标签凭什么可信，要靠人工标注一致性来证明。</p>
+    <p>先写清标签定义与三种单位，再让两位以上标注员独立标同一批材料，
+       算一个扣掉偶然一致的系数。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+       约定 α ≥ .80 才可下结论；模型自动标注同样要抽样与人工比对。<sup class="cite"><a href="#ref-3">[3]</a></sup><sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>标注一致性像给一仓库行李贴标签：先写一份贴标规则（什么算易碎、什么算超重），
+     再让几个人各贴一遍同一批行李，看他们贴得有多齐。如果两个人对"易碎"的理解不一样，
+     标签贴得再多也不可信。一致性就是这份"贴得有多齐"的成绩单，约定合格线是 α ≥ .80。
+     换成机器来贴也一样，规则和抽查都不能省。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释为什么机器打的标签不能靠一个准确率自证，而要与人工标注比对一致性。</li>
+  <li>能区分抽样单位、标注单位与语境单位，并说出混淆它们会造成什么后果。</li>
+  <li>能判断一致性系数该怎么算、怎么读：为什么要扣掉偶然一致，α 的三个档位各是什么。</li>
+  <li>能写出一份完整的一致性报告：系数值与差异函数、置信区间、标注员数、缺失情况、预定阈值。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>标签是机器自己长出来的，还是人定好的？</summary>
+  <div class="body">
+    人定的。官方教程里载入语料时要显式写出要哪几个类别，类别集合与名称都由人给定，
+    模型只输出类别编号——机器做不了"定类别"这件事。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+    所以标注规则必须<strong>事前写下来</strong>：每个档位都要有足够具体的文字定义，
+    具体到两个人读了会把同一个边界例子归到同一档，并给边界例子举出实例。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>抽样单位、标注单位、语境单位，这三个"单位"到底差在哪？</summary>
+  <div class="body">
+    一项标注通常同时用到三种单位：<strong>抽样单位、语境单位与记录单位（标注单位）</strong>。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    一句话分别说清：<strong>抽样单位</strong>回答"抽什么进来"（一个月的公开反馈、5000 条留言）；
+    <strong>标注单位</strong>回答"给哪一段贴标签"（一条留言、一个句子、一处诉求）；
+    <strong>语境单位</strong>回答"贴标签时允许看多少上下文"（只看这一句，还是连前后文一起看）。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    三者混淆是最常见的错误之一：单位切得太细，标注员就不得不在上下文被剥掉的句子上做判断，
+    一致性会直接掉下来。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>为什么要算一致性系数，不能直接算"一致率"？</summary>
+  <div class="body">
+    因为有些一致是<strong>碰巧</strong>的。如果十个档位里某一档占了九成，
+    两个人闭着眼睛都选这一档，一致率也会很高。
+    系数的作用就是把这份"凭运气也会达成的一致"扣掉：
+    方法指南说得直白——简单一致率直观，但<strong>会高估信度，因为它没有扣除仅凭偶然就会达成的一致</strong>。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    Cohen's kappa 的公式就是这个意思：κ =（观察一致率 − 随机期望一致率）/（1 − 随机期望一致率）。<sup class="cite"><a href="#ref-7">[7]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>Krippendorff's alpha 是什么？多少算够？</summary>
+  <div class="body">
+    它是标注员间一致性里最通用的一种系数，特别之处在于
+    <strong>可以用于任意数量的标注员、任意数量的类别、任意测量层次（名义、序数、区间、比率），
+    也容许缺失数据</strong>，不像 Cohen's kappa 那样把标注员数限制在两个。<sup class="cite"><a href="#ref-3">[3]</a></sup><sup class="cite"><a href="#ref-1">[1]</a></sup>
+    档位是领域约定而不是推导出来的：<strong>alpha 达到 .80 以上才可以据此下结论；
+    .667 到 .80 之间只能作为初步结果；低于 .667 的数据应当弃用</strong>。<sup class="cite"><a href="#ref-3">[3]</a></sup><sup class="cite"><a href="#ref-1">[1]</a></sup>
+    报告时还有一条：<strong>要逐个变量报各自的信度，而不是把所有变量平均成一个数</strong>——
+    平均值会让某一个变量信度极低这件事完全看不出来。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>模型已经打完标签了，还得走这一套吗？一致性高就等于标对了吗？</summary>
+  <div class="body">
+    要走。模型给文本打标签，本质上就是<strong>自动标注</strong>——它换的是执行者，不是方法论要求。
+    做法是把自动标签当作"一位新的标注员"：抽样一批，与人工标注比对，报告一致性，
+    并说明分歧集中在哪几档、这些分歧由谁怎么处理。<sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-8">[8]</a></sup>
+    但一致性高并不等于标对了：一致性问的是"测得稳不稳"，效度问的是"测得对不对"。
+    规则可以完全一致地把错误的东西测出来——类别定义含糊，再高的一致性也只是把错误放大。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>标注一致性（inter-annotator agreement）做的事很简单：
+   <strong>让两个以上的人各自独立地给同一批材料贴标签，看他们贴得有多一致</strong>。
+   Stemler 的经典表述把这件事叫可重复性——不同的人依据同一套规则，会不会把同一份文本放进同一个类别；
+   与之并列的另一种信度是稳定性，也就是同一个人重做一次会不会得到同样的结果。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+   它之所以需要，是因为<strong>标签是人定义的，不是机器自己长出来的</strong>：
+   类别集合与名称由人给定，模型只负责把样本分到已有的档位上。<sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+<p>规则表要满足两个硬要求：<strong>穷尽</strong>（每一条材料都有地方可去，实践中通常要有个"其他"档）
+   与<strong>互斥</strong>（同一条材料在一个变量上只能进一档）。
+   方法指南把规则表比作调查里的问卷——它是这件"仪器"，仪器不可靠，测出来的东西就不可信。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   动手之前必须先定下三种单位，它们容易被当成一回事，但回答的是三个不同的问题：</p>
+<ul>
+  <li><strong>抽样单位</strong>：抽什么进来。比如"某平台 2026 年 3 月的全部公开用户反馈"。</li>
+  <li><strong>标注单位</strong>：给哪一段贴标签。比如"每条反馈里的主要诉求"。
+      它在中文文献里也常被译作记录单位（recording unit）——两种叫法指的是同一个东西。<sup class="cite"><a href="#ref-5">[5]</a></sup></li>
+  <li><strong>语境单位</strong>：贴标签时允许看多少上下文。比如"允许读完整条反馈"。
+      语境单位设定的是判断时能看到的物理边界，它不一定要独立、可单独描述，还可以重叠并包含多个标注单位。<sup class="cite"><a href="#ref-5">[5]</a></sup></li>
+</ul>
+<p>这一层之所以关键，是因为单位太细会让标注员在上下文被剥掉的片段上做判断，
+一致性会直接掉下来；而单位一旦中途改动，按旧单位算出的信度就作废了。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+<h3>为什么</h3>
+<p>因为<strong>"同意"可以是假的</strong>。假同意有两个来源。</p>
+<p>一是<strong>偶然一致</strong>：简单一致率不扣除碰巧，所以会虚高。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   所有像样的系数都在扣这一项——kappa 的公式先把随机期望一致率 pe 从观察一致率里减掉再除以 1 − pe；
+   alpha 换了个角度，从"不一致"出发，定义为 α = 1 − Do / De，
+   其中 Do 是观察到的分歧，De 是随机贴标签时预期会有的分歧。<sup class="cite"><a href="#ref-7">[7]</a></sup><sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+<p>二是<strong>默契一致</strong>：长期一起打磨规则表的人会形成共同但没说出口的理解。
+   经典提醒是——规则表的制定者往往长期紧密地参与项目，以至于形成了共享而隐含的理解，
+   他们报出来的信度系数会被人为抬高；<sup class="cite"><a href="#ref-5">[5]</a></sup>
+   要挡住这一点，只有一条路：<strong>让独立的人、按写下来的规则、标同一批材料，然后算一个扣掉偶然的系数</strong>。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+<p>这也是 alpha 会成为通用选择的原因：它不挑标注员人数、不挑测量层次、容许缺失值——
+   同一批数据里，主题这类档位用名义尺度算，强度评分用区间尺度算，一个系数就能覆盖；
+   而且每一个只有一位标注员标过的单元不会被丢掉，只按实际到达它的标注员数参与计算。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   档位是约定：<strong>可以下结论</strong>、<strong>只能作初步结果</strong>、<strong>应当弃用</strong>三档，
+   界线就是 .80 与 .667，而作者给这两个数的理由是高代价用途与探索性用途的风险不同。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+<p>但一致性只是必要条件，不是充分条件。规则可以非常可靠地把错误的东西测得很一致：
+   信度问题的根源之一就是词义与类别定义的模糊，类别定义含糊、类别不互斥不穷尽，
+   会让整套标注的效用被摧毁。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+   而这套纪律并不只属于某个学科——只要有人在给材料定义标签，它就在起作用。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+<h3>怎么工作</h3>
+<ol>
+  <li><strong>定三个单位</strong>：抽样什么、给哪一段贴标签、允许看多少上下文。写进方法说明，中途不要改。
+      中途改单位，会让按旧单位算出的信度作废。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>写标签定义表</strong>：每一档都要有足够具体的书面定义，具体到两个人读了会把同一个边界例子归到同一档，
+      并给边界例子举出实例；同时用"其他"档保证穷尽。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>试标并修规则</strong>：先在少量材料上跑一遍，把定义含糊的地方改掉，再进入全量。
+      试标阶段就应该自己算一次一致性，不达标先改规则，而不是事后补。</li>
+  <li><strong>独立标一个子样本</strong>：至少两位标注员各自独立标同一批材料，互相不看对方结果。
+      抽多少要写清楚，不能只标几条——alpha 的稳定性取决于单位数与档位分布，不是拍一个"够大"就行。<sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>算 alpha、给出区间、逐个变量报</strong>：达到 .80 才继续；落在 .667 到 .80 之间只能当初步结果；
+      低于 .667 就回去改规则表、重新培训标注员，再重算。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+      同时要报<strong>置信区间</strong>：alpha 在存在缺失值或标注员数不齐时没有简单的标准误公式，
+      通行做法是对<strong>单元</strong>做自助重抽样（通常 2000–10000 次），取 2.5% 与 97.5% 分位作为 95% 区间；
+      一个 .71 配 [.58, .84] 的区间，与配 [.68, .74] 的区间，结论完全不同。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>把模型的自动标签接进同一条链，并写全报告</strong>：抽样与人工标注比对、报告一致性、
+      说明分歧点由谁处理；报告至少包含<strong>系数值与所用的差异函数</strong>（如"名义尺度的 Krippendorff's alpha"，
+      不能只写"alpha"）、<strong>点估计与置信区间</strong>、<strong>标注员人数以及评分矩阵缺失了多少</strong>、
+      <strong>单元数与可配对值数</strong>、<strong>事前设定的阈值</strong>，以及计算所用的软件与版本。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-2">[2]</a></sup>
+      整个链条有一条通行的底线：自动化结果必须可交代、可复核，责任留在人这一侧。<sup class="cite"><a href="#ref-9">[9]</a></sup></li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 360" role="img" aria-label="从标签定义表到 Krippendorff's alpha 的标注流程与三个档位">
+  <defs>
+    <marker id="carrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">从标签定义到 alpha：模型打标签也要走完这条链</text>
+
+  <rect x="20" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="81" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">① 定三个单位</text>
+  <text x="81" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">抽样 / 标注 / 语境</text>
+  <text x="81" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">中途不能改</text>
+
+  <path d="M144 89L160 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="164" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="225" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">② 写标签定义表</text>
+  <text x="225" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">每档一句标准</text>
+  <text x="225" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">互斥且穷尽</text>
+
+  <path d="M288 89L304 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="308" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="369" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">③ 独立双标注</text>
+  <text x="369" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">两人各标一遍</text>
+  <text x="369" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">互相不看结果</text>
+
+  <path d="M432 89L448 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="452" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="513" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">④ 算 alpha</text>
+  <text x="513" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">扣掉偶然一致</text>
+  <text x="513" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">逐个变量分别报</text>
+
+  <path d="M576 89L592 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="596" y="52" width="122" height="74" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="657" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">⑤ 达标才继续</text>
+  <text x="657" y="96" text-anchor="middle" font-size="10.5" fill="#a8554a">不达标就改定义</text>
+  <text x="657" y="112" text-anchor="middle" font-size="10.5" fill="#a8554a">重训标注员再算</text>
+
+  <text x="20" y="158" font-size="12.5" font-weight="700" fill="#4a5160">Krippendorff's alpha 的三个档位（领域约定，不是数学推导）</text>
+
+  <text x="60" y="196" text-anchor="middle" font-size="10.5" fill="#7b8294">0</text>
+  <text x="460" y="196" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7b8294">.667</text>
+  <text x="540" y="196" text-anchor="middle" font-size="10.5" font-weight="700" fill="#7b8294">.80</text>
+  <text x="660" y="196" text-anchor="middle" font-size="10.5" fill="#7b8294">1</text>
+
+  <rect x="60" y="206" width="400" height="30" fill="#fdece4" stroke="#f0d5cd"/>
+  <rect x="460" y="206" width="80" height="30" fill="#fdf6e6" stroke="#e0c98a"/>
+  <rect x="540" y="206" width="120" height="30" fill="#eef7f1" stroke="#cfe4d8"/>
+
+  <text x="260" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#b3261e">低于 .667：应当弃用</text>
+  <text x="500" y="226" text-anchor="middle" font-size="11" font-weight="700" fill="#8a6d1f">初步</text>
+  <text x="600" y="226" text-anchor="middle" font-size="11.5" font-weight="700" fill="#2e7d4f">可以下结论</text>
+
+  <text x="20" y="264" font-size="11.5" fill="#7b8294">· 报的时候要逐个变量报各自的信度，而不是把所有变量平均成一个数——平均值会掩盖某个变量极低这一事实。</text>
+  <text x="20" y="286" font-size="11.5" fill="#7b8294">· 只报"一致率"会高估：它没有扣除仅凭偶然就会达成的一致；alpha 与 kappa 都把这一项减掉了。</text>
+  <text x="20" y="308" font-size="11.5" fill="#a8554a">· alpha 只看"标注员之间一致不一致"，看不出"标签定得对不对"：定义错了，高 alpha 只是把错误测得很一致。</text>
+  <text x="20" y="332" font-size="11.5" fill="#a8554a">· 模型自动标注时，上面每一步照样要做：换的是执行者，不是方法论要求。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>真实的规定：一致性报告有必须交代的清单，不是一个数字。</strong>
+   方法指南给出了一份明确清单——报告时应当写明<strong>系数与所用差异函数</strong>
+   （写"名义尺度的 Krippendorff's alpha"，而不是只写"alpha"）、<strong>点估计与自助法置信区间</strong>、
+   <strong>标注员人数、是否每位标注员都标了每个单元、评分矩阵缺失了多少</strong>、
+   <strong>单元总数与可配对值总数</strong>（单元太少时高 alpha 也没有多少分量）、
+   <strong>事前设定的阈值</strong>，以及所用<strong>软件与版本</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   这份清单挡住的是最常见的一种糊弄：只交一个系数，读者无法判断它是在什么条件下算出来的。</p>
+
+<div class="flag">
+  <span class="lbl">示意案例（推演，非公开资料）</span>
+  <p style="margin:6px 0 0">2026 年 3 月，一个在线教育平台的内容审核小组要给 5000 条用户反馈贴风险等级
+      （低 / 中 / 高），好决定先处理哪些。第一次汇报只有一句话：<strong>模型准确率 92%</strong>。
+      评审会上被追问三个问题，谁也答不上来——"跟谁比的 92%？""错的是哪一档？""分错的那些你打算怎么办？"</p>
+  <ul>
+    <li><strong>重做第一步——把单位写清楚。</strong>抽样单位：2026 年 3 月 1 日至 31 日的全部公开反馈（共 5000 条）。
+        标注单位：每条反馈的<strong>主要诉求</strong>，一条只进一档。
+        语境单位：只读这条反馈本身，不读它下面的追评——追评是别人写的，会把判断带偏。<sup class="cite"><a href="#ref-5">[5]</a></sup></li>
+    <li><strong>第二步——写标签定义表。</strong>三个等级各写一句判定标准，每个都给一个边界例子，
+        并事先约定"既提出抱怨又索要解决方案时按高风险计"。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+    <li><strong>第三步——独立双标注。</strong>从 5000 条里随机抽 200 条，
+        由两位审核员各自独立标一遍，互相看不到对方的结果；
+        再把同一批 200 条的模型标签单独列出来，作为"第三位标注员"。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+    <li><strong>第四步——算 alpha，逐档报告并给出区间。</strong>结果假定为：低风险 .86、中风险 .78、高风险 .61。
+        按约定，只有低风险可以据此下结论；中风险只能作为初步结果；
+        高风险必须回去改定义、重新对齐标准后重算，不能直接进处理排期。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+    <li><strong>第五步——把模型的结果同样报告。</strong>模型标签与两位审核员比对后，
+        整体落在 .80 附近，但在"反讽表达"上明显偏低；
+        这 30 余条分歧点由资深审核员逐条复核后定稿，
+        并在方法说明里写清抽样量、缺失情况与事前设定的阈值。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  </ul>
+  <p style="margin:6px 0 0">现在再问"凭什么可信"，答案就不再是一个数字，而是一条可以复核的链：
+  单位是什么、规则是什么、抽了多少、和谁比、每个档位各是多少、区间有多宽、分歧怎么处理。
+  本案例中的具体数值是推演的，用来演示报告结构，实际数值需要在课程练习中实地跑出。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>文本分类</strong></td>
+      <td>文本分类只负责产出一批标签；标注一致性回答的是"这批标签凭什么可信"。同一个分类器，如果它的标签没经过一致性检验，就只是一堆没人担保的判断。</td>
+      <td>分类解决"怎么贴标签"，一致性解决"凭什么信这些标签"。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>模型评估</strong></td>
+      <td>模型评估比的是"模型与人工标注"的一致程度，参照物是人的标签；标注一致性比的是"人工标注员彼此"的一致程度。参照物不同，但都在用一致性证明可信。</td>
+      <td>评估问"模型像不像人"，一致性问"两个人在同一批材料上会不会做同样的判断"。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>训练集 / 测试集划分</strong></td>
+      <td>划分管的是"拿哪一批数据去评估"，前提是标签本身可靠；一致性管的是"标签本身可不可靠"。标签不可靠，划分得再规范，也只是把噪声均匀分到两边。</td>
+      <td>划分解决"在哪批数据上评"，一致性解决"被评的标签值不值得当标准答案"。</td>
+    </tr>
+    <tr>
+      <td><strong>标注工具 / 标注平台</strong></td>
+      <td>工具解决"怎么把标签收集上来并合流"，它通常顺手就能算出 kappa 或 alpha；一致性方法解决的是"合流之前，这些标签要不要相信"，以及阈值该在什么时候定、缺失怎么报。</td>
+      <td>工具替你算出数字，一致性要求你解释这个数字在什么条件下成立。</td>
+    </tr>
+    <tr>
+      <td><strong>简单一致率<br />与 Cohen's kappa</strong></td>
+      <td>一致率不扣除偶然，会高估信度；kappa 扣掉了偶然，但一般只用于两位标注员、且对档位分布很敏感；alpha 容许任意标注员数、任意测量层次与缺失值，因此更通用。</td>
+      <td>一致率是"看着挺像"，kappa 和 alpha 是"扣掉运气之后还剩多少像"。<sup class="cite"><a href="#ref-7">[7]</a></sup><sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Krippendorff's Alpha: Calculating Intercoder Reliability</strong> · CASRAI（研究管理信息标准推进联盟）<br />
+    <a href="https://casrai.org/guides/krippendorffs-alpha" target="_blank" rel="noopener">https://casrai.org/guides/krippendorffs-alpha</a>
+    <span class="badge">方法指南</span><br />
+    <span class="note">本卡引用它五处：alpha 的定义与三个"kappa 做不到"之处（任意标注员数、容许缺失值的评分矩阵、
+      任意测量层次）；α = 1 − Do / De 的构成与"只有一位标注员标过的单元不会被整条丢掉"的说明；
+      .800 / .667 / 低于 .667 三档及其"是高代价用途与探索性用途的风险不同，属约定而非推导"的限定；
+      缺失值或不齐标注员数时对<strong>单元</strong>做自助重抽样、取 2.5% 与 97.5% 分位得到 95% 置信区间的做法；
+      以及"该报告什么"清单（系数与差异函数、点估计与置信区间、标注员数与缺失比例、单元数与可配对值数、
+      事前阈值、软件与版本）。本次访问确认页面有效并已逐条核对上述表述。</span>
+  </li>
+  <li id="ref-2">
+    <strong>Content Analysis: Coding Text and Media Systematically</strong> · CASRAI（研究管理信息标准推进联盟）<br />
+    <a href="https://casrai.org/guides/content-analysis" target="_blank" rel="noopener">https://casrai.org/guides/content-analysis</a>
+    <span class="badge">方法指南</span><br />
+    <span class="note">本卡引用的是它的<strong>通用方法论部分</strong>，与具体学科无关：unitizing（怎么确定一个可标注的单元，
+      以及"单元太细会让标注员在上下文被剥掉的片段上做判断"这一常见设计错误）；规则表就是这件"仪器"，
+      如同问卷是调查的仪器；每档定义要具体到"两个人读了会把同一个边界例子归到同一档"并给出边界例子；
+      穷尽与互斥；试标之后再进入全量、中途改单元会使按旧单元算出的信度作废；
+      "简单一致率直观，但会高估信度，因为它没有扣除仅凭偶然就会达成的一致"；
+      以及报告一致性时须写清系数、计算所用的单元样本与所达到的值。</span>
+  </li>
+  <li id="ref-3">
+    <strong>The E-Design Assessment Tool: an evidence-informed approach towards a consistent terminology for quantifying online distance learning activities</strong> · Research in Learning Technology（ALT 期刊，2019-02-07，作者 Walmsley-Smith、Machin、Walton）<br />
+    <a href="https://journal.alt.ac.uk/index.php/rlt/article/view/2106/2476" target="_blank" rel="noopener">https://journal.alt.ac.uk/index.php/rlt/article/view/2106/2476</a>
+    <span class="badge">学术论文</span><br />
+    <span class="note">一篇实际使用 alpha 的同行评议论文。原句：alpha 可应用于
+      <strong>任意数量的观察者、任意数量的类别、任意度量或测量层次，以及不完整数据</strong>，
+      并适用于大样本与小样本。关于可接受水平，论文指出"文献中没有给出统计学上的理由"，
+      Krippendorff（2004）的建议是<strong>关键分析需要 α ≥ 0.800，结论较为初步时 α ≥ 0.667 可接受</strong>。
+      本卡 .80 与 .667 两个阈值主要以这一同行评议来源为据。该研究自身的结果也印证了"逐个变量报"的必要性：
+      两个类别分别为 0.815 与 0.612，一个达标一个不达标，平均起来就会看不出问题。</span>
+  </li>
+  <li id="ref-4">
+    <strong>Calculating inter-coder reliability in media content analysis using Krippendorff's Alpha</strong> · De Swert, K.<br />
+    <a href="https://polcomm.org/wp-content/uploads/ICR01022012.pdf" target="_blank" rel="noopener">https://polcomm.org/wp-content/uploads/ICR01022012.pdf</a>
+    <span class="badge">学术论文</span><br />
+    <span class="note">一份面向信度计算的操作指南，共 15 页。本卡引用它的主张是：
+      应当报告<strong>变量级信度，而不是所有变量的平均分</strong>，并交代系数低于阈值时的背景。
+      <strong>核实情况说明</strong>：本次访问确认该 PDF 存在（服务器返回完整文件，含 15 页，正文内嵌了
+      Hayes 的 alpha 计算资料链接与作者 k.deswert@uva.nl 的联系方式），但正文为压缩流、无法逐字提取。
+      本卡因此只引用其"报变量级信度"这一条主张，并注明该主张的表述来自检索摘要而非逐页阅读；
+      两个阈值的具体数值则改以来源 1、3 为据。</span>
+  </li>
+  <li id="ref-5">
+    <strong>An Introduction to Content Analysis（ERIC Digest ED458218）</strong> · Steve Stemler · ERIC Clearinghouse on Assessment and Evaluation<br />
+    <a href="https://purl.fdlp.gov/GPO/LPS26359" target="_blank" rel="noopener">https://purl.fdlp.gov/GPO/LPS26359</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">2001 年发布。本卡引用它四处，均已回原文逐句核对：
+      "Typically, three kinds of units are employed: sampling units, context units, and recording units"
+      这一句，以及三种单位各自的说明——抽样单位可以是词、句、段；语境单位不必独立或可单独描述，
+      可以重叠并包含多个记录单位，它设定的是"能够记录什么数据"的物理边界；记录单位很少以物理边界来定义，
+      而是按观点或意义来划分。另外两处是：信度的两种含义——稳定性（同一个人重做是否一致）
+      与可重复性（不同的人依据同一套规则是否会把同一份文本放进同一个类别）；
+      以及"规则表的制定者往往长期紧密参与项目，以致形成了共享而隐含的理解，
+      他们所报告的信度系数会被人为地抬高（Krippendorff, 1980）"。可直接打开的联邦寄存图书馆计划（FDLP）托管版本。</span>
+  </li>
+  <li id="ref-6">
+    <strong>Working With Text Data（scikit-learn 官方教程 1.4）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html" target="_blank" rel="noopener">https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">与序号 13「文本分类」共用同一份来源。这里引用的是它最能说明本卡观点的一点：
+      载入语料时要用 <code>categories</code> 参数显式写出要哪几个类别，类别集合与名称都由人给定，
+      模型只输出类别编号（<code>target</code> 存的是类别在 <code>target_names</code> 里的下标）——
+      机器做不了"定类别"这件事。</span>
+  </li>
+  <li id="ref-7">
+    <strong>sklearn.metrics.cohen_kappa_score</strong> · scikit-learn 文档（1.9.1）<br />
+    <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/modules/generated/sklearn.metrics.cohen_kappa_score.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">本卡用它说明"扣掉偶然一致"到底扣的是什么：kappa 被定义为
+      κ =（p<sub>o</sub> − p<sub>e</sub>）/（1 − p<sub>e</sub>），
+      其中 p<sub>o</sub> 是两位标注员对样本所贴标签的实际一致比例，p<sub>e</sub> 是
+      <strong>假设两人随机贴标签时的期望一致</strong>；文档明确把它叫做 inter-annotator agreement 的度量，
+      且取值 0 表示"一致程度不高于随机"。它同时说明了 kappa 的适用面：表达的是<strong>两位</strong>标注员之间的一致，
+      另外该函数在标签分布极不均衡时可能返回未定义值——这正是需要更通用系数的原因。</span>
+  </li>
+  <li id="ref-8">
+    <strong>Bring in the machines: AI-powered investigative journalism</strong> · Monika Sengul-Jones · DataJournalism.com（欧洲新闻中心）<br />
+    <a href="https://datajournalism.com/read/longreads/machine-learning-investigative-journalism" target="_blank" rel="noopener">https://datajournalism.com/read/longreads/machine-learning-investigative-journalism</a>
+    <span class="badge">行业资源</span><br />
+    <span class="note">2021-12-01 发布。ICIJ 处理 Pandora Papers 的经过，以及"它不是魔法，
+      需要相当的时间和资源""每一步都有人在回路中""规模化绝不意味着没有人的参与"等表述；
+      文中还提到团队会自己承担训练数据的工作以保证准确性，而不是外包出去。
+      本卡用它说明自动标注不改变"人在回路中"这一要求，也是本卡的非技术类来源之一。</span>
+  </li>
+  <li id="ref-9">
+    <strong>New charter provides ethical framework for AI in journalism</strong> · African Centre for Media Excellence（ACME）<br />
+    <a href="https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism" target="_blank" rel="noopener">https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism</a>
+    <span class="badge">行业规范</span><br />
+    <span class="note">2023-11-13 报道《Paris Charter on AI and Journalism》（2023-11-10 于巴黎和平论坛发布）。要点：
+      AI 系统须经独立评估；人类决策必须保持在中心，使用方要为每个系统定下目标、范围与使用条件并保持监管；
+      发布方对所发布内容负责。本卡取它最通用的一条——<strong>自动化的结果必须可交代、可复核，责任留在人这一侧</strong>；
+      它也是本卡的第二条非技术类来源。原始 PDF 正文为压缩流，本卡引用的是这家媒体支持机构的公开报道。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">这是概念库里的跨课枢纽卡：序号 13、14、15 三张卡都在讲"让机器打标签"，
+     本卡回答的是"凭什么相信它打的标签"。它讲的是一套<strong>与学科无关的标注纪律</strong>：
+     标签由人定义、单位要事前写清、一致性要扣掉偶然、模型标注也要抽样与人工比对。
+     结构由 AI 按本项目的《概念学习卡》规范起草，所有事实性表述都挂了来源角标。
+     来源 5、6 与序号 13、14 各卡共用，复核时一并检查过。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>全部 9 条来源本次逐条用 WebFetch 实际访问确认。</strong>8 条可读出正文，
+        来源 4 为压缩流 PDF（详见下方缺口）。没有任何一条是凭记忆写进去的。</li>
+    <li><strong>来源 1 的六组表述回原文核对</strong>：alpha 的三个特性；α = 1 − Do / De 与巧合矩阵的加权方式；
+        "只有一位标注员标过的单元被自动丢弃而不牵连整位标注员"；三档阈值及其"约定而非推导"的限定；
+        自助重抽样取 2.5% 与 97.5% 分位得 95% 区间；"该报告什么"六项清单。均已确认为原文表述。</li>
+    <li><strong>来源 2 的四组表述逐句核对</strong>，包括"简单一致率会高估信度，因为它没有扣除偶然一致"这一句、
+        "两人读了会把同一个边界例子归到同一档"的定义标准、
+        "单元太细会让标注员在上下文被剥掉的片段上做判断"与"中途改单元会使旧信度作废"。
+        核对时确认：来源 2 <strong>没有</strong>采用"抽样单位／记录单位／语境单位"三分法，
+        也<strong>没有</strong>讨论"一致性必要但不充分"这一命题。本卡因此未把这两个说法挂在来源 2 上。</li>
+    <li><strong>来源 5 的三种单位做了定点核实</strong>：原文有
+        "Typically, three kinds of units are employed in content analysis: sampling units, context units, and recording units"
+        一句，并有三种单位各自的说明段落；语境单位"不必独立或可单独描述、可以重叠"与记录单位
+        "很少以物理边界来定义"的对照也是原文表述。本卡据此写作，未超出原文范围。</li>
+    <li><strong>来源 3 与来源 1 对 .80 / .667 做了双来源交叉核对</strong>：来源 3 写明
+        "关键分析需要 α ≥ 0.800，结论较为初步时 α ≥ 0.667 可接受"；来源 1 给出相同的三档划分，
+        并补充了这两条线是高代价用途与探索性用途的风险判断。两处一致，本卡据此表述。</li>
+    <li><strong>来源 7 的 kappa 公式回文档核对</strong>：κ =（p<sub>o</sub> − p<sub>e</sub>）/（1 − p<sub>e</sub>）、
+        p<sub>e</sub> 为随机贴标签时的期望一致、0 表示不高于随机，以及标签分布问题可能导致返回未定义值。
+        均确认为文档原文。</li>
+    <li><strong>来源 6、8、9 逐条打开确认存在</strong>，且内容与本卡引用一致。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 4（De Swert 的信度计算指南）未能逐字核实正文。</strong>
+        本次访问确认 PDF 存在、共 15 页、正文为压缩流无法提取，因此
+        "报告变量级信度而非平均分"这一条<strong>来自检索索引摘要，而非逐页阅读</strong>，
+        本卡已在来源条目里注明。正式引用前建议自行下载核对一次。</li>
+    <li><strong>Krippendorff 本人的原始文档本次未核实。</strong>
+        多份二手材料都指向 asc.upenn.edu 上那篇 alpha 计算文档，
+        但本次没有把它列入参考来源（该站点为已知抓取受限），只在此处如实记下线索。
+        alpha 的方法出处与阈值改以来源 1、3 为据。</li>
+    <li><strong>"一致性是必要但不充分的条件"这一命题，本次查到的来源中没有任何一处以这句话的形式直接给出。</strong>
+        本卡的支持材料是来源 5 的两处表述——"作出有效推论要求分类程序可靠"
+        与"信度问题通常源于词义、类别定义或其他规则的模糊性"，以及来源 2 关于类别定义与穷尽互斥的要求。
+        该命题在本卡中是<strong>基于这些材料的表述性归纳，而非某一份来源的原话</strong>。</li>
+    <li><strong>三个"单位"的中文译名不统一</strong>：recording unit 在不同教材里被译作"记录单位"或
+        "标注单位"，本卡的统一叫法是"标注单位"，并在正文里标明两者指同一个概念，以免读者对不上号。</li>
+    <li><strong>"5000 条用户反馈"案例中的数值（.86 / .78 / .61、.80 附近、30 余条分歧）标明为推演</strong>，
+        用来演示报告结构，不是任何真实项目的数据；实际数值需要在课程练习中实地跑出。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"；文中没有把 AI 生成的内容冒充为本人原创。
+     全部来源链接都在本次改版中逐条实际访问确认，未能读出正文的已在上文明确标出。</p>
+</div>
+
+<footer>
+  概念学习卡 · 标注一致性 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 17 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '本卡说的"标注一致性"，比的是下面哪一组？',
+      options: [
+        '两个模型在同一批数据上的输出之间',
+        '两位以上标注员各自独立给同一批材料贴的标签之间',
+        '同一位标注员两次标注的耗时之间',
+        '训练集与测试集的数据分布之间'],
+      answer: 1,
+      why: '标注一致性（inter-annotator agreement）问的是可重复性：不同的人依据同一套规则，会不会把同一份材料放进同一个档位。与之并列的另一种信度是稳定性，即同一个人重做一次能否得到同样结果。模型与模型之间、训练集与测试集之间都不是这个概念的考察对象。',
+      ref: 5, refText: '来源 [5] 信度的两种含义' },
+
+    { level: 0, text: '标签集合——也就是"一共有哪几档"——通常由谁决定？',
+      options: [
+        '由人预先写下标签定义与判定规则',
+        '由模型从数据里自己发现并命名',
+        '由随机初始化决定',
+        '由训练轮数的多少决定'],
+      answer: 0,
+      why: '官方教程里载入语料时要显式写出要哪几个类别，类别名称由人给定，模型只输出类别编号。所以标签是人为定义的，不是机器自己长出来的；规则必须在看数据之前就写下来，并给边界例子。',
+      ref: 6, refText: '来源 [6] 类别集合由人给定' },
+
+    { level: 1, text: '抽样单位、标注单位、语境单位分别在回答什么问题？',
+      options: [
+        '抽什么进来 / 给哪一段贴标签 / 允许看多少上下文',
+        '用哪个软件 / 用哪个模型 / 用哪台机器',
+        '标注员是谁 / 几个人标 / 标几遍',
+        '一致性多高 / 效度多高 / 成本多高'],
+      answer: 0,
+      why: '抽样单位决定哪些材料进入研究；标注单位（记录单位）决定给哪一段贴标签，它决定结果的颗粒度；语境单位决定贴标签时允许看多少上下文，它设定的是判断时能看到的物理边界。语境单位切得太细，标注员就得在上下文被剥掉的片段上做判断，一致性会直接掉下来；中途改动单位，按旧单位算出的信度就作废了。',
+      ref: 5, refText: '来源 [5] 三种单位各自的说明' },
+
+    { level: 1, text: '为什么不能只报一个"一致率"？',
+      options: [
+        '因为一致率算起来太慢',
+        '因为有些一致是碰巧达成的，一致率没有扣除偶然一致，所以会高估',
+        '因为一致率只能用于英文材料',
+        '因为一致率需要至少十位标注员才能算'],
+      answer: 1,
+      why: '方法指南的原句是：简单一致率直观，但会高估信度，因为它没有扣除仅凭偶然就会达成的一致。如果十档里某一档占九成，两个人闭着眼选这一档，一致率也会很高。系数的作用就是扣掉这一项——kappa 是把随机期望一致率从观察一致率里减掉，alpha 则是从"不一致"出发做定义。另一种假一致是默契一致：长期一起打磨规则的人会形成共享而隐含的理解，报出的系数会被人为抬高。',
+      ref: 2, refText: '来源 [2] 简单一致率为何会高估信度' },
+
+    { level: 2, text: '两位审核员独立标注同一批 200 条材料后，某个变量的 alpha 是 .72。按本卡的约定，该怎么处理？',
+      options: [
+        '可以据此下结论，.72 已经够高',
+        '只能作为初步结果；应当说明背景，并考虑改进定义后重算',
+        '完全不看，直接把这批数据删掉',
+        '把所有变量的信度平均一下再看'],
+      answer: 1,
+      why: '约定是：alpha 达到 .80 以上才可以据此下结论；.667 到 .80 之间只能作为初步结果；低于 .667 应当弃用。.72 落在中间档，所以只能作初步结果，并且要交代它的置信区间与背景，而不是当成定论。同时注意要逐个变量报，别用平均值掩盖问题。',
+      ref: 3, refText: '来源 [3] alpha 的档位约定' },
+
+    { level: 2, text: '模型给 5000 条材料打完标签后，同事说"准确率 92%，够了吧"。按本卡的要求，最该补上的是什么？',
+      options: [
+        '把 92% 四舍五入写成九成',
+        '再换一个大模型交叉验证一次',
+        '抽样与人工标注比对，并逐个变量报告一致程度',
+        '把 5000 条全部人工重标一遍'],
+      answer: 2,
+      why: '模型打标签就是自动标注，换的是执行者，不是方法论要求。要把它当成"一位新标注员"：抽一个子样本与人工标注比对，报告一致性，并说明分歧集中在哪几档、由谁怎么处理。只报一个准确率，等于把"和谁比、比了什么、错在哪"三个问题都跳过了。',
+      ref: 2, refText: '来源 [2] 自动标注仍需人工比对' },
+
+    { level: 3, text: '某团队把标签定义写得很细，两位标注员的 alpha 高达 .95，事后却发现这套规则把"抱怨"和"提建议"合成了同一个档。这说明什么？',
+      options: [
+        'alpha 算错了，应该更高才对',
+        '标注员培训不够，应该重新培训',
+        '一致性达标不等于效度达标——规则可能非常一致地测错了东西',
+        '应该增加标注员人数把 alpha 再提高一点'],
+      answer: 2,
+      why: '一致性问的是"测得稳不稳"，效度问的是"测得对不对"。规则可以完全可靠地把错误的东西测得很一致。经典提醒是：信度问题通常源于词义、类别定义或其他规则的模糊，类别定义含糊会让整套标注的效用被摧毁——这正是把两档合成一档时发生的事。',
+      ref: 5, refText: '来源 [5] 类别定义与信度问题的根源' },
+
+    { level: 3, text: '要把模型自动标注的结果写进一份正式材料。下面哪种报告方式最站得住？',
+      options: [
+        '"本分析由模型完成，准确率 92%。"',
+        '"样本量 5000 条，规模足够，结论可靠。"',
+        '交代三个单位与标签定义，说明抽样与人工标注比对的一致性，逐个变量报出系数值、所用差异函数与置信区间，并写明标注员数、缺失情况和事前设定的阈值',
+        '"已由两位同事通读全部 5000 条确认无误。"'],
+      answer: 2,
+      why: '一个准确率数字会被追问"和谁比、错在哪"；样本量大不等于标签可信。方法指南给的报告清单是：系数与所用差异函数、点估计与置信区间、标注员人数与缺失比例、单元数与可配对值数、事前设定的阈值、软件与版本——少一项，读者就无法判断这个数字在什么条件下成立。',
+      ref: 1, refText: '来源 [1] 一致性报告该写清什么' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>条件判断 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 2 课 · 序号 05 / 17</div>
+  <h1>条件判断</h1>
+  <div class="badges">
+    <span class="badge">概念卡 05</span>
+    <span class="badge">前置：变量与数据类型</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">7 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">条件判断就是给程序写一条规则：满足就做，不满足就不做。</p>
+    <p>if / elif / else 从上往下比，第一个成立的分支生效，后面的一律跳过。空字符串、
+       空列表、0 在 if 里都算假；最容易踩的两个坑是把 = 当成 ==，以及缩进写乱。<sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-7">[7]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>条件判断像编辑部收稿时的分拣台。稿件先过第一道闸门：来源里有没有本地地名？有就落进本地篮；
+     没有，稿件继续滑到第二道闸门：标题里有没有本地关键词？第一道闸门放行之后，后面的闸门就不再问。
+     分拣台严格按事先写好的顺序执行，不猜、不通融，闸门顺序写错，落进篮子的稿件就会跟着错。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释布尔值只有真（True）和假（False）两种取值，比较运算符的结果都是布尔值。</li>
+  <li>能区分 <code>=</code> 与 <code>==</code>，说清哪一个在赋值、哪一个在判断。</li>
+  <li>能写出 if / elif / else 的三层分流，并说明为什么条件的先后顺序会改变结果。</li>
+  <li>能判断空字符串、空列表、数字 0 放进 if 里会被当成真还是假。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>if 后面的条件，能用一句话说完吗？</summary>
+  <div class="body">
+    能，但只能有<strong>一个</strong>表达式，写多个条件要用 <code>and</code>、<code>or</code> 连起来，例如
+    <code>if 来源 == '市日报' and '本地' in 标题:</code>。当 <code>if</code> 用来把一个值和多个常量比较时，
+    官方教程提到 <code>match</code> 语句更合适；对入门阶段的稿件筛选来说，if / elif / else 已经够用。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    条件怎么写得更细，官方教程在第 5 章"数据结构"的第 5.7 节「深入条件控制」里集中讲了一层，
+    包括比较运算的组合与优先级。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>为什么把 if 和 elif 的先后顺序换了，结果就不一样？</summary>
+  <div class="body">
+    因为 Python 的执行规则是：条件<strong>从上往下判断</strong>，某个条件一旦成立，就执行它对应的语句，
+    然后<strong>忽略掉剩下所有的 elif 和 else</strong>。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    教程里有一个经典例子：先写 <code>age &gt;= 6</code> 再写 <code>age &gt;= 18</code>，
+    输入 20 会打印 teenager 而不是 adult——因为第一条就把 20 抓住了。写筛选规则时，
+    把最严格的类目放最前面，是同一个道理的实战用法。
+  </div>
+</details>
+
+<details>
+  <summary>空字符串和空列表为什么在 if 里等于"假"？</summary>
+  <div class="body">
+    这是 Python 的<strong>真值测试</strong>规则：默认情况下对象都算真，除非它的类型说明自己是假。
+    官方列出的假值包括常量 <code>None</code>、<code>False</code>，任意数值类型的零（<code>0</code>、<code>0.0</code>），
+    以及空序列和空集合（<code>''</code>、<code>()</code>、<code>[]</code>、<code>{}</code>、<code>range(0)</code>）。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    所以 <code>if 标题:</code> 的实际意思是"标题不是空字符串"，
+    而 <code>if 点赞数:</code> 会把 0 个赞的稿件判成假。
+  </div>
+</details>
+
+<details>
+  <summary>写成 <code>if x = 5</code> 会怎样？</summary>
+  <div class="body">
+    Python 会直接报 <strong>SyntaxError（语法错误）</strong>，程序根本跑不起来。
+    原因是 Python 把 <code>=</code> 定义成<strong>语句</strong>，不是表达式，所以它不能出现在
+    if 的条件位置。PEP 572 讲得很直白：C 及其派生语言把 <code>=</code> 定义为表达式，
+    而 Python 的方式是语句；<code>if (x == y)</code> 与 <code>if (x = y)</code> 语法上极为相似，
+    语义却截然不同，正是为了区分这两者，Python 后来才为"在表达式里赋值"单独引入了 <code>:=</code>。<sup class="cite"><a href="#ref-7">[7]</a></sup>
+    真正需要留神的其实是另一半——<code>==</code> 少写一个等号时，得到的不是"判断失效"，
+    而是整段代码无法运行。
+  </div>
+</details>
+
+<details>
+  <summary>缩进错了一格，为什么程序就不跑了？</summary>
+  <div class="body">
+    因为 Python 用缩进表示"哪些语句属于这个分支"，而不是用大括号。方法体、
+    if 分支的内容都必须缩进，官方教程原话是"函数语句从下一行开始，并且必须缩进"。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    官方风格指南建议每级缩进用 <strong>4 个空格</strong>，并明确禁止混用制表符和空格。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    混用的后果是缩进对不齐，程序抛 <code>IndentationError</code> 或 <code>TabError</code>。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>条件判断是让程序<strong>按规则分流</strong>的语句：先算一个条件，条件成立就执行一段，
+   不成立就执行另一段。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   它的原料是布尔值（bool）——只有 <code>True</code> 和 <code>False</code> 两个取值；
+   比较运算符 <code>==</code>、<code>!=</code>、<code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code>
+   以及成员运算符 <code>in</code> 的结果都是布尔值。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   把布尔值用 <code>and</code>（都要真）、<code>or</code>（有一个真就行）、<code>not</code>（取反）组合起来，
+   就能表达"来源是本地媒体，或者标题里提到本地地名"这类业务规则。</p>
+
+<h3>为什么</h3>
+<p>新闻工作里大量判断本来就是规则化的：什么算本地新闻、什么进突发栏、什么稿子要退回补充信源。
+   靠人一条条记，量一大就会前后不一致。把规则写成条件判断，好处是<strong>可复现</strong>：
+   同样的输入永远得到同样的归类，出错时能回到那行代码去改。
+   这也是人工标注工作的基本要求——类目必须事先定义清楚、判定标准对所有材料一致，
+   而不是标注员当场临时决定。</p>
+
+<h3>怎么工作</h3>
+<p>执行顺序是理解一切的关键：解释器从上往下逐个算条件，<strong>第一个成立的生效</strong>，
+   执行完它下面缩进的语句块后，剩下的 elif 和 else 全部跳过；如果都不成立，才落到 else。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   <code>elif</code> 是 else if 的缩写，用来避免层层嵌套，可以有零个或多个，<code>else</code> 是可选的。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<pre><code>来源 = "市日报"
+标题 = "老城区停车位新增 300 个"
+
+if "市" in 来源 or "老城区" in 标题:      # 条件①：任一成立即命中
+    类别 = "本地新闻"
+elif 来源 == "省台通稿":
+    类别 = "转载"
+else:
+    类别 = "非本地"
+
+print(类别)   # 本地新闻</code></pre>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 340" role="img" aria-label="条件判断的执行顺序示意：从上往下判断，第一个成立的分支生效">
+  <defs>
+    <marker id="darrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">条件判断的执行顺序：第一个成立的分支生效，其余全部跳过</text>
+  <text x="20" y="40" font-size="11.5" fill="#7b8294">规则：来源含本地地名 or 标题含本地关键词</text>
+
+  <rect x="20" y="70" width="140" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="90" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">一篇稿件</text>
+  <text x="90" y="112" text-anchor="middle" font-size="11" fill="#7b8294">来源 + 标题</text>
+
+  <path d="M162 98L192 98" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#darrow)"/>
+
+  <rect x="196" y="70" width="176" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="284" y="94" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">条件① 来源含本地地名？</text>
+  <text x="284" y="112" text-anchor="middle" font-size="11" fill="#7b8294">"市日报" in 来源</text>
+
+  <path d="M374 84L404 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#darrow)"/>
+  <text x="389" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#2e7d4f">真</text>
+
+  <rect x="408" y="56" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="483" y="80" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">本地新闻</text>
+  <text x="483" y="98" text-anchor="middle" font-size="11" fill="#a8554a">命中，后面不再判断</text>
+
+  <path d="M284 128L284 150" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#darrow)"/>
+  <text x="296" y="144" font-size="11" font-weight="700" fill="#7b8294">假</text>
+
+  <rect x="196" y="154" width="176" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="284" y="178" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">条件② 标题含本地关键词？</text>
+  <text x="284" y="196" text-anchor="middle" font-size="11" fill="#7b8294">"老城区" in 标题</text>
+
+  <path d="M374 168L404 168" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#darrow)"/>
+  <text x="389" y="160" text-anchor="middle" font-size="11" font-weight="700" fill="#2e7d4f">真</text>
+
+  <rect x="408" y="140" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="483" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">本地新闻</text>
+  <text x="483" y="182" text-anchor="middle" font-size="11" fill="#a8554a">命中，后面不再判断</text>
+
+  <path d="M284 212L284 252L404 252" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#darrow)"/>
+  <text x="296" y="240" font-size="11" font-weight="700" fill="#7b8294">假</text>
+
+  <rect x="408" y="224" width="150" height="56" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="483" y="248" text-anchor="middle" font-size="12" font-weight="700" fill="#7b8294">非本地（else）</text>
+  <text x="483" y="266" text-anchor="middle" font-size="11" fill="#9aa0ad">兜底分支，可省略</text>
+
+  <text x="20" y="308" font-size="11.5" fill="#7b8294">注意：条件①里用的是 or ——"来源成立"和"标题成立"只要有一个满足，整条判断就是真。</text>
+  <text x="20" y="326" font-size="11.5" fill="#7b8294">顺序影响结果：把宽泛的条件写在前面，后面更严格的条件就永远轮不到。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一条把上千篇稿子分成两堆的规则。</strong>某地市报客户端 2026 年 3 月改版后，
+   后台每天从通讯社、区县通讯员和自媒体渠道收到约 400 篇稿件，其中只有一部分属于本地选题。
+   编辑原来的做法是逐篇人工扫标题，一个上午过去，人力和注意力都消耗在"看标题"上。</p>
+
+<p>改版后的做法是把判定标准写成一条规则：先把本地地名整理成一张清单
+   （市名、各区县名、常出现的简称），只要<strong>来源里出现清单中的地名，或者标题里出现本地关键词</strong>，
+   就进入本地新闻候选池；两者都不满足的，落到转载或非本地队列。
+   写成代码就是卡片上方那段 if / elif / else。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+<p>规则上线后暴露了两个问题，也正好对应本卡强调的两个点。第一，最初有人把条件写成
+   <code>if 来源 == "本地"</code>，结果只有来源字段恰好等于"本地"两个字的稿件才命中——
+   要判断"包含"就必须用 <code>in</code> 而不是 <code>==</code>。
+   第二，把宽泛条件放在最前面（比如 <code>if 来源:</code>，只要来源非空就成立），
+   后面的精细条件永远执行不到。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+
+<div class="flag">
+  <span class="lbl">示意</span>
+  <p style="margin:6px 0 0">上面的编辑部场景与数字为课程设计时的推演，用于说明规则化筛选的收益与风险，
+      不是对某家媒体的公开报道。可核查的部分只有规则本身：条件从上往下判断、
+      第一个成立的分支生效，以及空值被当作假值这两条语言规则。<sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>布尔值与比较运算</strong></td>
+      <td>布尔值是取值只有真、假两种的数据类型；比较运算符是产出布尔值的运算，条件判断是<strong>消费</strong>布尔值的语句。</td>
+      <td>比较运算回答问题，条件判断根据答案决定走哪条路。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>for 循环</strong></td>
+      <td>循环解决"同一件事对一批数据做一遍"，判断解决"这件事要不要做、按哪条规则做"。实践中两者经常套在一起用。</td>
+      <td>循环管重复，判断管分流。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>真值判断的省略写法</strong></td>
+      <td>写 <code>if 标题:</code> 与写 <code>if 标题 != "":</code> 在空字符串上结果相同，但空列表、0、None 也一并被算作假值。</td>
+      <td>省略写法更短，但它顺手把"空"和"零"都归到了假。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的规则表</strong></td>
+      <td>人工标注由标注员按事先定义的类目给材料贴标签；if / elif / else 是把这张规则表写成代码。两者都要求<strong>类目互斥、穷尽</strong>。</td>
+      <td>类目重叠时，靠前的类目会把材料先抢走——这与 elif 的执行顺序是同一件事。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>4. 更多控制流工具（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/controlflow.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">4.1 节给出 <code>if</code> 语句的完整形态：可有零个或多个 elif，else 可选，
+      elif 是 else if 的缩写；4.2 节起讲 for 与 range。本卡"是什么/怎么工作"两节的依据。</span>
+  </li>
+  <li id="ref-2">
+    <strong>条件判断（Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/basic/if/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/basic/if/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">原文明确写出两条关键结论：缩进规则决定 if 成立时执行哪些语句；
+      if 语句从上往下判断，某个条件为 True 后"就忽略掉剩下的 elif 和 else"。
+      本卡"第一个成立的分支生效"与"if x: 的省略写法"即出自此处。</span>
+  </li>
+  <li id="ref-3">
+    <strong>内置类型（含真值测试与比较运算）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/stdtypes.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">Truth Value Testing 一节列出被视为假的内置对象：None、False、任意数值类型的零、
+      空序列与空集合（''、()、[]、{}、set()、range(0)）；Comparisons 一节列出八种比较运算，
+      并说明 in / not in 由可迭代对象支持。本卡"真值判断"部分据此。</span>
+  </li>
+  <li id="ref-4">
+    <strong>5. 数据结构 · 5.7 深入条件控制（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/datastructures.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">第 5 章把条件表达式、比较运算与序列比较集中讲解，是本卡与"列表""字典"两张卡
+      之间衔接的官方入口；5.1 节还给出列表各项方法的准确语义。</span>
+  </li>
+  <li id="ref-5">
+    <strong>PEP 8 – Style Guide for Python Code</strong> · Guido van Rossum, Barry Warsaw, Alyssa Coghlan<br />
+    <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">https://peps.python.org/pep-0008/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">Indentation 一节原文为"Use 4 spaces per indentation level"；
+      Tabs or Spaces? 一节原文为"Python disallows mixing tabs and spaces for indentation"——
+      即禁止混用制表符与空格是语言要求，不只是风格建议。本卡"缩进坑"的依据。</span>
+  </li>
+  <li id="ref-6">
+    <strong>Media Topics — Subject Taxonomy for the Media</strong> · IPTC（国际新闻电信理事会）<br />
+    <a href="https://iptc.org/standards/media-topics/" target="_blank" rel="noopener">https://iptc.org/standards/media-topics/</a>
+    <span class="badge">行业规范</span><br />
+    <span class="note">面向媒体内容分类的主题词表，2010 年首次发布、每年至少更新一次，
+      含 1200 多个词条并有中文版本。它说明"给稿件定类目"在新闻业里是有正式标准的工作，
+      也因此类目必须先定义清楚——这正是把规则写成 if / elif / else 之前要做的功课。</span>
+  </li>
+  <li id="ref-7">
+    <strong>PEP 572 – Assignment Expressions</strong> · Chris Angelico, Tim Peters, Guido van Rossum<br />
+    <a href="https://peps.python.org/pep-0572/" target="_blank" rel="noopener">https://peps.python.org/pep-0572/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">在"为什么不直接把现有赋值变成表达式"一节中，原文说明 C 及其派生语言把
+      <code>=</code> 定义为表达式，而 Python 传统上把 <code>=</code> 作为语句；
+      并指出 <code>if (x == y)</code> 与 <code>if (x = y)</code> 语法上极为相似、语义却截然不同，
+      因此该提案改用 <code>:=</code> 来明确区分。本卡"= 与 == 混用"一处据此。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草，
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li>来源 1—6 <strong>逐条打开确认页面存在</strong>，并核对内容与引用一致；
+        其中来源 2（廖雪峰"条件判断"）确认新路径为 <code>/books/python/basic/if/index.html</code>，
+        旧 wiki 路径本次未采用。</li>
+    <li>"第一个成立的分支生效、其余 elif 与 else 被忽略"这句<strong>回到来源 2 原文确认</strong>，
+        教程小结里原话是"条件判断从上向下匹配，当满足条件时执行对应的块内语句，后续的 elif 和 else 都不再执行"。</li>
+    <li>假值清单<strong>逐项对照来源 3</strong> 的 Truth Value Testing 原文，未采用二手整理。</li>
+    <li>缩进规则<strong>回到来源 5 原文</strong>，确认"禁止混用制表符与空格"来自 PEP 8 的 Tabs or Spaces? 小节。</li>
+    <li>来源 7<strong>通读后确认</strong>其"Frequently Raised Objections"一节确实讨论了
+        <code>if (x == y)</code> 与 <code>if (x = y)</code> 的相似与语义差异，
+        本卡引用的是这一处的原意，未引申到其它结论。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>应用案例中的媒体场景与数字（每日约 400 篇、2026 年 3 月改版）是<strong>课程推演</strong>，
+        已在正文用"示意"标注，未引用任何一家媒体的公开材料。</li>
+    <li><code>if x = 5</code> 会抛出 <code>SyntaxError</code> 这一具体行为，
+        来源 7 支持的是"Python 中 = 是语句而非表达式"这一前提，
+        <strong>报错名称与文案未在来源中逐字核对</strong>，建议在本机运行一次确认。</li>
+    <li><code>IndentationError</code> 与 <code>TabError</code> 的报错名称同样取自 Python 语言行为，
+        <strong>未在来源 5 中逐字找到</strong>，正式引用前建议在本机验证。</li>
+    <li>来源 6 只用于说明"新闻业有正式的内容分类词表"这一事实，
+        本卡<strong>未逐一核对词表里的具体类目</strong>（完整词表需另下载 Excel 或访问受控词表服务器）。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 条件判断 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 5 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '条件判断在程序里解决的是什么问题？',
+      options: [
+        '让程序按事先写好的规则分流，不同情况走不同分支',
+        '让程序把同一件事对一批数据重复做很多遍',
+        '把一条数据贴上一个名字，之后反复使用',
+        '把一个文件夹里的文件全部读进内存'],
+      answer: 0,
+      why: '条件判断负责分流；重复做很多遍是循环，给数据贴名字是变量，批量读文件属于文件读写。',
+      ref: 1, refText: '来源 [1] if 语句的定义与用法' },
+
+    { level: 0, text: '下面哪个写法是在判断"两边是否相等"？',
+      options: ['= ', '==', '!=', '%'],
+      answer: 1,
+      why: '== 是相等比较运算符，结果是布尔值；= 是赋值，把右边的值存进左边的名字；!= 判断的是不相等。',
+      ref: 3, refText: '来源 [3] Comparisons 一节列出的八种比较运算' },
+
+    { level: 1, text: '一段筛选稿件的代码把条件写成了先 if 条件宽泛、再 elif 条件严格。最可能的结果是什么？',
+      options: [
+        '两个条件都会依次判断，两条分支都会执行',
+        '程序会报语法错误，无法运行',
+        '宽泛条件先成立，后面更严格的条件永远执行不到',
+        'Python 会自动按严格程度重新排序'],
+      answer: 2,
+      why: '条件从上往下判断，第一个成立的分支执行完后，剩下的 elif 与 else 全部被跳过。所以宽泛条件写在前面会把材料全部抢走。',
+      ref: 2, refText: '来源 [2] 条件判断从上向下匹配，后续分支不再执行' },
+
+    { level: 1, text: '空列表 [] 放进 if 里被当作假值，最直接的原因是？',
+      options: [
+        '因为它的长度为 0，属于真值测试里所说的空集合',
+        '因为列表这种类型永远被当作假值',
+        '因为没有给列表指定元素类型',
+        '因为它等价于 None'],
+      answer: 0,
+      why: '真值测试的规则是：默认都算真，除非类型表明自己是假；空字符串、空元组、空列表、空字典与 range(0) 都属于假值。列表只要有元素就为真。',
+      ref: 3, refText: '来源 [3] Truth Value Testing' },
+
+    { level: 2, text: '规则写成"来源含本地地名 or 标题含本地关键词"。一篇稿子来源是外地通讯社、标题里出现了本地地名，会被判成什么？',
+      options: [
+        '不算本地新闻，因为来源这一条不成立',
+        '算本地新闻，or 只要一侧成立整条判断就为真',
+        '程序会报错，因为两侧结果不一致',
+        '要看哪一行代码写在前面才能决定'],
+      answer: 1,
+      why: 'or 的语义是"有一个成立即为真"。来源不成立但标题成立，整条条件为真，稿件进入本地新闻分支。若换成 and，则必须两侧都成立。',
+      ref: 3, refText: '来源 [3] 布尔运算与比较运算的优先级说明' },
+
+    { level: 2, text: '某段代码运行时抛出 IndentationError。最合理的解释与处理是什么？',
+      options: [
+        '这是运行结果不理想，换个条件表达式即可',
+        '是中文编码问题，把变量名改成英文就能解决',
+        '说明 Python 版本太旧，需要升级',
+        '缩进出错，属于写法问题：应统一用空格、每级 4 个空格，并检查是否混用了制表符'],
+      answer: 3,
+      why: '缩进在 Python 里是语法的一部分。风格指南要求每级 4 个空格，并明确禁止混用制表符与空格，混用会导致缩进对不齐而报错。',
+      ref: 5, refText: '来源 [5] Indentation 与 Tabs or Spaces? 两节' },
+
+    { level: 3, text: '人工标注的规则表要求类目"互斥且穷尽"。把这张规则表写成 if / elif / else 时，最需要检查的是什么？',
+      options: [
+        '把类目按字母顺序排列，方便阅读',
+        '用 and 把尽可能多的条件串在一起',
+        '确认类目不重叠、且靠前的类目不会把材料抢走，并让 else 兜住未覆盖的材料',
+        '把每个类目都单独写成一段独立的 if，不用 elif'],
+      answer: 2,
+      why: '标注规则表要求类目互斥、穷尽，正好对应 elif 的判定顺序：类目重叠时靠前者先命中，后面的类目永远拿不到材料；而 else 就是兜底，用来接住没有归属的材料。',
+      ref: 6, refText: '来源 [6] 新闻内容的主题分类词表与类目定义' },
+
+    { level: 3, text: '下面哪种需求最适合用条件判断，而不是循环？',
+      options: [
+        '对 1000 条读者留言逐条检查是否含关键词',
+        '遍历一个文件夹里 80 篇稿件',
+        '把所有稿件的字数加总求平均',
+        '根据今天的稿件是否达标，决定这条推送发还是不发'],
+      answer: 3,
+      why: '循环处理的是"一批数据重复做同一件事"，判断处理的是"一件事要不要做、按哪条规则做"。发不发推送是典型的二选一分流，两种情况都不需要重复。',
+      ref: 1, refText: '来源 [1] if 语句与 for 语句的分工' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

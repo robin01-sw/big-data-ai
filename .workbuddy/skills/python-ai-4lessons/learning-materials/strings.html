@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>字符串 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 1 课 · 序号 02 / 17</div>
+  <h1>字符串</h1>
+  <div class="badges">
+    <span class="badge">概念卡 02</span>
+    <span class="badge">前置：变量与数据类型</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">7 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">字符串就是引号里的文字，可以按位置切、也可以按分隔符拆。</p>
+    <p>位置从 0 开始，<code>s[0:5]</code> 取前五个字，<code>s[-1]</code> 是最后一个字。
+       字符串不能改：<code>replace()</code> 只是返回新串。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+       中文标点与英文标点不是同一个字符，这是新手第一大坑。<sup class="cite"><a href="#ref-6">[6]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>字符串像一条贴了编号的珠链：第一个字编号 0，第二个编号 1，也可以从右往左数成 -1、-2。想取一段，就说清从哪开始、到哪结束（结尾那位不算）。有些方法像换珠子——换了以后原来的链子没变，只是多了一条新链。最容易出事的是引号：全角逗号"、"和半角","长得像，电脑却当成两个字符。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释字符串为什么可以按位置取值，以及索引从 0 开始意味着什么。</li>
+  <li>能区分 <code>s[0:5]</code> 与 <code>s[5]</code> 取到的东西有什么不同，并说出切片为什么不会越界报错。</li>
+  <li>能写出用 <code>split()</code>、<code>strip()</code>、<code>replace()</code> 把一条采访记录拆成字段的代码。</li>
+  <li>能判断一段文字里哪些是中文标点、哪些是英文标点，并说出这个区别为什么会让匹配失败。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>索引为什么从 0 开始，不从 1？</summary>
+  <div class="body">
+    因为索引指的是<strong>字符之间的位置</strong>，不是第几个字。官方教程给出的理解方式是：
+    第一个字符的左侧标 0，最后一个字符的右侧标 n（n 是字符串长度）。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    这样 <code>s[:i] + s[i:]</code> 永远等于 <code>s</code>，切片的算式才自洽。
+    记法上只要记住一句话：第一个字是 <code>s[0]</code>，取最后一个字用 <code>s[-1]</code>。
+  </div>
+</details>
+
+<details>
+  <summary>s[0:5] 为什么取到 5 个字，不是 6 个？</summary>
+  <div class="body">
+    因为切片的规则是<strong>含起点、不含终点</strong>。起止索引之差就是切出来的长度，
+    <code>5 - 0 = 5</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    另外一条常见的困惑是：索引越界会报 <code>IndexError</code>，但切片不会——
+    <code>s[4:42]</code> 只会给到末尾，多余的部分被自动忽略。
+  </div>
+</details>
+
+<details>
+  <summary>为什么 replace() 之后原来那个变量没变？</summary>
+  <div class="body">
+    因为字符串是<strong>不可变对象</strong>：一旦创建就不能改动。
+    <code>a.replace('a', 'A')</code> 不会修改 <code>a</code> 指向的那条数据，
+    而是新建一条 <code>'Abc'</code> 返回给你。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    要用这个结果，就得写 <code>b = a.replace('a', 'A')</code>。
+    这条规则对字符串的所有方法都成立，也正因为不可变，字符串才能安全地当字典的键（见概念 04）。
+  </div>
+</details>
+
+<details>
+  <summary>"王某某，男，45岁" 为什么用 split(',') 拆不开？</summary>
+  <div class="body">
+    因为记录里用的是中文全角逗号"'，'"，而代码里写的是英文半角逗号 "','"。
+    这两个字符看起来像，编码上却是两个完全不同的字符，程序不会把它们当成同一个。
+    《标点符号用法》给汉语书面语规定的句内点号，形式就是全角写法。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+    正确写法是 <code>record.split('，')</code>；如果数据来源混杂，
+    稳妥做法是先用 <code>replace()</code> 把两种逗号统一成一种，再切。
+  </div>
+</details>
+
+<details>
+  <summary>f-string 和直接用加号拼接有什么不一样？</summary>
+  <div class="body">
+    加号只能把两段文字首尾相接，而且两边必须都是字符串——想要放进去一个整数，
+    得先自己转成字符串，否则报错。f-string 在字符串前面加一个 <code>f</code>，
+    花括号里可以直接写变量甚至表达式，运行时先算好再放进去，
+    还能在冒号后面写格式说明符（例如保留两位小数）。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+    官方教程把它列为三种格式化方式里最简洁的一种。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>字符串是<strong>引号里的文字序列</strong>。单引号和双引号完全等价，
+   要表示引号本身就用反斜杠转义（<code>\'</code>）或者换一种引号；
+   <code>\n</code> 表示换行，<code>\t</code> 表示制表符，前面加 <code>r</code> 则不转义；
+   三引号 <code>'''...'''</code> 可以写多行。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   索引取的是单个字符，切片取的是子串，还有一个内置函数 <code>len()</code> 返回长度——
+   在 Python 里，"长度为一的字符串"就是单字符，没有单独的类型。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>为什么</h3>
+<p>三个原因。第一，<strong>新闻工作的原料就是文字</strong>：标题、正文、采访记录、读者留言，
+   在程序里全是字符串。字段提取这一步，本质就是字符串操作。
+   第二，<strong>只有字符串能被切成一批</strong>：<code>split()</code> 的返回值就是列表——
+   这是通往概念 03（列表）和概念 11（中文分词）的入口，jieba 做的事情说到底也是把一个句子切成一批词。
+   第三，<strong>不可变带来安全</strong>：因为字符串改不了，它可以被当作字典的键，
+   也可以放心地在多处共享而不会被别的代码改掉。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+<h3>怎么工作</h3>
+<ol>
+  <li><strong>位置编号</strong>：从左往右从 0 开始；从右往左用负数，<code>-1</code> 是最后一个字符。
+      索引越界报 <code>IndexError</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>切片</strong>：写 <code>s[起:止]</code>，含起点、不含终点。省略起点默认从 0 开始，
+      省略终点默认到末尾。切片不会因为越界而报错。</li>
+  <li><strong>清洗与拆分</strong>：<code>strip()</code> 去掉首尾空白，<code>replace()</code> 换内容，
+      <code>split()</code> 按分隔符拆成列表，<code>startswith()</code> 判断开头。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>拼回模板</strong>：用 f-string 把变量填进稿子模板，例如
+      <code>f'{name} 记者今日报道'</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+  <li><strong>记住不可变</strong>：以上方法都不会改动原字符串，只返回新串。想留下结果，必须赋值给变量。</li>
+</ol>
+
+<table>
+  <thead>
+    <tr><th style="width:26%">写法</th><th style="width:30%">作用</th><th>新闻场景</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>s.split('，')</code></td><td>按分隔符切成一个<strong>列表</strong></td>
+        <td>把 <code>'王某某，男，45岁'</code> 拆成三个字段分别取用</td></tr>
+    <tr><td><code>s.replace('，', ',')</code></td><td>把内容替换成别的，返回新串</td>
+        <td>把混在数据里的全角逗号统一成半角，再统一处理</td></tr>
+    <tr><td><code>s.strip()</code></td><td>去掉首尾空白</td>
+        <td>清掉从导出的 CSV 带进来的空格，否则 <code>' 486'</code> 不是数字</td></tr>
+    <tr><td><code>s.startswith('本报讯')</code></td><td>判断是不是以某段开头，返回 <code>True</code>/<code>False</code></td>
+        <td>从一批稿件里筛出以"本报讯"开头的消息类稿件</td></tr>
+  </tbody>
+</table>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 356" role="img" aria-label="字符串的位置编号、切片与 split 拆分示意图">
+  <defs>
+    <marker id="s1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">字符串：位置从 0 起，切片含头不含尾</text>
+
+  <text x="20" y="46" font-size="12.5" font-weight="700" fill="#7b8294">① 每个字都有编号，正着数从 0 开始，倒着数从 -1 开始</text>
+
+  <text x="45" y="68" text-anchor="middle" font-size="11" fill="#7b8294">0</text>
+  <text x="95" y="68" text-anchor="middle" font-size="11" fill="#7b8294">1</text>
+  <text x="145" y="68" text-anchor="middle" font-size="11" fill="#7b8294">2</text>
+  <text x="195" y="68" text-anchor="middle" font-size="11" fill="#7b8294">3</text>
+  <text x="245" y="68" text-anchor="middle" font-size="11" fill="#7b8294">4</text>
+  <text x="295" y="68" text-anchor="middle" font-size="11" fill="#7b8294">5</text>
+  <text x="345" y="68" text-anchor="middle" font-size="11" fill="#7b8294">6</text>
+  <text x="395" y="68" text-anchor="middle" font-size="11" fill="#7b8294">7</text>
+  <text x="445" y="68" text-anchor="middle" font-size="11" fill="#7b8294">8</text>
+
+  <rect x="20" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="45" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">王</text>
+  <rect x="70" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">某</text>
+  <rect x="120" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="145" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">某</text>
+  <rect x="170" y="76" width="50" height="42" rx="4" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="195" y="104" text-anchor="middle" font-size="17" fill="#c0392b">，</text>
+  <rect x="220" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="245" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">男</text>
+  <rect x="270" y="76" width="50" height="42" rx="4" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="295" y="104" text-anchor="middle" font-size="17" fill="#c0392b">，</text>
+  <rect x="320" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="345" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">4</text>
+  <rect x="370" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="395" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">5</text>
+  <rect x="420" y="76" width="50" height="42" rx="4" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="445" y="104" text-anchor="middle" font-size="17" fill="#2c2c2a">岁</text>
+
+  <text x="45" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-9</text>
+  <text x="95" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-8</text>
+  <text x="145" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-7</text>
+  <text x="195" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-6</text>
+  <text x="245" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-5</text>
+  <text x="295" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-4</text>
+  <text x="345" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-3</text>
+  <text x="395" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-2</text>
+  <text x="445" y="136" text-anchor="middle" font-size="11" fill="#7b8294">-1</text>
+
+  <text x="500" y="94" font-size="11.5" fill="#7b8294">红色格子是同一个</text>
+  <text x="500" y="112" font-size="11.5" fill="#7b8294">全角逗号，编号不同</text>
+
+  <text x="20" y="166" font-size="12.5" font-weight="700" fill="#7b8294">② 切片含起点、不含终点；负索引从右边数</text>
+
+  <rect x="20" y="176" width="210" height="70" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="125" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2c2a">s[0:3]</text>
+  <text x="125" y="220" text-anchor="middle" font-size="11.5" fill="#7b8294">从 0 号位到 3 号位之前</text>
+  <text x="125" y="238" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">'王某某'</text>
+
+  <rect x="250" y="176" width="210" height="70" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="355" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2c2a">s[4]</text>
+  <text x="355" y="220" text-anchor="middle" font-size="11.5" fill="#7b8294">只要一个字符</text>
+  <text x="355" y="238" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">'男'</text>
+
+  <rect x="480" y="176" width="210" height="70" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="585" y="200" text-anchor="middle" font-size="13" font-weight="700" fill="#2c2c2a">s[-1]</text>
+  <text x="585" y="220" text-anchor="middle" font-size="11.5" fill="#7b8294">倒数第一个字符</text>
+  <text x="585" y="238" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">'岁'</text>
+
+  <text x="20" y="274" font-size="12.5" font-weight="700" fill="#7b8294">③ split() 按分隔符拆开，返回的是一个列表</text>
+
+  <rect x="20" y="284" width="200" height="56" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="120" y="308" text-anchor="middle" font-size="12" fill="#2c2c2a">s.split('，')</text>
+  <text x="120" y="326" text-anchor="middle" font-size="11" fill="#7b8294">输入：一整条记录</text>
+
+  <path d="M224 312L248 312" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#s1)"/>
+
+  <rect x="254" y="284" width="436" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="472" y="308" text-anchor="middle" font-size="13" font-weight="700" fill="#c0392b">['王某某', '男', '45岁']</text>
+  <text x="472" y="327" text-anchor="middle" font-size="11" fill="#a8554a">列表（list）—— 概念 03 要讲的容器，分词的结果也是它</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一百二十条读者来电，卡在一个逗号上。</strong>
+   2026 年 4 月，某市晚报的实习记者小周要把 120 条读者来电记录整理成表格。
+   这套记录是热线系统自动生成的，格式统一，每条都长这样：
+   <code>'王某某，男，45岁，反映某小区停水三天'</code>。</p>
+
+<p>她的第一版代码只有一行：<code>record.split(',')</code>。
+   结果整条记录只拆出一段，等于没拆。原因不是代码写错了，而是记录里用的是
+   <strong>全角逗号</strong>，她写的是<strong>半角逗号</strong>——
+   两个字符肉眼几乎一样，在计算机里却是完全不同的两个。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   改成 <code>record.split('，')</code> 之后，120 条一次全部拆开。</p>
+
+<p>第二个坑紧跟着来了：拆出来的第二段有的写成 <code>'男'</code>，
+   有的写成 <code>' 男'</code>（前面带一个半角空格），做统计时会被当成两类。
+   加上一步 <code>.strip()</code> 就干净了。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   最后她把结果拼成通稿模板 <code>f'{name}，{age} 岁，来自 {addr}'</code> 打印出来核对，
+   120 条一目了然。<sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+
+<div class="flag">
+  <span class="lbl">示意（推演场景，非公开报道）</span>
+  <p style="margin:6px 0 0">上面的人物与记录内容是教学推演。
+     但"全角标点混进数据"这件事在真实工作中极常见：从网页复制、从微信导出、
+     从旧系统迁移的数据，都可能两种逗号混着用。稳妥做法是先把标点统一，再动手分析。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>字符与字节</strong></td>
+      <td><code>len()</code> 数的是<strong>字符数</strong>；编码成 UTF-8 之后才能得到字节数。
+          一个汉字编码后通常占 3 个字节，一个英文字母只占 1 个。
+          <code>len('中文')</code> 是 2，<code>len('中文'.encode('utf-8'))</code> 是 6。</td>
+      <td>数"几个字"用字符串，数"占多大"要先编码。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>列表（概念 03）</strong></td>
+      <td>字符串是"一条"，索引取到的是单个字符；列表是"一列"，索引取到的是一整项。
+          两者的连接点是 <code>split()</code>：它把一条字符串变成一列。</td>
+      <td>字符串按位置取出一个字，列表按位置取出一项；split() 是从前者到后者的桥。</td>
+    </tr>
+    <tr>
+      <td><strong>中文标点与<br />英文标点</strong></td>
+      <td>汉语书面语的句内点号有规范形式（全角），这与英文的半角标点在编码上是不同字符，
+          但长度都算 1。它们长得很像，程序不会自动等同。</td>
+      <td>肉眼像不等于相等，这是字符串处理里最常见的假象。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>f-string 与<br />加号拼接</strong></td>
+      <td>加号只能把两段文字接起来，而且两边必须都是字符串；f-string 的模板里可以直接写变量和表达式，
+          运行时先算好再放进去，还能带格式说明符。</td>
+      <td>加号只会"接"，f-string 会"算好再放"。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>元数据字段名<br />（NewsML-G2）</strong></td>
+      <td>行业标准给内容条目规定了固定的字段名——标题用 <code>headlines</code>、署名用 <code>by</code>、
+          主题用 <code>subjects</code>，不能随手改成别的。<sup class="cite"><a href="#ref-7">[7]</a></sup>
+          这和"用固定分隔符切字符串"是同一个道理：名字先统一，后面才接得上。</td>
+      <td>字符串管"这段文字长什么样"，字段名管"这段文字在内容条目里扮演什么角色"。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Python 速览 · 3.1.2 文本（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/introduction.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">单引号与双引号等价、反斜杠转义、原始字符串、三重引号、索引与切片、
+      负索引从 -1 起、切片含头不含尾、越界报 IndexError 但切片不报错、
+      "Python 字符串不能修改，是 immutable 的"、<code>len()</code> 返回长度——
+      本卡这几处表述都出自此页。</span>
+  </li>
+  <li id="ref-2">
+    <strong>内置类型 · 文本序列类型 str 与字符串方法</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/stdtypes.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note"><code>str.split()</code>、<code>str.strip()</code>、<code>str.replace()</code>、
+      <code>str.startswith()</code> 的官方定义所在章节（在"字符串方法"的拆分与合并、
+      填充与剥离、搜索与替换三个小类下）。注意：核查时抓取到的只是页面被截断的前半段，
+      这四个方法只见方法汇总表中的名称，正文未取到，详见文末「仍是缺口的地方」。</span>
+  </li>
+  <li id="ref-3">
+    <strong>输入与输出 · 7.1.1 格式化字符串字面值（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/inputoutput.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">"格式化字符串字面值在字符串前加前缀 f 或 F，通过 {expression} 表达式
+      把 Python 表达式的值添加到字符串内"，以及格式说明符的用法。
+      本卡"先算好再放进去"的表述依据此页。</span>
+  </li>
+  <li id="ref-4">
+    <strong>PEP 498 – Literal String Interpolation</strong> · Eric V. Smith<br />
+    <a href="https://peps.python.org/pep-0498/" target="_blank" rel="noopener">https://peps.python.org/pep-0498/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">f-string 的原始提案。它说明引入动机是原有几种格式化方式
+      "易错、不灵活或繁琐"，并给出通用语法形式
+      <code>f'&lt;text&gt;{&lt;expression&gt;&lt;!s/!r/!a&gt;&lt;:format specifier&gt;}&lt;text&gt;'</code>。</span>
+  </li>
+  <li id="ref-5">
+    <strong>字符串和编码（廖雪峰 Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017075323632896" target="_blank" rel="noopener">https://www.liaoxuefeng.com/wiki/1016959663602400/1017075323632896</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">讲清了 ASCII、Unicode 与 UTF-8 的关系，并给出可核查的数字：
+      <code>len('中文')</code> 为 2、<code>len('中文'.encode('utf-8'))</code> 为 6，
+      "1 个中文字符经过 UTF-8 编码后通常会占用 3 个字节"。
+      本卡"字符与字节"一条依据此页。注意：该书新版站点下 <code>/books/python/basic/</code>
+      路径的"字符串和编码"一节访问返回 404，本卡因此使用仍可正常访问的上面的地址。</span>
+  </li>
+  <li id="ref-6">
+    <strong>《标点符号用法》GB/T 15834—2011</strong> · 中华人民共和国国家质量监督检验检疫总局、中国国家标准化管理委员会<br />
+    <a href="https://www.moe.gov.cn/ewebeditor/uploadfile/2015/01/13/20150113091548267.pdf" target="_blank" rel="noopener">https://www.moe.gov.cn/ewebeditor/uploadfile/2015/01/13/20150113091548267.pdf</a>
+    <span class="badge">国家标准</span><br />
+    <span class="note">教育部网站上的标准全文（PDF）。第 4 章逐条给出汉语书面语标点符号的形式，
+      例如句号形式是"。"、顿号形式是"、"、问号形式是"？"——都写作全角形状；
+      第 5 章"标点符号的位置和书写形式"还专门增加了使用中文输入软件处理标点符号的规范。
+      本卡用它说明"中文标点与英文标点不是同一个字符"这件事有规范依据。
+      注意：该 PDF 正文为压缩流，抓取工具未能逐字还原，详见文末缺口说明。</span>
+  </li>
+  <li id="ref-7">
+    <strong>NewsML-G2 · the news industry's standard for exchanging news</strong> · IPTC（国际新闻电信理事会）<br />
+    <a href="https://iptc.org/standards/newsml-g2/" target="_blank" rel="noopener">https://iptc.org/standards/newsml-g2/</a>
+    <span class="badge">行业标准</span><br />
+    <span class="note">新闻行业交换文本、图片、视频的元数据标准。原页说明它承载的是
+      "data that describe the content in an abstract way (i.e. metadata)"，
+      即描述内容本身的字段。本卡把它作为非技术类来源，说明"字段名要先统一"是新闻业
+      本来就在做的事，不是程序员的额外要求。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1 逐段核对</strong>，页面存在且内容与引用一致。
+        "切片含起点不含终点"、"索引越界报错但切片不报错"、"字符串是 immutable 的"
+        三处均回到原文确认。</li>
+    <li><strong>来源 5 的数字</strong>（<code>len('中文')</code> 为 2、UTF-8 后为 6、汉字占 3 字节）
+        直接取自该页原文，未采信二手转述。</li>
+    <li><strong>来源 4 的语法形式</strong>回到 PEP 498 的 Specification 一节确认，未凭印象书写。</li>
+    <li><strong>来源 7 已访问确认</strong>，页面列出了 NewsML-G2 承载的几类元数据，
+        引用的英文原句可在该页找到。</li>
+    <li><strong>旧版链接的处理</strong>：廖雪峰教程的"字符串和编码"在新版站点路径下返回 404，
+        本卡改用可正常访问的地址，并在访问验证通过后才写入。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 2 未能逐字核实</strong>：该页体量极大，抓取时在 <code>str.isspace()</code>
+        处被截断，<code>split</code>、<code>strip</code>、<code>replace</code>、<code>startswith</code>
+        只出现在"文本与二进制序列方法汇总"表中，正文定义未取到。
+        本卡对这四个方法的行为描述属于通行常识，正式引用前建议自己打开该页核对一次。</li>
+    <li><strong>来源 6 只能确认为可访问的 PDF</strong>：文件本身可下载、结构完整，
+        但正文为 FlateDecode 压缩流，抓取工具无法解析出文字。
+        本卡引用的标点形式（句号"。"、顿号"、"等）来自检索索引中的标准正文片段，
+        <strong>未逐页阅读</strong>。正式引用前建议自己下载 PDF 核对。</li>
+    <li><strong>"应用案例"标明为示意</strong>：人物、记录内容与报错情形均为教学推演，
+        不是真实事故记录。</li>
+    <li>本卡没有展开讲编码问题（乱码、<code>encode()</code>/<code>decode()</code>）。
+        那是第 2 课文件读写的内容，这里只点到"字符与字节不是一回事"为止。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 字符串 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 2 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '字符串 s = \'第一现场\'，下面哪一个写法能取到最后一个字「场」？',
+      options: ['s[0]', 's[-1]', 's[5]', 's[0:1]'],
+      answer: 1,
+      why: '负索引从右往左数，-1 就是最后一个字符。s[5] 会越过末尾报 IndexError，s[0] 和 s[0:1] 取到的都是第一个字「第」。',
+      ref: 1, refText: '来源 [1] 索引与负索引' },
+
+    { level: 0, text: 's = \'王某某，男，45岁\'，那么 s[0:3] 得到的是什么？',
+      options: ['\'王某某，\'', '\'王某某\'', '\'王\'', '\'某某，\''],
+      answer: 1,
+      why: '切片含起点、不含终点：从 0 号位取到 3 号位之前，长度是 3 - 0 = 3，刚好是前三个字。',
+      ref: 1, refText: '来源 [1] 切片与「不含终点」的说明' },
+
+    { level: 1, text: '先写 a = \'abc\'，然后执行 a.replace(\'a\', \'A\')。现在 a 指向的字符串是什么？',
+      options: ['\'Abc\'', '\'abc\'', '会报错，字符串不能调用方法', '\'ABC\''],
+      answer: 1,
+      why: '字符串是不可变对象，replace() 不会改动原来的字符串，而是新建一个并返回。想留下结果必须赋值，例如 b = a.replace(\'a\', \'A\')。',
+      ref: 1, refText: '来源 [1] 关于字符串不可修改的原文' },
+
+    { level: 1, text: '记录 \'王某某，男，45岁\' 用 .split(\',\') 为什么拆不开？',
+      options: [
+        'split() 不支持和中文一起使用',
+        '记录里的逗号是全角「，」，代码里写的是半角「,」，两者在不同字符上是两个字符',
+        '因为这条记录太短，split() 需要更长的文本',
+        '因为 split() 必须传两个参数'],
+      answer: 1,
+      why: '看起来一样不代表相等。汉语书面语的句内点号有规范的全角形式，与英文半角标点不是同一个字符，程序不会自动等同，所以按半角逗号切就切不动。',
+      ref: 6, refText: '来源 [6] 标点符号的形式' },
+
+    { level: 2, text: '从采编系统导出的表格里，字数一列有的写成 \' 486\'（前面带空格）。处理这批数据最该先做哪一步？',
+      options: [
+        '直接做 int() 转换，Python 会自动忽略空格',
+        '先用 strip() 去掉首尾空白，再转换成整数',
+        '用 replace(\' \', \'0\') 把空格补成 0',
+        '把整列都改存成字符串，避免报错'],
+      answer: 1,
+      why: 'strip() 去掉首尾空白是最直接的一步。带空格的 \' 486\' 转 int 时在很多场景下会失败或带来隐患；补成 0 会直接把数值改错；整列存成字符串则没法算平均。',
+      ref: 2, refText: '来源 [2] 字符串方法（剥离空白）' },
+
+    { level: 2, text: '要把变量 name 和 count（count 是整数）填进模板「记者某某共采写 12 篇」，下面哪种写法最合适？',
+      options: [
+        '\'记者\' + name + \'共采写\' + count + \'篇\'',
+        'f\'记者{name}共采写{count}篇\'',
+        '\'记者 name 共采写 count 篇\'',
+        '先用 replace() 把模板里的变量名换成值'],
+      answer: 1,
+      why: 'f-string 会在运行时把花括号里的表达式算好再放进去，整数不用手工转字符串。第一个选项会因为 count 是整数而报 TypeError（加号两边必须都是字符串）。',
+      ref: 3, refText: '来源 [3] 格式化字符串字面值' },
+
+    { level: 3, text: '要判断一批稿件是不是以「本报讯」开头，下面哪种说法最站得住？',
+      options: [
+        'startswith(\'本报讯\') 可以用，但导出的数据开头常带空白，先 strip() 再判断更稳',
+        's[0:3] == \'本报讯\' 比 startswith() 更可靠，不需要做别的处理',
+        'startswith() 和 find() == 0 完全等价，所以都不需要先清理空白',
+        'startswith() 只能判断英文字母，判断中文要用切片'],
+      answer: 0,
+      why: 'startswith() 本身没有问题，问题出在数据上：前导空白会让它返回 False。三种判断方式（startswith、find==0、切片比较）都同样受空白影响，所以关键动作是先 strip()，而不是换方法。',
+      ref: 2, refText: '来源 [2] 字符串方法（搜索与替换）' },
+
+    { level: 3, text: '一段文字 s，len(s) 是 12，其中 8 个汉字、4 个英文字母。下面哪种说法是对的？',
+      options: [
+        's.encode(\'utf-8\') 之后的长度也是 12',
+        'len(s) 数的是字符数，是 12；编码成 UTF-8 后字节数是 8×3+4=28',
+        'len(s) 数的是字节数，所以 s 实际只有 6 个汉字',
+        '在 Python 里一个汉字算 2 个字符，所以字符数应该是 20'],
+      answer: 1,
+      why: 'len() 对 str 数的是字符数；要数字节必须先 encode。教程给出的可核查数字是：len(\'中文\') 为 2，len(\'中文\'.encode(\'utf-8\')) 为 6，也就是汉字 UTF-8 后通常占 3 个字节、英文字母占 1 个。',
+      ref: 5, refText: '来源 [5] 字符串和编码' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

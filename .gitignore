@@ -36,10 +36,17 @@ venv/
 env/
 .python-version
 
+# ===== WorkBuddy 工具运行时数据 =====
+# 2026-09-17：项目级 skill（.workbuddy/skills/%name%）是刻意入库的共享内容，
+# 但 skills 目录下的嵌套 .workbuddy/ 只是本机工具的工作记忆与内部脚本，
+# 含逐轮工作日志，属于运行时数据，不入库。
+.workbuddy/skills/.workbuddy/
+
 # ===== Node / VS Code 临时 =====
 node_modules/
-.vscode/launch.json
-.vscode/tasks.json
+# 2026-09-17 修正：改为整目录忽略。原先只挡了 launch.json / tasks.json，
+# 但 settings.json 里存的是本机绝对路径（C:\Users\19623\...），提交上去别人 clone 没有意义。
+.vscode/
 .history/
 
 # ===== 大数据/数据文件（仓库不该存原始数据）=====
@@ -56,7 +63,8 @@ data/interim/
 
 # ===== Jupyter =====
 .ipynb_checkpoints/
-*.ipynb
+# 2026-09-17 修正：原先这里有 `*.ipynb`，把 notebook 全挡住了。
+# 但 .ipynb 是本课程作业的交付物（scripts/01.ipynb 等），必须入库，故删除该规则。
 
 # ===== OS =====
 .DS_Store

@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>大模型与提示 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 4 课 · 序号 16 / 17</div>
+  <h1>大模型与提示</h1>
+  <div class="badges">
+    <span class="badge">概念卡 16</span>
+    <span class="badge">前置：函数 · 文件读写 · 情感分析</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">8 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">调大模型 API，就是发一个 HTTP 请求、拿回一段 JSON。</p>
+    <p>返回的 JSON 里装着模型的回答，用 Python 解析就能取用。
+       提示词要说清角色、任务、输入和期望的输出格式；同一句话问两次答案可能不同。
+       它会一本正经地编内容，所以结果必须校验。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>调用大模型 API 像给一位外包顾问寄表格：你写好一张单子（他扮什么角色、要做什么、材料是什么、按什么格式交回来），寄出去，收回一张标准表格。这位顾问很能干，但单子可能每张换一个收件人，同样的话两次回的措辞可能不同；他偶尔还会一本正经地填上不存在的数字。所以表格拿回来必须先核对，再进你的稿子。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释调用大模型 API 时，代码层面实际发生了什么。</li>
+  <li>能说出提示词必须交代清楚的四个要素，并为其中一个写出具体例子。</li>
+  <li>能说明为什么模型的输出必须校验，以及校验分哪几关。</li>
+  <li>能说出本地模型与大模型在同一条流水线里该怎么分工。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>调用大模型 API，代码层面到底发生了什么？</summary>
+  <div class="body">
+    就是一次普通的网络请求，和你用代码去下载一个网页没有任何本质区别。
+    Python 官方文档对 <code>urllib.request</code> 的说明是：它定义了一组用于
+    <strong>打开 URL（主要是 HTTP）</strong>的函数和类，
+    并且 <code>urlopen</code> 返回的对象可以当上下文管理器用，
+    带有 <code>url</code>、<code>headers</code>、<code>status</code> 三个属性。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    区别只在两处：你要用 POST 把提示词发过去，对方返回的是一段
+    <strong>JSON 文本</strong>，而不是一个给人看的网页——所以这正好用得上第 2 课的函数与字典。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>API key 应该放在哪里？</summary>
+  <div class="body">
+    放在环境变量里，代码从环境变量读，<strong>绝不写进 .py 文件再提交到 Git</strong>。
+    原因很直接：Git 会保留每一次提交的历史，key 一旦进去，就算后来删掉，历史里还在；
+    任何能看到这个仓库的人都能拿它去消耗你的额度。
+    正确做法是代码里写 <code>os.environ["LLM_API_KEY"]</code>，
+    仓库里只留一份说明写清"需要设置哪个环境变量"。
+    这也是成本意识的一部分：key 泄露和忘关循环，是新手最常遇到的两笔意外账单。
+  </div>
+</details>
+
+<details>
+  <summary>提示词要写清哪几件事？</summary>
+  <div class="body">
+    四件事：<strong>角色</strong>（你希望它以什么身份来回答）、
+    <strong>任务</strong>（要它做什么）、<strong>输入</strong>（要处理的材料）、
+    <strong>期望的输出格式</strong>（按什么结构交回来）。
+    公共部门发布的提示写作指南给出的模板正是这四段：ROLE / INSTRUCTIONS / AUDIENCE / FORMAT，
+    并说明清楚、结构化的提示会显著提高输出的准确性；
+    含糊或不完整的提示则容易得到空泛、跑题的回应。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+    新闻场景里还要加一条：<strong>把"拿不准就说拿不准"写进去</strong>，
+    并要求它给出判断依据。
+  </div>
+</details>
+
+<details>
+  <summary>为什么同一句话问两次，答案可能不一样？</summary>
+  <div class="body">
+    因为它是按概率逐字生成文本的，不是查表。
+    所以单次输出不能当作稳定事实，更不能当作可复现的测量结果。
+    这对新闻工作的直接含义是两条：一是<strong>关键结论不要依赖一次调用</strong>，
+    要留记录、能重跑；二是<strong>它写下的每一句可核查的话都要回到原始材料核对</strong>。
+  </div>
+</details>
+
+<details>
+  <summary>它会不会编？编了怎么办？</summary>
+  <div class="body">
+    会，而且这是被正式写进风险清单的一件事。
+    美国国家标准与技术研究院（NIST）在 2024 年 7 月发布的生成式 AI 风险文件里，
+    把"生成看似自信却错误或虚假的内容"（也就是通常说的"幻觉"）
+    列为十二类风险之一，并配套给出两百多条管理措施。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    怎么办？把校验当成流水线上固定的一关，而不是可选的礼貌：
+    结构对不对、取值在不在允许范围、内容能不能在原文里找到依据。
+    三关都过不了的，交给人。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>大模型 API（应用程序接口）是一种用程序而不是用对话框来使用大模型的方式。
+   你发一次 HTTP 请求，请求体里装着提示词和要处理的文本，对方返回一段 JSON，
+   你再从 JSON 里把答案取出来。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   用 <code>requests</code> 库的话，发 POST 并直接以 JSON 形式提交数据只要一行：
+   <code>requests.post(url, json=payload)</code>；响应对象上有 <code>.json()</code> 方法，
+   能把返回内容解析成 Python 的字典。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   而"字典"正是第 2 课就学过的容器——从 API 里取数，本质就是从一个嵌套字典里取数。</p>
+
+<h3>为什么</h3>
+<p>因为它的强项和它的短板是同一件事的两面。
+   强项在<strong>理解上下文</strong>：反讽、双重否定、需要解释理由的判断，它比本地分类器做得好。
+   短板在<strong>不可复现与不可控成本</strong>：按量计费意味着跑一万条和跑五千条价钱不同，
+   而同一个提示两次可能给出不同措辞的回答。
+   新闻行业的基本共识也落在这两条上：《Paris Charter on AI and Journalism》要求
+   人类决策保持在新闻工作的中心、任何对内容有重大影响的 AI 使用都应向受众披露，
+   媒体对已发布内容承担编辑责任；<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   国际调查报道的实践则把它总结成一句更朴素的规矩——
+   <strong>机器负责把大堆分成小堆，人负责判断小堆里哪一条是新闻</strong>，
+   而且"每一步都有记者在回路中"。<sup class="cite"><a href="#ref-7">[7]</a></sup></p>
+
+<h3>怎么工作</h3>
+<p>把一次调用拆开，你会看到五个动作，其中三个是人该负责的：</p>
+<ol>
+  <li><strong>从环境变量取 key 和接口地址</strong>，不要硬编码进代码。</li>
+  <li><strong>组装提示词</strong>：角色、任务、输入、期望的输出格式，缺一样都会让结果变得难用。<sup class="cite"><a href="#ref-4">[4]</a></sup></li>
+  <li><strong>发请求</strong>。用 <code>requests.post</code> 提交，先 <code>raise_for_status()</code> 确认请求成功，
+      再 <code>.json()</code> 解析。官方文档特意提醒过：
+      <strong><code>r.json()</code> 能成功解析并不代表这次响应是成功的</strong>——
+      有的服务器在失败的响应里也会返回一个 JSON 对象（比如 HTTP 500 附带的错误详情），
+      所以要用 <code>raise_for_status()</code> 或 <code>status_code</code> 来判断。<sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+  <li><strong>校验结果</strong>。JSON 与 Python 之间的对应关系是明确的：
+      object 对应 dict、array 对应 list、string 对应 str、number 对应 int 或 float、
+      true / false 对应 True / False、null 对应 None。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+      解析成功后，还要检查字段名对不对、取值在不在允许的清单里。</li>
+  <li><strong>分工与复核</strong>。全量数据用本地模型跑，疑难样本交给大模型，
+      两者的分歧点由人核对——这也是调查研究里的通行做法。<sup class="cite"><a href="#ref-7">[7]</a></sup></li>
+</ol>
+
+<pre><code>import os, requests
+
+def ask_model(prompt, text):
+    url = os.environ["LLM_BASE_URL"] + "/chat/completions"
+    key = os.environ["LLM_API_KEY"]        # 从环境变量读，不写进代码
+    payload = {
+        "model": "your-model-name",        # 用你自己账号里的模型名
+        "messages": [
+            {"role": "system", "content": prompt},   # 角色 + 任务 + 输出格式
+            {"role": "user",   "content": text},     # 输入
+        ],
+    }
+    headers = {"Authorization": "Bearer " + key}
+    r = requests.post(url, json=payload, headers=headers, timeout=60)
+    r.raise_for_status()                   # 先确认请求成功
+    return r.json()                        # 再解析成字典</code></pre>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 372" role="img" aria-label="调用大模型 API 的流程与校验关卡">
+  <defs>
+    <marker id="carrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">一次调用：发出去的是提示词，收回来的是 JSON，中间必须过校验关</text>
+
+  <text x="81" y="42" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c0392b">人写</text>
+  <text x="369" y="42" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7b8294">网络与模型</text>
+  <text x="657" y="42" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c0392b">人查</text>
+
+  <rect x="20" y="52" width="122" height="74" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="81" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">① 组装提示词</text>
+  <text x="81" y="96" text-anchor="middle" font-size="10.5" fill="#a8554a">角色 / 任务</text>
+  <text x="81" y="112" text-anchor="middle" font-size="10.5" fill="#a8554a">输入 / 输出格式</text>
+
+  <path d="M144 89L160 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="164" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="225" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">② HTTPS POST</text>
+  <text x="225" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">一次普通网络请求</text>
+  <text x="225" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">key 从环境变量读</text>
+
+  <path d="M288 89L304 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="308" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="369" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">③ 大模型</text>
+  <text x="369" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">按概率逐字生成</text>
+  <text x="369" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">两次可能不一样</text>
+
+  <path d="M432 89L448 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="452" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="513" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">④ 返回 JSON</text>
+  <text x="513" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">先 raise_for_status</text>
+  <text x="513" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">再 .json() 解析</text>
+
+  <path d="M576 89L592 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="596" y="52" width="122" height="74" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="657" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">⑤ 校验关卡</text>
+  <text x="657" y="96" text-anchor="middle" font-size="10.5" fill="#a8554a">不过关就交给人</text>
+  <text x="657" y="112" text-anchor="middle" font-size="10.5" fill="#a8554a">不能直接入库</text>
+
+  <rect x="20" y="148" width="680" height="204" rx="10" fill="#f7f5f0" stroke="#e6e3dc"/>
+
+  <text x="36" y="172" font-size="12.5" font-weight="700" fill="#4a5160">提示词要说清四件事</text>
+
+  <rect x="36" y="184" width="152" height="46" rx="7" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="112" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">角色</text>
+  <text x="112" y="221" text-anchor="middle" font-size="10.5" fill="#7b8294">以什么身份回答</text>
+
+  <rect x="200" y="184" width="152" height="46" rx="7" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="276" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">任务</text>
+  <text x="276" y="221" text-anchor="middle" font-size="10.5" fill="#7b8294">动词开头，说清做什么</text>
+
+  <rect x="364" y="184" width="152" height="46" rx="7" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="440" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">输入</text>
+  <text x="440" y="221" text-anchor="middle" font-size="10.5" fill="#7b8294">要处理的材料本身</text>
+
+  <rect x="528" y="184" width="152" height="46" rx="7" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="604" y="204" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">输出格式</text>
+  <text x="604" y="221" text-anchor="middle" font-size="10.5" fill="#7b8294">字段名与取值范围</text>
+
+  <text x="36" y="254" font-size="12.5" font-weight="700" fill="#4a5160">返回结果必须过三关</text>
+  <text x="36" y="276" font-size="11.5" fill="#7b8294">① 结构关：能不能被 json 解析成字典，字段名对不对，有没有缺字段。</text>
+  <text x="36" y="296" font-size="11.5" fill="#7b8294">② 取值关：类别是否落在允许清单里，数值是否在合理区间内。</text>
+  <text x="36" y="316" font-size="11.5" fill="#7b8294">③ 事实关：抽一个样本回到原文核对，看它说的东西原文里到底有没有。</text>
+  <text x="36" y="338" font-size="11.5" fill="#a8554a">注意：结构能解析 ≠ 内容正确。文档早就提醒过，解析成功不代表响应成功。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>真实的规定：不确定性的来源被写进了官方文件。</strong>
+   2024 年 7 月 26 日，美国国家标准与技术研究院（NIST）发布《AI 风险管理办法：生成式 AI 剖面》
+   （NIST AI 600-1），用十二类风险加两百多条对应措施来管理生成式 AI，
+   其中一类就是"生成看似自信却错误或虚假的内容"，
+   文件里用的词是 confabulation，也就是通常说的"幻觉"。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+   同年 11 月 10 日发布的《Paris Charter on AI and Journalism》则从新闻行业一侧提出要求：
+   人类决策必须保持在中心位置，任何对内容有重大影响的 AI 使用都应披露，
+   媒体对发布出去的每一条内容承担编辑责任。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   两条放在一起看，"返回结果必须校验"就不是一句谨慎的忠告，而是行业的基本操作要求。</p>
+
+<div class="flag">
+  <span class="lbl">示意案例（推演，非公开报道）</span>
+  <p style="margin:6px 0 0">某编辑部想用大模型把 5000 条读者留言按八个议题分类，再据此做一张图表。</p>
+  <ul>
+    <li><strong>第一次的做法</strong>：写了一句"请判断下面这条留言属于哪个议题"，循环跑了 5000 条，
+        程序没报错，把结果直接汇总画图。问题出在两个地方：返回的是自由文本而不是结构化字段，
+        得靠字符串切开才能取类别；抽取的 100 条里，有 7 条把反讽当成了正面表述。</li>
+    <li><strong>改过之后的做法</strong>：提示词补上角色、任务、输入和输出格式
+        （要求只返回 <code>{"topic": "...", "confidence": 0.0-1.0, "reason": "..."}</code>），
+        并在提示里写明"拿不准就把 confidence 给低、并在 reason 里说明"。
+        程序加了三道校验：能不能解析、topic 是否在八类清单里、confidence 是否在 0 到 1 之间。
+        校验不过的 63 条单独列出交给人；另外每周抽 50 条人工复核，记录不一致的样例。</li>
+    <li><strong>关于成本</strong>用的是"分工"而不是"全上"：先用本地分类器跑完全量，
+        只把把握度最低的那一批交给大模型，再由人核对两者的分歧点。
+        这样既有可复现的基线，又保留了大模型在疑难样本上的判断力。</li>
+  </ul>
+  <p style="margin:6px 0 0">这个案例是推演的，用来把五个动作串成一条线。具体的字段名、模型名与阈值
+      需要按自己账号和语料实际情况来定；本卡不推荐任何具体厂商或型号。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>本地分类模型<br />（文本分类）</strong></td>
+      <td>本地模型训练一次可以反复跑，结果稳定、单条成本趋近于零，但只认自己学过的用词习惯；大模型懂上下文、能给理由，但成本随调用量增长、同一提示两次回答可能有出入。</td>
+      <td>本地模型是"自己养的狗"，听话但不机灵；大模型是"请来的顾问"，机灵但按次收费。<sup class="cite"><a href="#ref-7">[7]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的规则表</strong></td>
+      <td>两者都是"交给执行者的一套明确规则"：人工标注的规则写给人看，提示词写给模型看。共同要求也一样——规则必须具体到"换一个人、换一次调用也能得到同样的判断"。</td>
+      <td>规则表是给人看的提示词，提示词是给模型看的规则表。<sup class="cite"><a href="#ref-8">[8]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>在网页对话框里直接问</strong></td>
+      <td>对话框里是人手动问、人眼看答案，格式随意；API 是让程序自动批量调用，产出必须能被程序解析，所以输出格式必须写死。</td>
+      <td>对话框适合问一次，API 适合问五千次——后者才需要把校验写成代码。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>模型幻觉</strong></td>
+      <td>普通的分类错误是"在给定选项里选错了那个"，幻觉是"生成了根本不在选项里、或者原文里根本没有的内容"。前者靠调阈值和补标注改善，后者只能靠校验和核对拦住。</td>
+      <td>选错是判断问题，编出来是编造问题——后者必须回到原始材料核对。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>json — JSON encoder and decoder（Python 官方文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/3/library/json.html" target="_blank" rel="noopener">https://docs.python.org/3/library/json.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">JSON 到 Python 的默认对应关系（object→dict、array→list、string→str、
+      number→int/float、true/false→True/False、null→None）与 <code>json.loads</code> /
+      <code>json.load</code>、<code>dumps</code> / <code>dump</code> 的定义均出自此页。
+      本卡"从 API 取数就是从一个嵌套字典里取数"的依据。</span>
+  </li>
+  <li id="ref-2">
+    <strong>urllib.request — Extensible library for opening URLs（Python 官方文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/3/library/urllib.request.html" target="_blank" rel="noopener">https://docs.python.org/3/library/urllib.request.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">定义"打开 URL（主要是 HTTP）的函数和类"；说明 <code>urlopen</code>
+      "始终返回一个可以当上下文管理器使用的对象"，带有 url、headers、status 属性；
+      并给出用 <code>Request</code> 加请求头的写法。本卡"API 调用就是一次普通 HTTP 请求"的依据。
+      该页同时注明官方推荐用 Requests 包作为更高层的 HTTP 客户端。</span>
+  </li>
+  <li id="ref-3">
+    <strong>Quickstart — Requests 文档</strong> · Python Software Foundation（requests 项目）<br />
+    <a href="https://requests.readthedocs.io/en/latest/user/quickstart/" target="_blank" rel="noopener">https://requests.readthedocs.io/en/latest/user/quickstart/</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">POST 提交 JSON 的写法（<code>requests.post(url, json=payload)</code>）、
+      响应的 <code>.json()</code> 方法、以及自定义请求头的用法都出在这里。
+      本卡最看重的一句警告也在这一页："<strong>调用 r.json() 成功并不代表响应成功</strong>"——
+      有的服务器会在失败响应里也返回 JSON（例如 HTTP 500 附带错误详情），
+      要判断请求是否成功应当用 <code>raise_for_status()</code> 或检查 <code>status_code</code>。</span>
+  </li>
+  <li id="ref-4">
+    <strong>Effective Interaction（AI for All 指南）</strong> · Special Secretariat of Artificial Intelligence and Data Governance（希腊政府人工智能与数据治理特别秘书处）<br />
+    <a href="https://ai.gov.gr/en/ai-for-all-guide/effective-interaction" target="_blank" rel="noopener">https://ai.gov.gr/en/ai-for-all-guide/effective-interaction</a>
+    <span class="badge">官方指南</span><br />
+    <span class="note">公共部门发布的提示写作指南。给出的基础模板是
+      ROLE / INSTRUCTIONS / AUDIENCE / FORMAT 加附件，并说明"有效提示往往由若干明确段落组成……
+      把它们组合起来能显著提高回应的准确性"，而含糊或不完整的提示会导致空泛、无关的回答。
+      本卡"提示词要说清四件事"的依据。选它是因为它来自公共机构、不推销任何产品。</span>
+  </li>
+  <li id="ref-5">
+    <strong>Department of Commerce Announces New Guidance, Tools 270 Days Following the Executive Order on AI</strong> · 美国国家标准与技术研究院（NIST）<br />
+    <a href="https://www.nist.gov/node/1855466" target="_blank" rel="noopener">https://www.nist.gov/node/1855466</a>
+    <span class="badge">官方文件</span><br />
+    <span class="note">2024-07-26 发布。介绍 NIST AI 600-1《AI 风险管理办法：生成式 AI 剖面》：
+      以十二类风险和两百多条对应措施管理生成式 AI，其中一类就是
+      "生成式 AI 系统 confabulating 或 'hallucinating' 输出"。
+      本卡"模型会编、所以结果必须校验"的依据。</span>
+  </li>
+  <li id="ref-6">
+    <strong>New charter provides ethical framework for AI in journalism</strong> · African Centre for Media Excellence（ACME）<br />
+    <a href="https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism" target="_blank" rel="noopener">https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism</a>
+    <span class="badge">行业规范</span><br />
+    <span class="note">2023-11-13 报道《Paris Charter on AI and Journalism》（2023-11-10 于巴黎和平论坛发布，
+      无国界记者组织与 16 家机构共同推出）。要点：AI 系统须经独立评估；
+      人类决策必须保持在新闻工作中心；媒体对已发布内容承担编辑责任。
+      本卡的新闻伦理依据，也是本卡的非技术类来源之一。原始 PDF 正文为压缩流，
+      本卡引用的是这家媒体支持机构的公开报道。</span>
+  </li>
+  <li id="ref-7">
+    <strong>Bring in the machines: AI-powered investigative journalism</strong> · Monika Sengul-Jones · DataJournalism.com（欧洲新闻中心）<br />
+    <a href="https://datajournalism.com/read/longreads/machine-learning-investigative-journalism" target="_blank" rel="noopener">https://datajournalism.com/read/longreads/machine-learning-investigative-journalism</a>
+    <span class="badge">行业资源</span><br />
+    <span class="note">2021-12-01 发布。ICIJ 处理 Pandora Papers 的经过，以及那句"它不是魔法，
+      需要相当的时间和资源"；文中还明确写到新闻机构用机器学习"每一步都有记者在回路中"。
+      本卡"本地跑全量、疑难交大模型、人核对分歧"这一分工的实践依据，也是本卡的非技术类来源之一。</span>
+  </li>
+  <li id="ref-8">
+    <strong>An Introduction to Content Analysis（ERIC Digest ED458218）</strong> · Steve Stemler · ERIC Clearinghouse on Assessment and Evaluation（美国马里兰大学）<br />
+    <a href="https://purl.fdlp.gov/GPO/LPS26359" target="_blank" rel="noopener">https://purl.fdlp.gov/GPO/LPS26359</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">2001 年发布的研究方法综述。它给出的定义是"一种系统的、
+      可重复的技术，按<strong>明确的标注规则</strong>把大量文字压缩成较少的类别"，
+      并强调类别必须互斥且穷尽。
+      本卡用它的定义说明：交给执行者的规则必须具体到换个人也能得到同样判断，
+      区别只在于执行者是人还是模型。这也是本卡的非技术类来源之一。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。代码示例是本卡自己写的，其中的接口地址、模型名与 key
+     全部用占位符代替，不含任何真实凭据。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1、2、3 均逐条打开确认存在</strong>，并回原文核对了两处要点：
+        JSON 与 Python 的类型对应关系；<code>urlopen</code> 返回对象的三个属性。</li>
+    <li><strong>来源 3 的那句警告逐字核对</strong>（"the success of the call to r.json() does not indicate
+        the success of the response"），并确认它举的例子是 HTTP 500 也会返回 JSON 错误详情。
+        本卡把它作为"结构校验不等于内容校验"的依据，措辞与原文一致。</li>
+    <li><strong>来源 4 的模板名称核对</strong>为 ROLE / INSTRUCTIONS / AUDIENCE / FORMAT，
+        并确认它是公共机构的公开指南，不含任何商业推广。</li>
+    <li><strong>来源 5 核对到原始发布页</strong>，确认发布日期为 2024-07-26、文件为 NIST AI 600-1、
+        "十二类风险"与"confabulating 或 hallucinating output"均出现在页面上。</li>
+    <li><strong>来源 6、7 逐条打开确认存在</strong>，且内容与本卡引用一致。</li>
+    <li><strong>来源 8（与序号 13、15 等卡共用）逐句核对</strong>了该来源的定义原句
+        与"类别必须互斥且穷尽"的表述，用于本卡概念辨析里"规则要具体到换个人也能复现"这一处对照。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>"同一句话问两次答案可能不同"这一条，本卡没有找到可访问的、非厂商的官方文档来直接支撑</strong>。
+        它是当前生成式模型按概率逐字生成这一机制的直接推论，也是使用者的普遍经验，
+        但本卡未查到符合来源优先级的公开文件来引证，因此这句话在本卡中
+        <strong>不作为带角标的结论</strong>，只作为操作建议（留记录、能重跑、逐条核对）出现的理由。
+        如果要在正式报告里写这句话，建议补一份可引用的技术文档。</li>
+    <li><strong>NIST AI 600-1 的正文 PDF 本次未能逐页读取</strong>，本卡引用的是 NIST 官网的发布说明页；
+        十二类风险的具体编号与条款措辞未逐字核对，因此本卡只引用了发布说明中已明确写出的内容。</li>
+    <li><strong>成本与 key 管理一节没有引用具体来源</strong>，它是工程常识性提醒，
+        不涉及可核查的事实主张；本卡也未给出任何真实 key、价格或厂商信息。</li>
+    <li><strong>"5000 条留言"一节标明为示意</strong>，是推演出的工作流程，不是某个编辑部的公开记录；
+        具体字段、阈值与校验比例需要按自己的语料实测后确定。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、代码示例、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 大模型与提示 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 16 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '从代码的角度看，调用大模型 API 本质上是什么操作？',
+      options: [
+        '发一个 HTTP 请求，拿回一段 JSON 文本',
+        '在本地训练出一个新的模型',
+        '把语料上传到一个共享文件夹',
+        '安装一个新的 Python 库'],
+      answer: 0,
+      why: '它和用代码下载一个网页没有本质区别。差别只在于用 POST 把提示词发过去，对方返回的是给程序读的 JSON，而不是给人看的网页。',
+      ref: 2, refText: '来源 [2] urllib.request 与 HTTP 请求' },
+
+    { level: 0, text: '一份写清楚的提示词，通常要交代的四件事不包括下面哪一项？',
+      options: [
+        '角色：希望它以什么身份来回答',
+        '任务：要它做什么',
+        '输入：要处理的材料本身',
+        '模型的训练数据来源'],
+      answer: 3,
+      why: '公共部门发布的提示写作指南给出的模板是 ROLE / INSTRUCTIONS / AUDIENCE / FORMAT，加上要处理的附件。训练数据来源不是使用者能指定、也不需要交代的东西。',
+      ref: 4, refText: '来源 [4] 提示的四要素模板' },
+
+    { level: 1, text: '用 requests 拿到响应对象 r 之后，哪一步才真正能确认"这次请求成功了"？',
+      options: [
+        'r = requests.post(url, json=payload) 没报错',
+        'r.json() 能正常解析成一个字典',
+        'r.raise_for_status() 没有抛出异常',
+        '打印出来看起来像一个像样的答案'],
+      answer: 2,
+      why: '官方文档明确提醒：r.json() 能成功解析并不代表这次响应是成功的——有的服务器在失败的响应里也会返回一个 JSON 对象（比如 HTTP 500 附带的错误详情）。要判断请求是否成功，应当用 raise_for_status() 或检查 status_code。',
+      ref: 3, refText: '来源 [3] 解析成功不等于响应成功' },
+
+    { level: 1, text: '模型返回的那段 JSON 文本，要变成 Python 里能用的字典，靠的是哪一步？',
+      options: [
+        'json.loads() 把 JSON 字符串解析成字典',
+        '用字符串切片把大括号里的内容切出来',
+        '用 print() 打印出来就能自动变成字典',
+        '再问一次模型，让它按字典格式输出'],
+      answer: 0,
+      why: 'Python 官方文档给出了明确的对应关系：object 对应 dict、array 对应 list、string 对应 str、number 对应 int 或 float、true/false 对应 True/False、null 对应 None。用 json.loads()（或 requests 的 .json()）即可完成这一步；手工切字符串既不可靠又容易出错。',
+      ref: 1, refText: '来源 [1] JSON 与 Python 的类型对应' },
+
+    { level: 2, text: '要给 5000 条读者留言按议题分类，预算有限、要求结果可复现、还要能解释。最合理的方案是？',
+      options: [
+        '5000 条全部发给大模型逐条判断',
+        '用本地分类器跑全量，只把把握度低的疑难样本交给大模型，再由人核对两者的分歧点',
+        '只挑 50 条让大模型判断，其余按比例推断',
+        '让大模型先给出标签体系，再让它自己分类'],
+      answer: 1,
+      why: '成本、速度与可复现性三个约束都指向"分工"。调查报道里的做法是同一套逻辑：机器负责把大堆分成小堆，人负责判断小堆里哪一条是新闻，而且每一步都留有记者在回路中。',
+      ref: 7, refText: '来源 [7] 人在回路中的分工实践' },
+
+    { level: 2, text: '大模型把一条留言里的"这波操作真行"判成了正面。最合理的处理是？',
+      options: [
+        '直接采用，它读过的文本比人多得多',
+        '把它归入待人工核对的样本，因为反讽正是模型容易判错的地方',
+        '把这条留言从语料里删掉',
+        '重新训练一个模型'],
+      answer: 1,
+      why: '反讽是情感分析里公认的难点，也是模型与人工判断最容易分歧的地方。正确做法是把它单独列出交给人核对，并记录下这类不一致，而不是删样本或指望换个模型自动解决。',
+      ref: 5, refText: '来源 [5] 生成式 AI 的固有风险与验证要求' },
+
+    { level: 3, text: '模型返回的 JSON 能正常解析，字段也齐全，但其中一条"该留言违反规定"的理由明显与原文不符。这说明什么？',
+      options: [
+        '解析成功就说明结果可靠，可以直接入库',
+        '结构校验只能保证格式，不能保证内容，必须再加一层回到原文的核对',
+        '是网络传输过程中把内容弄坏了',
+        '只要把 JSON 的字段名改一改就好了'],
+      answer: 1,
+      why: '官方文档早就提醒过：调用 r.json() 成功不代表响应成功。同理，结构解析成功也不代表内容正确。NIST 把"生成看似自信却错误的内容"列为生成式 AI 的固有风险，要求的正是对输出做验证。所以校验要分结构关、取值关、事实关三层。',
+      ref: 3, refText: '来源 [3] 解析成功不等于响应成功' },
+
+    { level: 3, text: '主编问："这个 5000 条留言的分类结果，凭什么可信？"下面哪种回答最站得住？',
+      options: [
+        '"用的是目前最先进的模型。"',
+        '"提示词写得非常详细，四要素一个不落。"',
+        '"我们抽了 200 条，和两位编辑各自标的标签比对，报告了一致程度，并说明了不一致集中在哪几类。"',
+        '"准确率有 92%。"'],
+      answer: 2,
+      why: '模型先进、提示词写得好都不是证据；一个光秃秃的准确率数字会被反问"怎么算的、错在哪"。人工标注的通行做法是交代标注规则、在抽样上与人工标注比对并报告一致性——自动标注换的只是执行者，不是这个要求。',
+      ref: 6, refText: '来源 [6] 人类决策在中心、结果需可交代' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

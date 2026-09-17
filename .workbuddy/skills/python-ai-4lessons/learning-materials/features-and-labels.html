@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>特征与标签 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 3 课 · 序号 10 / 17</div>
+  <h1>特征与标签</h1>
+  <div class="badges">
+    <span class="badge">概念卡 10</span>
+    <span class="badge">前置：机器学习 · 字典</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">7 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">特征是判断时看的东西，标签是要判断出的结果。</p>
+    <p>一条训练样本是"一组特征 + 一个标签"，代码里写成字典。标签由人定义，带主观性：
+       同一句标题两人可能贴不同标签。标签体系就是一份写清楚的标注规则表，
+       定义模糊，学到的也模糊。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>特征与标签的关系，像一张采访登记表。表上每行是一位受访者，左边的栏目是特征——年龄、职业、所在城市、说了什么；最右边一栏是标签——你要下的那个判断，比如是否愿意实名受访。填表的人决定了栏目怎么设，也决定了右边那一栏怎么勾。栏目设得不对，比如用籍贯去判断是否关注环保，勾出来的结果自然靠不住。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能说出一条训练样本由哪两部分构成，并在代码里写出它的样子。</li>
+  <li>能区分特征与标签，对一组给定字段判断哪些是特征、哪个是标签。</li>
+  <li>能解释为什么两个人给同一句标题贴的标签可能不同，以及这对结论意味着什么。</li>
+  <li>能说明"标签体系相当于一份写清楚的标注规则表"这一对应关系，并举出一个定义模糊导致结果模糊的例子。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>特征和标签，一句话怎么分清楚？</summary>
+  <div class="body">
+    特征是你拿什么来判断，标签是你要判断出什么。用编辑部的话说：特征是你手上有的线索，
+    标签是你在稿签上写下的那个结论。
+    scikit-learn 的术语表把特征进一步说明为"把被抽样的对象映射成数值或类别的函数"，
+    在数据表里表现为一列；标签则被称为因变量，是每个样本对应的已知答案。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>一条训练样本在代码里长什么样？</summary>
+  <div class="body">
+    它就是"一组特征 + 一个标签"。在 scikit-learn 里，整套数据被拆成两块：
+    特征组成矩阵 <code>X</code>，形状是"样本数 × 特征数"，也就是行是样本、列是特征；
+    标签组成 <code>y</code>，长度等于样本数，第 i 个值对应第 i 行样本的答案。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    用字典表示单条样本也很常见，比如
+    <code>{"词数": 12, "含数字": 1, "频道": "本地", "标签": "财经"}</code>。
+  </div>
+</details>
+
+<details>
+  <summary>为什么两个人给同一句标题贴的标签会不一样？</summary>
+  <div class="body">
+    因为标签是人定的，而定义常常没有写清到能覆盖边界情况。"某科技公司发布季度财报"，
+    算科技还是算财经？两个人各自心里有一把尺子，尺子不同，结果就不同。
+    这不是谁粗心，而是任何贴标签的工作都会遇到的固有难题；
+    人工标注的做法正是用标注员间一致性把这种分歧量出来，
+    再回头把定义改清楚。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>样本要多少条才够？正负样本必须一样多吗？</summary>
+  <div class="body">
+    没有统一数字，但有一条底线：每个标签下的样本都要足够多，多到模型能看出规律而不是碰巧。
+    类别不均衡是更隐蔽的坑——如果九成样本都是同一类，模型全判这一类也能拿到九成准确率，
+    数字好看却没有用。官方文档专门为这种情况提供了平衡准确率，
+    说明普通准确率在不均衡数据上会产生虚高的估计。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>怎么决定拿哪些信息当特征？</summary>
+  <div class="body">
+    一个实用的检验方法：把这条样本交给一位编辑，只看这些特征，他能不能做出判断？
+    能，就是有用的特征；不能，就再加。同时要小心两件事——
+    一是别把"答案本身"混进特征里（比如把来源栏目当成特征去判断栏目，这是同义反复）；
+    二是特征的选择和预处理只能在训练数据上做，用上测试数据会让成绩虚高。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>特征（feature）是判断时依据的信息，标签（label）是要判断出的结果。
+   术语表里，特征是"把被抽样的对象映射到数值或类别量的函数"，在一张数据矩阵里表现为列；
+   样本是"一个单独的特征向量"，表现为行；标签在术语表里叫目标（target），
+   也叫因变量、结果变量、真值，通过 <code>fit</code> 以 <code>y</code> 的形式传给模型。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   一句话概括：<em>行是样本，列是特征，答案那一列是标签</em>。</p>
+
+<h3>为什么</h3>
+<p>因为标签不是从数据里长出来的，是人在标注规则表里定下来的。
+   人工标注里，贴标签的依据是标注规则表——一份写明每个变量含义、取值和边界例的操作说明；
+   同一份材料，两份规则表会得出两套数据。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+   机器学习的标签体系就是同一件东西，只是执行者换成了模型。
+   这带来两个后果：<strong>第一，定义模糊，结果就模糊</strong>，
+   模型学到的不是"财经新闻的本质"，而是你写下的那套定义；
+   <strong>第二，必须检查一致性</strong>，也就是不同判断者对同一批材料是否得出相同结果，
+   否则后面的统计只是在给分歧装上数字外壳。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<h3>怎么工作</h3>
+<p>定一套标签体系，需要依次做三件事：</p>
+<ol>
+  <li><strong>定标签。</strong>写出每个标签的定义、正例与边界例，明确"拿不准时怎么办"。
+      DOCA 把这项工作叫操作化，它是标注工作里最容易被跳过、也最影响结论的一步<sup class="cite"><a href="#ref-4">[4]</a></sup>。
+      关键是把口径写成明文条目，而不是留在各人心里——新闻编辑部把编辑经验整理成一条条核查清单，
+      道理是一样的：没写下来的规矩，就等于没有规矩。<sup class="cite"><a href="#ref-7">[7]</a></sup></li>
+  <li><strong>定特征。</strong>列出编辑做同样判断时会看的信息，逐条整理成字段。
+      这一步要问自己：这条信息在判断发生时是否真的可得、是否与标签同义。<sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+  <li><strong>凑样本并检查均衡。</strong>每个标签下都要有足够多的样本，
+      并留意两类样本的比例。新闻编辑部里，"机构自荐稿"往往远少于"正常稿件"，
+      这种悬殊会让准确率失去意义。<sup class="cite"><a href="#ref-6">[6]</a></sup></li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 356" role="img" aria-label="标签体系（标注规则表）、特征列与标签列，以及训练出模型的关系">
+  <defs>
+    <marker id="farrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">一条训练样本的结构：行是样本，列是特征，最后一列是标签</text>
+
+  <text x="20" y="46" font-size="12.5" font-weight="700" fill="#7b8294">样本表（前 3 列＝特征，最后 1 列＝标签）</text>
+
+  <rect x="20" y="56" width="100" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="70" y="76" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">词数</text>
+  <rect x="120" y="56" width="100" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="170" y="76" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">含数字</text>
+  <rect x="220" y="56" width="100" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="270" y="76" text-anchor="middle" font-size="11.5" font-weight="700" fill="#4a5160">频道</text>
+  <rect x="320" y="56" width="100" height="30" rx="4" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="370" y="76" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c0392b">标签</text>
+
+  <rect x="20" y="86" width="100" height="28" rx="0" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="70" y="105" text-anchor="middle" font-size="11" fill="#4a5160">12</text>
+  <rect x="120" y="86" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="170" y="105" text-anchor="middle" font-size="11" fill="#4a5160">1</text>
+  <rect x="220" y="86" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="270" y="105" text-anchor="middle" font-size="11" fill="#4a5160">本地</text>
+  <rect x="320" y="86" width="100" height="28" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="370" y="105" text-anchor="middle" font-size="11" fill="#a8554a">财经</text>
+
+  <rect x="20" y="114" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="70" y="133" text-anchor="middle" font-size="11" fill="#4a5160">9</text>
+  <rect x="120" y="114" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="170" y="133" text-anchor="middle" font-size="11" fill="#4a5160">0</text>
+  <rect x="220" y="114" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="270" y="133" text-anchor="middle" font-size="11" fill="#4a5160">体育</text>
+  <rect x="320" y="114" width="100" height="28" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="370" y="133" text-anchor="middle" font-size="11" fill="#a8554a">体育</text>
+
+  <rect x="20" y="142" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="70" y="161" text-anchor="middle" font-size="11" fill="#4a5160">15</text>
+  <rect x="120" y="142" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="170" y="161" text-anchor="middle" font-size="11" fill="#4a5160">1</text>
+  <rect x="220" y="142" width="100" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="270" y="161" text-anchor="middle" font-size="11" fill="#4a5160">科技</text>
+  <rect x="320" y="142" width="100" height="28" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="370" y="161" text-anchor="middle" font-size="11" fill="#a8554a">财经？</text>
+
+  <path d="M20 182L20 190L320 190L320 182" fill="none" stroke="#e0c98a" stroke-width="1.4"/>
+  <text x="170" y="206" text-anchor="middle" font-size="11.5" font-weight="700" fill="#8a6d1f">特征 = 你拿什么来判断</text>
+  <path d="M320 216L320 224L420 224L420 216" fill="none" stroke="#c0392b" stroke-width="1.4"/>
+  <text x="470" y="228" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c0392b">标签 = 你要判断出什么</text>
+
+  <text x="20" y="252" font-size="12.5" font-weight="700" fill="#7b8294">同一批材料，两份标注规则会得出两套数据</text>
+  <rect x="20" y="262" width="200" height="66" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="120" y="284" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">标注规则表 / 标签体系</text>
+  <text x="120" y="302" text-anchor="middle" font-size="11" fill="#7b8294">什么算财经、什么算体育</text>
+  <text x="120" y="318" text-anchor="middle" font-size="11" fill="#7b8294">由人写清，含正例与边界例</text>
+
+  <path d="M224 295L248 295" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#farrow)"/>
+
+  <rect x="252" y="262" width="200" height="66" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="352" y="284" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">标注样本</text>
+  <text x="352" y="302" text-anchor="middle" font-size="11" fill="#7b8294">一行行填上标签那一栏</text>
+  <text x="352" y="318" text-anchor="middle" font-size="11" fill="#7b8294">两人各标一批，比对一致性</text>
+
+  <path d="M456 295L480 295" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#farrow)"/>
+
+  <rect x="484" y="262" width="196" height="66" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="582" y="284" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">模型学到的规律</text>
+  <text x="582" y="302" text-anchor="middle" font-size="11" fill="#a8554a">等于你写下的那套定义</text>
+  <text x="582" y="318" text-anchor="middle" font-size="11" fill="#a8554a">定义模糊，模型就模糊</text>
+
+  <text x="20" y="350" font-size="11.5" fill="#7b8294">第三行那条"某科技公司发布财报"，两人可能一个贴财经、一个贴科技——分歧暴露出的是定义没写清，不是谁粗心。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>给三千条标题贴三个标签，卡在了"什么算财经"。</strong>
+   2024 年春天，某高校校媒的数据小组想做一个"校园媒体议题分布"的小研究：
+   把过去一学年校媒发布的标题分成体育、财经、科技三类，看各类占比的变化。
+   他们从标题库里导出三千条记录，字段有标题文本、发布时间、所属栏目和字数。
+   小组里四个人分成两组，各标一百条试标。</p>
+
+<p>问题在第一天就冒出来了。最初的口径是"看到股价、基金、上市公司算财经"，
+   结果《某银行下调首套房贷利率》被漏掉了；《我校学生团队获创业大赛奖金》被一人标成财经、
+   一人标成科技；《学校食堂引入扫码点单》一人标科技、一人说"跟钱有关"标财经。
+   比对下来，一百条里只有六成多是一致的。
+   更要紧的是，他们发现"字数"这个特征几乎没用——
+   财经标题和体育标题的长度分布完全重叠，靠它判断等于瞎猜。</p>
+
+<p>第二版他们做了一件看起来很笨但很关键的事：写出一页标签定义，
+   每个标签给三条正例、两条边界例，并明确规定"标题里出现机构名称不等于财经，
+   要看是否涉及资金、价格、市场"；把"字数"换成"是否含金额词、是否含机构名、所属栏目"。
+   两组重新标同一批一百条，一致率上去了，才开始标其余两千九百条。
+   最终结果写进报告时，他们把定义页作为附件一起附上——
+   因为不附上，读者无从知道那三千个标签是怎么来的。</p>
+
+<div class="flag">
+  <span class="lbl">课堂推演案例（示意，非公开研究）</span>
+  <p style="margin:6px 0 0">上例的小组、时间与一致率数字是为说明流程而推演的，
+     不对应任何可公开查证的真实研究。可核查的部分是流程本身：
+     人工标注必须先做操作化——把变量与取值定义清楚，并报告一致性；
+     DOCA 这类开放数据库存在的意义就是把这一步公开出来供人复用<sup class="cite"><a href="#ref-4">[4]</a></sup>；
+     而"一致率多少才算够"在公开的标注操作指南里有明确建议。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>特征 / 属性、自变量</strong></td>
+      <td>术语表说明，特征在别处也叫属性、预测变量、自变量，指的是判断时依据的那些量；它是数据矩阵的列。</td>
+      <td>特征是"看什么"，标签是"要判什么"。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>标签 / 目标变量、真值</strong></td>
+      <td>标签是术语表里的目标（target），也叫因变量、结果变量、真值；分类任务的标签取自一个有限类别集合。</td>
+      <td>标签是答案那一栏，不是依据那一栏。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>样本</strong></td>
+      <td>样本是数据矩阵的一行，也就是一条记录；一条样本由"一组特征 + 一个标签"组成，特征则是列。</td>
+      <td>行是样本，列是特征。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的规则表</strong></td>
+      <td>人工标注先编一张规则表，写明每个变量的定义与取值，标注员据此贴标签；机器学习的标签体系就是同一件事，只是执行者从标注员换成了模型。</td>
+      <td>两者都是"先把类别定义写清，再贴标签"，定义不清两边都废。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>抽样与代表性</strong></td>
+      <td>抽样决定哪些材料进入研究，代表性决定结论能推多远；训练样本的构成同样决定模型能覆盖到什么范围。</td>
+      <td>样本选偏了，后面算得再精确，也只是在偏的范围内精确。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Glossary of Common Terms and API Elements（scikit-learn 术语表）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/glossary.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/glossary.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">本卡三个核心定义的出处：features（映射到数值或类别量的函数，在矩阵中为列，
+      别称属性 / 预测变量 / 自变量）、samples（一个单独的特征向量，为矩阵的行）、
+      targets（因变量，别称结果变量、真值、label，通过 fit 以 y 传入）。</span>
+  </li>
+  <li id="ref-2">
+    <strong>Getting Started（scikit-learn 官方入门）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/getting_started.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">出处为 fit 的两个输入参数说明：样本矩阵 X 的尺寸通常为
+      (n_samples, n_features)，即样本为行、特征为列；目标值 y 对分类任务取离散值，
+      是一维数组，第 i 项对应 X 的第 i 行。</span>
+  </li>
+  <li id="ref-3">
+    <strong>Common pitfalls and recommended practices（常见陷阱与推荐做法）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/common_pitfalls.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/common_pitfalls.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">特征选择必须只用训练数据，"把测试数据纳入特征选择会让模型产生乐观偏差"；
+      所有预处理变换只能从训练数据学出。本卡"特征选择要小心、别让测试数据参与"的依据。</span>
+  </li>
+  <li id="ref-4">
+    <strong>About the Database（DOCA · 变量数据库）</strong> · 苏黎世大学 IKMZ 传播与媒体研究所<br />
+    <a href="https://www.hope.uzh.ch/doca/aboutthedatabase" target="_blank" rel="noopener">https://www.hope.uzh.ch/doca/aboutthedatabase</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">开放获取的变量数据库，其目标是把各研究用到的变量编目、系统化并加以评估，
+      为变量定义与操作化提供起点，并可比较不同研究；
+      收录标准包括时效性、相关性与是否报告了信度。本卡"标签体系 ≈ 标注规则表""必须做操作化"这一对应关系的依据。</span>
+  </li>
+  <li id="ref-5">
+    <strong>Calculating inter-coder reliability in media content analysis using Krippendorff's Alpha</strong> · De Swert, K.<br />
+    <a href="https://polcomm.org/wp-content/uploads/ICR01022012.pdf" target="_blank" rel="noopener">https://polcomm.org/wp-content/uploads/ICR01022012.pdf</a>
+    <span class="badge">学术论文</span><br />
+    <span class="note">面向标注一致性计算的操作指南，讨论 Krippendorff's Alpha
+      的适用性与报告方式。该 PDF 正文为压缩流，<strong>本卡只用于确认"人工标注必须报告标注员间一致性"
+      这一方法论要求与其出处，未逐字引用其中的数值阈值</strong>，详见文末核查记录。</span>
+  </li>
+  <li id="ref-6">
+    <strong>Metrics and scoring: quantifying the quality of predictions（模型评估指标）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/modules/model_evaluation.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/modules/model_evaluation.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">原文写明 balanced_accuracy 的作用是"避免在不均衡数据集上产生虚高的性能估计"，
+      并指出常规准确率可能仅仅因为分类器利用了不均衡的测试集而高于随机水平。
+      精确率、召回率、F 值的定义也出自此页。本卡"类别不均衡时准确率会骗人"的依据。</span>
+  </li>
+  <li id="ref-7">
+    <strong>新闻审校"四必看""四必查"</strong> · 王平（河南日报全媒体编辑部）· 中国记协网<br />
+    <a href="https://www.zgjx.cn/2024-04/01/c_1310769706.htm" target="_blank" rel="noopener">https://www.zgjx.cn/2024-04/01/c_1310769706.htm</a>
+    <span class="badge">新闻行业规范</span><br />
+    <span class="note">该文把编辑经验整理成明文条目，例如"稿件中第一次出现的机构或单位的名称，
+      原则上应该用全称"。本卡借它说明一个道理：口径不写成明文规定，不同编辑就会做出不同选择——
+      这与标签定义不写清、不同标注者就会贴出不同标签，是同一个问题。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>逐条打开了来源 1、2、3、4、6、7</strong>，确认页面存在且内容与引用一致。
+        其中来源 1 的 features / samples / targets 三条定义，来源 6 的
+        "避免在不均衡数据集上产生虚高估计"一句，均回到原页面逐句核对。</li>
+    <li><strong>来源 4（DOCA）</strong>核对了站点性质：由苏黎世大学 IKMZ 运营，
+        条目经编辑与同行评审，许可协议为 CC BY-NC-ND 4.0。</li>
+    <li><strong>来源 5 的公开性与作者</strong>已确认（De Swert，阿姆斯特丹大学邮箱见文档内链接，
+        指向 Hayes &amp; Krippendorff 的 KALPHA 说明与宾大 Annenberg 的工作论文），
+        但正文未能提取，见下条。</li>
+    <li><strong>"特征选择只能用训练数据"</strong>在来源 3 与来源 2 的 Pipeline 说明之间交叉比对一致。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>来源 5（polcomm.org 上的 PDF）正文为压缩流，<strong>未能逐字核实</strong>。
+        本卡因此只引用"人工标注必须报告标注员间一致性"这一方法论要求，
+        <strong>没有引用任何具体数值阈值</strong>。若要在作业中引用阈值，请自行下载原文核对。</li>
+    <li>"应用案例"一节标明为<strong>示意</strong>：小组、时间与一致率数字均为推演，
+        未对应任何可公开查证的真实研究。</li>
+    <li>本卡未展开多标签、多分类的具体处理方式，也未讲不平衡数据的采样方法，
+        这些属于操作层面的内容，留在动手课处理。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 特征与标签 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 10 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '特征与标签的分工，下面哪种说法是准确的？',
+      options: [
+        '特征是要判断出的结果，标签是判断时看的依据',
+        '特征是你拿什么来判断，标签是你要判断出什么',
+        '特征和标签是同义词，只是叫法不同',
+        '特征只能是数字，标签只能是文字'],
+      answer: 1,
+      why: '特征是依据那一侧，标签是答案那一侧。两者不能互换，也不受数据类型限制——频道名这类文字同样可以是特征。',
+      ref: 1, refText: '来源 [1] features 与 targets 的定义' },
+
+    { level: 0, text: '一条训练样本通常由什么构成？',
+      options: [
+        '只有一组特征，不需要标签',
+        '只有一个人工给的结果，不需要特征',
+        '一组特征，加一个已知的标签',
+        '一段未经任何加工的原始文本'],
+      answer: 2,
+      why: '监督学习的样本是"输入 + 已知答案"。在 scikit-learn 里，特征组成矩阵 X（行是样本、列是特征），标签组成 y，第 i 个标签对应第 i 行样本。',
+      ref: 2, refText: '来源 [2] fit 的两个输入：X 与 y' },
+
+    { level: 1, text: '两名同学给同一句新闻标题贴标签，结果不一致。最可能的原因是什么？',
+      options: [
+        '其中一个人算错了，标签有唯一正解',
+        '标签的定义没写清，"什么算财经"两人理解不同',
+        '标题太短，机器读不懂',
+        '标签的数量太少'],
+      answer: 1,
+      why: '标签是人定的，定义没写到能覆盖边界情况时，两个人各自心里的尺子不同，结果自然不同。这不是粗心，而是任何贴标签工作都会遇到的固有难题，人工标注用标注员间一致性把这种分歧量出来。',
+      ref: 5, refText: '来源 [5] 人工标注必须检查并报告标注一致性' },
+
+    { level: 1, text: '为什么要注意正负样本的比例是否悬殊？',
+      options: [
+        '因为比例不均衡会让程序直接报错',
+        '因为如果九成样本都属于同一类，模型全判这一类也能拿到很高的准确率，数字好看却没有用',
+        '因为不均衡会明显拖慢训练速度',
+        '因为标签的种类数必须是偶数'],
+      answer: 1,
+      why: '官方文档明确指出，常规准确率可能仅仅因为利用了不均衡的测试集而显得高于随机水平，并为此提供了平衡准确率。所以在看分数之前，先看两类样本各有多少条。',
+      ref: 6, refText: '来源 [6] 不均衡数据集上准确率会虚高' },
+
+    { level: 2, text: '你要判断三千条标题是否属于财经类，手上有标题文本、发布时间、来源栏目和字数。最该先做的是哪一步？',
+      options: [
+        '把所有字段一股脑都当特征喂给模型',
+        '先写清"什么算财经"的定义与边界例，再据此标注一批样本',
+        '先训练模型，看准确率再决定标签怎么定',
+        '只挑那些一眼就能看出类别的标题来当样本'],
+      answer: 1,
+      why: '标签定义决定模型学到什么。定义没写清就开始标注，后面所有统计都建立在一把量不准的尺子上；而只挑容易判断的样本，等于把难例排除在研究之外。',
+      ref: 4, refText: '来源 [4] 人工标注必须先做操作化' },
+
+    { level: 2, text: '关于特征选择，下面哪一种做法是合理的？',
+      options: [
+        '能拿到的字段越多越好，全部放进去，让模型自己挑',
+        '先想清楚哪些信息对做这个判断真的有用，再整理成字段，并且只用训练数据来筛特征',
+        '只保留编号、行号这类唯一标识',
+        '用发布时间当唯一特征，因为它最好取到'],
+      answer: 1,
+      why: '好特征的标准是"判断时真的用得上"。唯一标识对每个样本都不同，学不到规律；而特征筛选如果用上测试数据，会让模型成绩虚高，官方文档把这一点列为典型陷阱。',
+      ref: 3, refText: '来源 [3] 特征选择只能用训练数据' },
+
+    { level: 3, text: '两位标注者各标一百条，一致率只有六成多。这时最该做的是什么？',
+      options: [
+        '直接开始训练模型，一致率不影响结果',
+        '回到标签定义，把分歧最大的例子拿出来讨论、修订定义，再重标一遍',
+        '换一个更复杂的模型来解决',
+        '把所有两人不一致的样本删掉，只用一致的样本训练'],
+      answer: 1,
+      why: '分歧率高说明定义本身不够清楚，问题在尺子而不在算法。删掉不一致样本等于把最难的那部分现实排除掉，会让模型看起来更好、实际更差。',
+      ref: 5, refText: '来源 [5] 通过修订标注规则提升一致性' },
+
+    { level: 3, text: '关于"标签体系相当于一份写清楚的标注规则表"这一说法，下面哪项判断站得住？',
+      options: [
+        '机器学习不需要标注规则表，模型会自己定义类别',
+        '两者都要求先把类别的定义与边界写清，并检查不同判断者之间的一致性',
+        '标注规则表只适用于人工标注，自动标注可以省略这一步',
+        '只要样本量足够大，定义模糊也会自动变清晰'],
+      answer: 1,
+      why: '自动标注换掉的只是执行者，不换方法论要求。DOCA 之所以把各研究的变量定义与操作化公开出来，正是为了让不同研究之间可比、可复用；定义与一致性这两步谁也省不掉。',
+      ref: 4, refText: '来源 [4] DOCA 对变量定义与操作化的公开' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

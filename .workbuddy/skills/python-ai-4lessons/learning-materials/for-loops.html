@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>for 循环 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 2 课 · 序号 06 / 17</div>
+  <h1>for 循环</h1>
+  <div class="badges">
+    <span class="badge">概念卡 06</span>
+    <span class="badge">前置：列表 · 条件判断</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">for 循环就是让同一件事，对一批数据自动做一遍。</p>
+    <p>把一批留言交给 for，就会逐条处理一遍。range() 生成序号，enumerate() 同时拿到序号和内容；
+       循环里删元素会让后面的元素往前挪而漏项，正确做法是另建一个新列表。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>for 循环像编辑部把一摞读者留言过一遍。不是把整摞抱起来一次读完，而是抽一张、看一眼、记一笔，
+     再抽下一张，直到摞空。抽到的每一张就是一次循环，记的那一笔就是循环体里做的事。
+     摞子的顺序就是清单的顺序，轮到第几张、还剩几张，全由这张清单本身决定。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能写出 for 循环遍历列表、字符串、字典的三种写法，并说出每种写法每次取出的是什么。</li>
+  <li>能区分 range() 与 enumerate()，并判断什么情况下需要序号。</li>
+  <li>能解释在循环里删除元素为什么会漏项，并写出用新列表的正确做法。</li>
+  <li>能判断一段循环代码里哪些语句属于循环体（看缩进），并说明 IndentationError 的成因。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>循环里的缩进，为什么差一格都不行？</summary>
+  <div class="body">
+    因为 Python 靠缩进判断"哪些语句属于这个循环"。缩进相同的语句被认为在同一层，
+    缩进多一层的才被算进循环体。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    官方风格指南要求每级缩进 <strong>4 个空格</strong>，并明确禁止混用制表符与空格——
+    混用会让肉眼看着对齐、解释器读起来不对齐，于是抛 <code>IndentationError</code> 或 <code>TabError</code>。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    还有一个常被忽略的推论：把统计或打印语句写在循环体里，它会重复执行一遍；
+    写在循环外面（不缩进），它才只执行一次。
+  </div>
+</details>
+
+<details>
+  <summary>为什么 range(5) 数出来是 0 到 4，不是 1 到 5？</summary>
+  <div class="body">
+    因为 <code>range()</code> 生成的序列<strong>不包含终止值</strong>。官方教程的表述是
+    "生成的序列绝不会包括给定的终止值"。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    这正好和列表的下标对齐：长度 5 的列表，合法下标就是 0 到 4。
+    想让序号从 1 开始显示，用 <code>range(1, 6)</code> 或 <code>enumerate(留言, start=1)</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>只想要内容，但还想知道"这是第几条"，怎么办？</summary>
+  <div class="body">
+    用 <code>enumerate()</code>。它每次吐出一个二元组：一个计数和一个值，计数默认从 0 开始，
+    可以指定 <code>start=1</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    官方教程也提到，要按索引迭代序列可以组合 <code>range()</code> 和 <code>len()</code>，
+    但"大多数情况下 <code>enumerate()</code> 函数很方便"。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    写稿时做编号清单、给命中留言标序号，都用得上它。
+  </div>
+</details>
+
+<details>
+  <summary>break 和 continue 差在哪里？</summary>
+  <div class="body">
+    <code>break</code> 是<strong>整个循环不要了</strong>，立刻跳出，后面的元素一个都不再看；
+    <code>continue</code> 是<strong>这一轮不要了</strong>，跳过当前元素剩下的语句，直接开始下一轮。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    廖雪峰教程还提醒一句实话：这两个语句会造成执行逻辑分叉，容易出错，
+    大多数循环并不需要它们。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    典型的合适用法是"找到第一条命中就停止"——那正是 break 的场景。
+  </div>
+</details>
+
+<details>
+  <summary>在循环里删列表元素，为什么会漏掉东西？</summary>
+  <div class="body">
+    因为删除会让后面的元素<strong>整体前移</strong>，而循环的下一轮已经走到下一位，
+    等于跳过一个。官方教程对此的说法很直接："很难正确地在迭代多项集的同时修改多项集的内容"，
+    更简单的方法是<strong>迭代副本，或者干脆创建一个新的多项集</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    实战做法是：边遍历边把"要保留的"追加进新列表，遍历结束后用新列表替换旧列表。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>for 循环是让程序对<strong>一批数据逐个执行同一段操作</strong>的语句。它和 C 语言那种"数数式"循环不同：
+   Python 的 <code>for</code> 是在列表、字符串等序列的元素上迭代，按元素在序列里出现的顺序逐个取用。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   每次取出的元素被赋给一个临时变量（习惯叫 <code>留言</code>、<code>稿件</code>、<code>行</code> 这类名字），
+   循环体就用这个变量干活。能被 for 逐个取用的东西，叫可迭代对象——列表、字符串、字典、文件对象都是。</p>
+
+<h3>为什么</h3>
+<p>新闻工作里最耗人的从来不是难事，而是<strong>重复的事</strong>：1000 条留言逐条查关键词、
+   80 篇稿件逐篇看有没有日期、每天早上把几家来源的标题扫一遍。人做这些事会累、会走神、标准会漂移；
+   循环不会。循环带来的不只是速度，更是<strong>一致的口径</strong>：
+   同一段代码跑 1000 条和跑 10 条，判断标准完全一样。
+   数据新闻手册里也强调，处理数据前先想清楚要回答哪些问题、变量够不够，
+   而"清洗和标准化"往往是数据项目里第一件大事<sup class="cite"><a href="#ref-6">[6]</a></sup>——这类工作正是循环最擅长承接的。</p>
+
+<h3>怎么工作</h3>
+<p>三件事要分清楚：<strong>从哪里取</strong>（要遍历的对象）、<strong>取出来叫什么</strong>（临时变量）、
+   <strong>取一条之后做什么</strong>（缩进的循环体）。取完最后一个元素，循环自然结束，程序继续往下走。
+   要序号时用 <code>range()</code> 生成数字序列，或让 <code>enumerate()</code> 一次给到序号和内容；
+   要提前收工时用 <code>break</code>；要跳过某一条时用 <code>continue</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<pre><code>留言列表 = ["老城区停车太难了", "这个政策挺好", "老城区又堵又乱"]
+命中清单 = []
+关键词 = "老城区"
+
+for i, 留言 in enumerate(留言列表, start=1):   # 序号从 1 开始
+    if 关键词 in 留言:
+        命中清单.append((i, 留言))             # 只把命中的记进新列表
+
+print("命中数量：", len(命中清单))              # 这句没缩进，只执行一次</code></pre>
+
+<p>同一件事也可以写成一行，这叫<strong>列表推导式</strong>：</p>
+
+<pre><code>命中清单 = [留言 for 留言 in 留言列表 if 关键词 in 留言]</code></pre>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 320" role="img" aria-label="for 循环逐条处理留言并累积命中清单的流程示意">
+  <defs>
+    <marker id="farrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">一次循环只处理一条：1000 条留言怎么变成一张命中清单</text>
+  <text x="20" y="40" font-size="11.5" fill="#7b8294">关键词 = "老城区"；循环体只看当前这一条，不看别的</text>
+
+  <rect x="20" y="76" width="150" height="72" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">留言列表</text>
+  <text x="95" y="120" text-anchor="middle" font-size="11" fill="#7b8294">1000 条，按顺序排</text>
+  <text x="95" y="138" text-anchor="middle" font-size="11" fill="#7b8294">第 1 条 → 第 1000 条</text>
+
+  <path d="M170 112L196 112" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#farrow)"/>
+
+  <rect x="200" y="76" width="190" height="72" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="295" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">循环体（每轮一次）</text>
+  <text x="295" y="120" text-anchor="middle" font-size="11" fill="#7b8294">if 关键词 in 留言:</text>
+  <text x="295" y="138" text-anchor="middle" font-size="11" fill="#7b8294">只判断当前这一条</text>
+
+  <path d="M390 92L420 92" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#farrow)"/>
+  <text x="405" y="84" text-anchor="middle" font-size="11" font-weight="700" fill="#2e7d4f">真</text>
+
+  <rect x="424" y="64" width="170" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="509" y="88" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">命中清单.append(留言)</text>
+  <text x="509" y="106" text-anchor="middle" font-size="11" fill="#a8554a">往新列表里追加</text>
+
+  <path d="M295 148L295 176" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#farrow)"/>
+  <text x="307" y="168" font-size="11" font-weight="700" fill="#7b8294">假</text>
+
+  <rect x="200" y="180" width="190" height="52" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="295" y="202" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">跳过这一条</text>
+  <text x="295" y="220" text-anchor="middle" font-size="11" fill="#7b8294">continue 或不写任何操作</text>
+
+  <path d="M509 120L509 144" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#farrow)"/>
+  <text x="519" y="136" font-size="11" fill="#7b8294">循环结束后</text>
+
+  <rect x="424" y="148" width="170" height="56" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="509" y="172" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">print(命中数量)</text>
+  <text x="509" y="190" text-anchor="middle" font-size="11" fill="#7b8294">len(命中清单)</text>
+
+  <path d="M295 232L295 258L95 258L95 152" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+    stroke-dasharray="4 3" marker-end="url(#farrow)"/>
+  <text x="160" y="276" font-size="11" fill="#7b8294">取完最后一个元素为止</text>
+
+  <text x="20" y="300" font-size="11.5" fill="#7b8294">提醒：输出语句写在循环体里会打印 1000 次，写在循环外面才只打印一次。</text>
+  <text x="20" y="316" font-size="11.5" fill="#7b8294">提醒：想边筛边删原列表会漏项，正确做法是像图里这样另建一个新列表。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>1000 条留言，一条规则，一张清单。</strong>2026 年 4 月，一个城市交通议题的系列报道上线后，
+   客户端后台积了 1000 条读者留言。编辑想知道的不是"有没有人提到老城区"，
+   而是"到底有多少条、分别是哪几条"——因为这个数字要写进稿子，还要拿来挑引语。</p>
+
+<p>人工做法是逐条读，读到相关的手动复制到另一个文档，同时在心里数数。这样做有三个问题：
+   数量记不准、中途被打断就要重来、两天后再统计口径可能已经变了。改成循环只需要四步：
+   把留言装进列表、循环逐条判断关键词是否出现、命中的追加进新清单、循环外打印数量。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   代码就是卡片上方那段：<code>enumerate(留言列表, start=1)</code> 让每条命中记录自带编号，
+   方便回头核对是第几条；<code>len(命中清单)</code> 给出可以写进稿子的数量。</p>
+
+<p>这里有一个容易犯的错：有人先想着"把不相关的删掉，剩下的就是命中"，于是在循环里对原列表做删除。
+   结果漏项——因为删除之后后面的元素会往前挪，而循环已经走到下一位。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   正确做法是反过来的：不动原列表，把要保留的往新列表里放。</p>
+
+<div class="flag">
+  <span class="lbl">示意</span>
+  <p style="margin:6px 0 0">上面的留言数量、时间与工作场景是课程设计时的推演，用于说明循环带来的口径一致性，
+      不代表某家媒体的真实操作记录。可核查的部分是语言规则：range 不含终止值、
+      enumerate 返回序号与值、迭代过程中修改多项集容易出错并建议改用新多项集。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>while 循环</strong></td>
+      <td>for 在一个现成的序列上逐个取用，次数由序列长度决定；while 只要条件成立就一直转，次数事先不一定知道。</td>
+      <td>for 是"把这一摞过完"，while 是"转到我喊停"。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>列表推导式</strong></td>
+      <td>推导式是"筛出并生成一个新列表"的一行写法，本质还是循环，只是省掉了先建空列表再 append 的步骤。</td>
+      <td>同一件事的两种写法：循环写给自己看，推导式写给一眼扫过的人看。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>遍历字典的三种方式</strong></td>
+      <td>直接遍历字典拿到的是键；<code>.values()</code> 拿到值；<code>.items()</code> 拿到键值对，最适合"编号配内容"的场景。</td>
+      <td>要什么就取什么，取错了会拿到键而不是内容。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工逐条标注</strong></td>
+      <td>人工标注是标注员逐条读材料、按同一张规则表贴标签；循环是把"逐条"这一步交给程序重复执行，判断规则仍由人写。</td>
+      <td>循环不会替你定规则，它只保证<strong>每条材料用的是同一条规则</strong>。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>4. 更多控制流工具（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/controlflow.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">4.2 节说明 for 在序列元素上迭代、并给出"很难正确地在迭代多项集的同时修改多项集的内容，
+      更简单的方法是迭代副本或创建新的多项集"；4.3 节说明 range 不含终止值；4.4 节讲 break 与 continue；
+      4.8 节讲函数定义。本卡多条结论均出自此处。</span>
+  </li>
+  <li id="ref-2">
+    <strong>循环（Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/basic/loop/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/basic/loop/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">给出 for 与 while 的分工、range 与 list 的配合、break 与 continue 的对比，
+      并提醒"不要滥用 break 和 continue"，因为会造成执行逻辑分叉、容易出错。</span>
+  </li>
+  <li id="ref-3">
+    <strong>内置函数 · enumerate()</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/functions.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">enumerate(iterable, start=0) 的官方定义与示例：返回的迭代器给出"一个计数 + 一个值"，
+      计数默认从 0 开始，可用 start 指定起点。本卡"要序号用 enumerate"的依据。</span>
+  </li>
+  <li id="ref-4">
+    <strong>5. 数据结构（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/datastructures.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">5.1 节含列表推导式，5.5 节讲字典的遍历与成员判断（<code>in</code> 检查键），
+      5.6 节"循环的技巧"集中讲遍历时取序号、键值对等常用写法。本卡辨析表的依据。</span>
+  </li>
+  <li id="ref-5">
+    <strong>PEP 8 – Style Guide for Python Code</strong> · Guido van Rossum, Barry Warsaw, Alyssa Coghlan<br />
+    <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">https://peps.python.org/pep-0008/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">Indentation 一节要求每级缩进 4 个空格；Tabs or Spaces? 一节写明
+      "Python disallows mixing tabs and spaces for indentation"。本卡"缩进坑"的依据。</span>
+  </li>
+  <li id="ref-6">
+    <strong>Basic Steps in Working with Data（The Data Journalism Handbook 1）</strong> · Steve Doig / European Journalism Centre<br />
+    <a href="https://datajournalism.com/read/handbook/one/understanding-data/basic-steps-in-working-with-data" target="_blank" rel="noopener">datajournalism.com/read/handbook/one/understanding-data/basic-steps-in-working-with-data</a>
+    <span class="badge">行业手册</span><br />
+    <span class="note">数据新闻手册中"处理数据的基本步骤"一章。核心观点：动手前先列清楚要回答的问题；
+      数据往往是脏的，需要清洗与标准化（例如把 Male / M / 1 / MALE 统一成 M、F）；
+      还要警惕数据字典没写明的取值含义。本卡"为什么要批量处理、口径要一致"的依据。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草，
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li>来源 1—6 <strong>逐条打开确认页面存在</strong>，并核对内容与引用一致；
+        来源 2 确认新路径为 <code>/books/python/basic/loop/index.html</code>，
+        旧 wiki 路径未采用。</li>
+    <li>"迭代时修改多项集会出错"这一句<strong>回到来源 1 的 4.2 节原文核对</strong>，
+        原文并给出了两种替代策略（迭代副本、创建新多项集），本卡按原文表述转述。</li>
+    <li><code>enumerate()</code> 的 <code>start</code> 参数与返回值结构<strong>对照来源 3 的官方定义与示例</strong>，
+        未采用二手整理。</li>
+    <li>缩进要求<strong>回到来源 5 原文</strong>，确认"禁止混用制表符与空格"出自 PEP 8。</li>
+    <li>来源 6 的具体观点（问题先行、清洗与标准化、数据字典之外的取值约定）<strong>在原文中逐段核对</strong>。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>应用案例中的留言数量、时间与编辑部场景为<strong>课程推演</strong>，已在正文用"示意"标注。</li>
+    <li>本卡未逐字核对 <code>IndentationError</code> 与 <code>TabError</code> 的异常文档页，
+        这两个名称取自 Python 语言行为，建议在本机运行一次确认报错文案。</li>
+    <li>列表推导式一节<strong>只采用最简形式</strong>（<code>[x for x in 列表 if 条件]</code>），
+        嵌套推导式与字典推导式未展开，留到后续课程；来源 4 的完整说明比本卡更详细。</li>
+    <li>来源 6 是英文材料，本卡的转述<strong>已核对原句</strong>，但未做逐句对照翻译。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · for 循环 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 6 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: 'for 循环适合解决下面哪一类问题？',
+      options: [
+        '把同一段操作对一批数据逐个执行一遍',
+        '根据一个条件决定程序走哪条分支',
+        '把一条数据存进一个名字里备用',
+        '把程序运行的错误信息记录下来'],
+      answer: 0,
+      why: 'for 循环的价值就是"重复且逐个"：一批数据、同一段操作、一个一个来。按条件分流是条件判断的职责。',
+      ref: 1, refText: '来源 [1] for 语句在序列元素上迭代' },
+
+    { level: 0, text: '判断一段代码里哪些语句属于循环体，Python 依据的是什么？',
+      options: ['行末有没有分号', '语句的缩进层级', '语句里有没有变量', '语句的长短'],
+      answer: 1,
+      why: 'Python 用缩进表示代码块的归属，缩进相同的语句在同一层，多缩进一层的才算进循环体。风格指南要求每级 4 个空格。',
+      ref: 5, refText: '来源 [5] Indentation 与 Tabs or Spaces?' },
+
+    { level: 1, text: 'range(5) 生成的整数序列是哪一组？',
+      options: ['1, 2, 3, 4, 5', '0, 1, 2, 3, 4, 5', '0, 1, 2, 3, 4', '5, 4, 3, 2, 1'],
+      answer: 2,
+      why: 'range 生成的序列不包含终止值，所以 range(5) 是 0 到 4 共 5 个值，正好对应长度 5 的序列的合法下标。',
+      ref: 1, refText: '来源 [1] 4.3 range() 函数' },
+
+    { level: 1, text: '在一个列表上循环时对同一个列表做删除操作，为什么会漏掉条目？',
+      options: [
+        '因为 Python 禁止在循环里做任何修改，程序会直接报错退出',
+        '因为列表被删除后长度变成 0，循环提前结束',
+        '因为删除会改变列表的类型，后续判断失效',
+        '因为删除操作会让后面的元素前移，而循环已经走到下一位'],
+      answer: 3,
+      why: '删除元素后，后面的元素依次前移一位，而循环的下一轮已经指向下一位，于是被前移上来的那个元素没有被检查到。官方建议改为迭代副本或创建新的多项集。',
+      ref: 1, refText: '来源 [1] 4.2 节关于迭代时修改多项集的说明' },
+
+    { level: 2, text: '要输出"第几条留言命中了关键词"，每一条都要带编号，用哪种写法最省事？',
+      options: [
+        'for i, 留言 in enumerate(留言列表, start=1):',
+        'for 留言 in 留言列表: 然后再想办法自己数',
+        'for i in range(len(留言列表)): 然后忽略 i',
+        '把留言列表先排序，再看一遍'],
+      answer: 0,
+      why: 'enumerate 每轮同时给出序号和值，start 可以指定从 1 开始，正好满足"编号 + 内容"的需求。',
+      ref: 3, refText: '来源 [3] enumerate() 的官方定义与示例' },
+
+    { level: 2, text: '要在 1000 条留言里找出第一条含关键词的留言，找到就立刻停下，应该用什么？',
+      options: ['continue', 'break', 'pass', '把关键词写进 else'],
+      answer: 1,
+      why: 'break 直接结束整个循环，剩下的元素不再检查；continue 只跳过当前这一轮，还会继续往后找。',
+      ref: 1, refText: '来源 [1] 4.4 break 与 continue 语句' },
+
+    { level: 3, text: '下面两个写法都成立。要在一行里筛出一个新列表，更合适的判断是什么？',
+      options: [
+        '循环加 append 一定更快，任何时候都该用循环',
+        '推导式只能处理数字，不能处理中文文本',
+        '列表推导式（[留言 for 留言 in 列表 if 条件]）更简洁，适合这种"筛出并新建"的单一任务',
+        '两者完全等价，随便选，与可读性无关'],
+      answer: 2,
+      why: '推导式是循环的紧凑写法，适合"筛出并生成新列表"这一件事；一旦循环体里要做多件事（既统计又记录又打印），就该老老实实展开成 for 循环，可读性更重要。',
+      ref: 4, refText: '来源 [4] 5.1 列表详解中的列表推导式' },
+
+    { level: 3, text: '把人工"逐条标注"改写成循环来做，最需要守住的是什么？',
+      options: [
+        '把循环写短一点，循环体里的语句越少越好',
+        '把标注规则写进循环里，每处理一条就调整一次规则',
+        '先把材料排序，让相似的排在一起再处理',
+        '保证每条材料用的判断规则完全一致，且不受前几条结果的影响'],
+      answer: 3,
+      why: '循环替代的是"逐条"这个动作，不是"定规则"这件事。人工标注要求对全部材料使用同一套标注规则、同一套判断标准，否则统计出来的比例就无法支撑结论。',
+      ref: 6, refText: '来源 [6] 清洗与标准化：统一口径是数据工作的第一步' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

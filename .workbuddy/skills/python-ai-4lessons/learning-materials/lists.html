@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>列表 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 1 课 · 序号 03 / 17</div>
+  <h1>列表</h1>
+  <div class="badges">
+    <span class="badge">概念卡 03</span>
+    <span class="badge">前置：字符串 · 变量与数据类型</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">列表是把一列东西按顺序放在一起，可以随时增删改。</p>
+    <p>方括号，逗号隔开，位置从 0 起，<code>-1</code> 是最后一项。<code>append()</code> 末尾加一项，
+       <code>len()</code> 数有几项。列表可改，字符串不可改。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+       里面能放任何东西，<code>split()</code> 的返回值就是列表。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>列表就像编辑部墙上的一排稿签：位置是固定的次序（第一张、第二张），但内容随时能换、能抽走、能在末尾补一张。它和字符串最大的区别是「能改」——字符串是刻好的字，列表是白板。列表里可以放任何东西：标题、数字，甚至整本采访记录。还要记住：给列表起第二个名字，两个名字指的是同一块白板。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释列表"有序"和"可修改"分别意味着什么，并把这两点和字符串作对比。</li>
+  <li>能区分 <code>append()</code> 与 <code>extend()</code> 的效果差别，以及为什么它们都返回 <code>None</code>。</li>
+  <li>能写出从一批标题里取出第一条、最后一条、前三条的代码。</li>
+  <li>能判断什么时候该用列表、什么时候用一个普通变量就够了。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>append() 和 extend() 到底差在哪？</summary>
+  <div class="body">
+    <code>append(x)</code> 把 <code>x</code> 当成<strong>一项</strong>加到末尾；
+    <code>extend(y)</code> 把 <code>y</code> 里的内容<strong>逐个拆开</strong>加进去。
+    所以 <code>lst.append([3, 4])</code> 之后列表只多了一项（那一项本身是个列表），
+    而 <code>lst.extend([3, 4])</code> 之后列表多两项。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    官方文档给的等价写法很能说明问题：<code>append</code> 相当于 <code>a[len(a):] = [x]</code>，
+    <code>extend</code> 相当于 <code>a[len(a):] = iterable</code>。
+  </div>
+</details>
+
+<details>
+  <summary>为什么 a = b 之后改 a，b 也跟着变？</summary>
+  <div class="body">
+    因为 Python 的简单赋值<strong>不会复制数据</strong>。写 <code>b = a</code>，
+    只是让两个名字指向同一个列表。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    之后通过任何一个名字改动它，另一个名字"看到"的自然也是改过的样子。
+    想要一个独立副本，得写 <code>b = a[:]</code>——切片会返回一个新列表。
+    这一点和字符串不同：字符串改不了，所以不存在这个问题。
+  </div>
+</details>
+
+<details>
+  <summary>列表里真的能放任何东西吗？</summary>
+  <div class="body">
+    能。列表可以放不同类型的元素，也可以放另一个列表（这就成了嵌套），
+    当然也能放字典。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+    但要留意一个副作用：因为内容不统一，就不能对整列做统一操作——
+    <code>[None, 'hello', 10]</code> 是没法排序的，因为整数不能和字符串比较。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    实践中更常见的做法是让一个列表里放同一类东西，比如一整批标题。
+  </div>
+</details>
+
+<details>
+  <summary>split() 和列表是什么关系？</summary>
+  <div class="body">
+    <code>split()</code> 是字符串的方法，但它<strong>返回的是一个列表</strong>。
+    这是概念 02 和概念 03 之间那条最关键的连接线：
+    <code>'流感，疫苗，接种'.split('，')</code> 得到
+    <code>['流感', '疫苗', '接种']</code>。
+    有了列表，才能对这一批内容逐个处理——第 2 课的 for 循环就是绕着列表转的。
+  </div>
+</details>
+
+<details>
+  <summary>列表和字符串都有索引和切片，区别在哪？</summary>
+  <div class="body">
+    取值方式几乎一样：都从 0 开始，都能用负数，切片都是含头不含尾。
+    真正的分水岭是<strong>能不能改</strong>：字符串是不可变对象，列表是可变对象。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    <code>word[0] = 'J'</code> 会报 <code>TypeError</code>，而
+    <code>squares[3] = 64</code> 完全合法。
+    另外，对列表做切片得到的是一个新列表，不是"视图"。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>列表是用方括号标注、逗号分隔的一组值，是 Python 最常用的<strong>复合数据类型</strong>。
+   它有两个关键性质：<strong>有序</strong>（每一项都有固定位置，可以用索引取）和
+   <strong>可修改</strong>（可以原地替换、追加、删除）。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   索引与切片的规则和字符串一致，还支持嵌套——列表里放列表，
+   就像一张二维表格。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   列表本身是可变对象，这一点把它和字符串、元组区分开来。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<h3>为什么</h3>
+<p>三个原因。第一，<strong>新闻工作里"一批"是常态</strong>：一批标题、一批关键词、
+   一批读者留言、一周的推送记录。用单个变量一条条存，超过十条就没法看了。
+   第二，<strong>列表是"从一条到一万条"的载体</strong>：第 2 课的 for 循环、
+   第 3 课把语料逐条处理，都是绕着列表转的。
+   第三，<strong>列表和字典是机器学习的落地点</strong>：概念 10 里"一条样本 = 一组特征 + 一个标签"，
+   写成代码就是"列表装多条样本、字典描述单条样本"。
+   换句话说，第 1 课这两个容器，到第 3 课还会原样出现一次。</p>
+
+<h3>怎么工作</h3>
+<ol>
+  <li><strong>建列表</strong>：<code>titles = ['A小区改造', 'B桥通车', 'C校开学']</code>，空列表写作 <code>[]</code>。</li>
+  <li><strong>取一项</strong>：<code>titles[0]</code> 是第一条，<code>titles[-1]</code> 是最后一条，
+      越界会报 <code>IndexError</code>。<sup class="cite"><a href="#ref-4">[4]</a></sup></li>
+  <li><strong>取一段</strong>：<code>titles[0:3]</code> 取前三条，返回的是<strong>新列表</strong>，
+      不是原来的列表的一部分。</li>
+  <li><strong>加内容</strong>：<code>append(x)</code> 加一项，<code>extend(y)</code> 加一串，
+      <code>insert(i, x)</code> 插到指定位置。<sup class="cite"><a href="#ref-2">[2]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+  <li><strong>查信息</strong>：<code>len(lst)</code> 数几项，<code>x in lst</code> 判断在不在，
+      <code>lst.count(x)</code> 数出现几次，<code>lst.index(x)</code> 找第一次出现的位置。</li>
+  <li><strong>改与删</strong>：<code>lst[1] = '新标题'</code> 直接替换，<code>lst.pop()</code> 取走最后一项，
+      <code>del lst[0]</code> 按位置删。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>从字符串来</strong>：<code>split()</code> 直接给你一个列表，这是最常用的一步入口。</li>
+</ol>
+
+<blockquote>
+  有一类方法只改列表本身，不返回有用的结果：<code>append</code>、<code>extend</code>、
+  <code>insert</code>、<code>remove</code>、<code>sort</code> 的返回值都是 <code>None</code>。
+  官方文档把这条写成一条设计原则：原地修改且不返回特定项的方法，从不返回集合实例本身，
+  而是返回 <code>None</code>。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  所以 <code>titles = titles.append('X')</code> 会把 titles 写成 <code>None</code>，是最常见的初学者事故。
+</blockquote>
+
+<table>
+  <thead>
+    <tr><th style="width:30%">写法</th><th style="width:22%">会改动原列表吗</th><th>返回什么</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>lst.append('新稿')</code></td><td>会，末尾多一项</td><td><code>None</code></td></tr>
+    <tr><td><code>lst.extend(['甲', '乙'])</code></td><td>会，末尾多两项</td><td><code>None</code></td></tr>
+    <tr><td><code>len(lst)</code></td><td>不会</td><td>一个整数，表示有几项</td></tr>
+    <tr><td><code>'甲' in lst</code></td><td>不会</td><td><code>True</code> 或 <code>False</code></td></tr>
+    <tr><td><code>lst[1:4]</code></td><td>不会</td><td>一个新列表（浅拷贝）</td></tr>
+  </tbody>
+</table>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 378" role="img" aria-label="列表的索引、append 与 extend 的区别、split 返回列表的示意图">
+  <defs>
+    <marker id="l1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">列表：按位置排好的一列，内容随时可以改</text>
+
+  <text x="20" y="46" font-size="12.5" font-weight="700" fill="#7b8294">① 一批标题就是一个列表，位置固定、内容可改</text>
+
+  <text x="95" y="68" text-anchor="middle" font-size="11" fill="#7b8294">0</text>
+  <text x="253" y="68" text-anchor="middle" font-size="11" fill="#7b8294">1</text>
+  <text x="411" y="68" text-anchor="middle" font-size="11" fill="#7b8294">2</text>
+  <text x="569" y="68" text-anchor="middle" font-size="11" fill="#7b8294">3</text>
+
+  <rect x="20" y="76" width="150" height="48" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="106" text-anchor="middle" font-size="12.5" fill="#2c2c2a">A小区改造</text>
+  <rect x="178" y="76" width="150" height="48" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="253" y="106" text-anchor="middle" font-size="12.5" fill="#2c2c2a">B桥通车</text>
+  <rect x="336" y="76" width="150" height="48" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="411" y="106" text-anchor="middle" font-size="12.5" fill="#2c2c2a">C校开学</text>
+  <rect x="494" y="76" width="150" height="48" rx="6" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="569" y="106" text-anchor="middle" font-size="12.5" fill="#2c2c2a">D站启用</text>
+
+  <text x="95" y="142" text-anchor="middle" font-size="11" fill="#7b8294">-4</text>
+  <text x="253" y="142" text-anchor="middle" font-size="11" fill="#7b8294">-3</text>
+  <text x="411" y="142" text-anchor="middle" font-size="11" fill="#7b8294">-2</text>
+  <text x="569" y="142" text-anchor="middle" font-size="11" fill="#7b8294">-1</text>
+
+  <text x="20" y="166" font-size="11.5" fill="#7b8294">有序：位置固定，titles[-1] 就是最后一条。可改：titles[0] = '新标题' 直接换掉第一项。</text>
+
+  <text x="20" y="190" font-size="12.5" font-weight="700" fill="#7b8294">② 两种"加内容"：append 加一项，extend 加一串</text>
+
+  <rect x="20" y="200" width="330" height="76" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="185" y="224" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2c2c2a">lst.append('E路封闭')</text>
+  <text x="185" y="245" text-anchor="middle" font-size="11.5" fill="#7b8294">把这一项整个加到末尾</text>
+  <text x="185" y="266" text-anchor="middle" font-size="12" fill="#c0392b">[…] → 末尾多 1 项</text>
+
+  <rect x="370" y="200" width="330" height="76" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="535" y="224" text-anchor="middle" font-size="12.5" font-weight="700" fill="#2c2c2a">lst.extend(['F馆开放', 'G校迁址'])</text>
+  <text x="535" y="245" text-anchor="middle" font-size="11.5" fill="#7b8294">把里面的每一项分别加进去</text>
+  <text x="535" y="266" text-anchor="middle" font-size="12" fill="#c0392b">[…] → 末尾多 2 项</text>
+
+  <text x="20" y="300" font-size="12.5" font-weight="700" fill="#7b8294">③ split() 的返回值就是列表 —— 从字符串到列表的那道门</text>
+
+  <rect x="20" y="310" width="320" height="48" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="180" y="340" text-anchor="middle" font-size="12" fill="#2c2c2a">'流感，疫苗，接种'.split('，')</text>
+
+  <path d="M348 334L372 334" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#l1)"/>
+
+  <rect x="376" y="310" width="324" height="48" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="538" y="340" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">['流感', '疫苗', '接种']</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一周的推送记录，两个名字指向同一块白板。</strong>
+   2026 年 5 月，某地级市融媒体中心的新媒体编辑要把一周的推送记录理清楚：
+   5 天一共 87 条标题，来自三个栏目。她做的第一件事，是把 87 条标题放进一个列表
+   <code>titles</code>——这一步之后就再也不用数"我存到第几条了"。</p>
+
+<p>接着她想留一份原始副本，于是写了 <code>titles_backup = titles</code>，
+   然后用 <code>titles_backup.append(...)</code> 往副本里补录漏掉的几条。
+   补完之后她发现，<code>titles</code> 也跟着变了——85 条变成了 90 条。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   原因不是 <code>append</code> 出了问题，而是这一行赋值没有复制任何东西，
+   两个名字指向的是同一个列表。</p>
+
+<p>正确的写法是 <code>titles_backup = titles[:]</code>，切片会返回一个新列表。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   改过来之后，她可以用 <code>len()</code> 分别数两个列表的条数，用 <code>in</code> 检查某条标题有没有重复，
+   用 <code>append</code> 放心地往副本里补录。三个动作加起来，87 条记录十分钟理完。</p>
+
+<div class="flag">
+  <span class="lbl">示意（推演场景，非公开报道）</span>
+  <p style="margin:6px 0 0">上面的人物与数据为教学推演。
+     "副本没有真正复制"这个问题在真实项目里出现得非常频繁，
+     排查时往往要花掉比写代码更多的时间——这也是本卡把它写进应用案例的原因。
+     第 2 课的 for 循环会让这一步变得更自然：逐个判断、分类追加，是列表最典型的用法。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>字符串（概念 02）</strong></td>
+      <td>两者都是序列，索引与切片规则几乎一样。区别在可变性：字符串是刻好的字，
+          不能原地修改；列表是白板，随时可以改。<code>word[0] = 'J'</code> 报错，
+          <code>lst[0] = 'J'</code> 合法。</td>
+      <td>字符串不可变，列表可变；这也是 split() 能把前者变成后者的原因。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>元组（tuple）</strong></td>
+      <td>写法上把方括号换成圆括号，取值方式完全一样，但元组<strong>一旦创建就不能修改</strong>，
+          也没有 append、insert 这些方法。</td>
+      <td>要不要改动，决定用列表还是元组。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>字典（概念 04）</strong></td>
+      <td>列表按<strong>位置</strong>取（第 0 项），字典按<strong>名字</strong>取（<code>d['标题']</code>）。
+          列表里可以放字典，字典里也可以放列表。</td>
+      <td>知道"第几位"就用列表，知道"叫什么"就用字典。</td>
+    </tr>
+    <tr>
+      <td><strong>受控词表<br />（IPTC Media Topics）</strong></td>
+      <td>给内容条目标关键词时，行业上用的是一份受控词表——IPTC 的 Media Topics 收录了
+          1200 多个术语，覆盖 13 种语言，每年至少更新一次。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+          一条记录的关键词在程序里就是一个列表，但列表里的值必须来自这份词表。</td>
+      <td>列表管"有几项、什么顺序"，受控词表管"哪些值才算数"。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Python 速览 · 3.1.3 列表（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/introduction.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">列表是"用方括号标注，逗号分隔的一组值"、支持索引与切片、
+      与不可变字符串不同列表是 mutable 类型、<code>append()</code> 添加条目、
+      以及"Python 中的简单赋值绝不会复制数据……你通过一个变量对列表所做的任何更改
+      都会被引用它的所有其他变量看到"。本卡几处关键表述均出自此页。</span>
+  </li>
+  <li id="ref-2">
+    <strong>数据结构 · 5.1 列表详解与 5.2 del 语句（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/datastructures.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">列表全部方法的官方定义：<code>append</code>（"在列表末尾添加一项。
+      类似于 a[len(a):] = [x]"）、<code>extend</code>（"通过添加来自 iterable 的所有项来扩展列表"）、
+      <code>insert</code>、<code>remove</code>、<code>pop</code>、<code>index</code>、<code>count</code>、<code>sort</code>。
+      另有两条重要表述：这类方法"返回默认值 None"，以及 <code>[None, 'hello', 10]</code> 不可排序。</span>
+  </li>
+  <li id="ref-3">
+    <strong>内置类型 · 序列类型 list 与方法汇总（Python 官方中文文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/stdtypes.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/stdtypes.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">列表方法的完整参考页，本卡用它作为"加内容"一类方法的权威出处。
+      注意：核查时抓取到的只是页面被截断的前半段，
+      列表相关小节的正文未取到，详见文末「仍是缺口的地方」。
+      详细的定义原文以来源 2 为主。</span>
+  </li>
+  <li id="ref-4">
+    <strong>使用 list 和 tuple（廖雪峰 Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/basic/list-tuple/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/basic/list-tuple/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">"list 是一种有序的集合，可以随时添加和删除其中的元素"；
+      索引从 0 开始、越界报 IndexError、用 -1 取最后一个元素；
+      "list 里面的元素的数据类型也可以不同"（<code>L = ['Apple', 123, True]</code>）；
+      以及元组与列表的对比。</span>
+  </li>
+  <li id="ref-5">
+    <strong>术语对照表（Python 官方中文文档）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/glossary.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/glossary.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">mutable（可变对象）与 immutable（不可变对象）的官方定义。
+      本卡"列表是白板、字符串是刻好的字"这一对比的依据；
+      也解释了为什么不可变的字符串可以被当作字典的键（见概念 04）。</span>
+  </li>
+  <li id="ref-6">
+    <strong>Media Topics · Subject Taxonomy for the Media</strong> · IPTC（国际新闻电信理事会）<br />
+    <a href="https://iptc.org/standards/media-topics/" target="_blank" rel="noopener">https://iptc.org/standards/media-topics/</a>
+    <span class="badge">行业标准</span><br />
+    <span class="note">新闻行业给稿件标主题用的受控词表。原页写明它收录了 1200 多个术语、
+      2010 年首次发布、每年至少更新一次，现已提供 13 种语言版本（含中文）。
+      本卡把它作为非技术类来源，说明"一篇文章的关键词是一份有约束的清单"，
+      而不是随手写的词——这正是列表在新闻场景里的真实对应物。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1、2 逐段核对</strong>，页面存在且内容与引用一致。
+        "简单赋值绝不会复制数据"、"append 类似于 a[len(a):] = [x]"、
+        "extend 通过添加来自 iterable 的所有项来扩展列表"、
+        "仅修改列表的方法返回默认值 None" 四处均回到原文逐字确认。</li>
+    <li><strong>append 与 extend 的区别</strong>用官方给出的等价写法交叉验证了一遍，
+        确认不是二手转述。</li>
+    <li><strong>来源 4 的"list 里可以放不同类型"与来源 2 的"并非所有数据都可以排序"</strong>
+        互相对照后写入，避免只说一半。</li>
+    <li><strong>来源 6 已访问确认</strong>：1200 多个术语、2010 年首发、13 种语言（含中文）
+        三项数字均可在该页原文中找到。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 3 未能逐字核实</strong>：该页体量极大，抓取时在 <code>str.isspace()</code>
+        处被截断，列表方法所在的序列类型小节未取到正文。
+        本卡的列表方法说明以来源 2（教程）为主，此页仅作为权威出处备查；
+        正式引用前建议自己打开该页确认。</li>
+    <li><strong>没有展开讲"浅拷贝"</strong>：<code>b = a[:]</code> 对只放字符串的列表是安全的，
+        但如果列表里还嵌着列表或字典，拷贝出来的副本仍然共享内部对象。
+        这个坑要等概念 04（字典）学完才讲得清，本卡刻意留到后面。</li>
+    <li><strong>"应用案例"标明为示意</strong>：人物、条数与场景均为教学推演，
+        不是真实项目记录。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 列表 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 3 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: 'lst = [\'A\', \'B\', \'C\', \'D\']，那么 lst[-1] 得到的是什么？',
+      options: ['\'A\'', '\'D\'', '\'C\'', '会报错，负数不能用'],
+      answer: 1,
+      why: '负索引从右边开始数，-1 就是最后一项。-2 是倒数第二项，以此类推；列表只有 4 项时 lst[-5] 才会越界。',
+      ref: 4, refText: '来源 [4] 用 -1 索引取最后一个元素' },
+
+    { level: 0, text: '下面哪个写法是在列表末尾加一项？',
+      options: ['lst.append(\'新稿\')', 'lst.extend()', 'lst + \'新稿\'', 'lst[0] = \'新稿\''],
+      answer: 0,
+      why: 'append() 在列表末尾添加一项。extend() 需要传一个可迭代对象；列表加字符串会报类型错误；lst[0] 是替换第一项，不是追加。',
+      ref: 2, refText: '来源 [2] list.append 的官方定义' },
+
+    { level: 1, text: '执行 lst = [1, 2]，然后 lst.append([3, 4])。现在 len(lst) 是多少？',
+      options: ['4', '3', '2', '会报错，列表里不能放列表'],
+      answer: 1,
+      why: 'append 把参数当成一项整体加到末尾，所以 lst 变成 [1, 2, [3, 4]]，长度是 3。想要变成 [1, 2, 3, 4] 应该用 extend。',
+      ref: 2, refText: '来源 [2] append 与 extend 的定义对比' },
+
+    { level: 1, text: '先写 a = [\'甲\', \'乙\']，再写 b = a，然后 b.append(\'丙\')。现在 a 是什么？',
+      options: ['[\'甲\', \'乙\']', '[\'甲\', \'乙\', \'丙\']', '会报错', '[\'甲\', \'乙\', \'丙\', \'丙\']'],
+      answer: 1,
+      why: 'Python 中的简单赋值绝不会复制数据：b = a 只是让两个名字指向同一个列表，通过任何一个名字改动，另一个名字看到的也是改过的样子。要独立副本得写 b = a[:]。',
+      ref: 1, refText: '来源 [1] 关于赋值不复制数据的原文' },
+
+    { level: 2, text: '有一批读者留言列表 msgs，要统计其中含"退款"二字的有几条。最合理的做法是？',
+      options: [
+        '用 len(msgs) 直接得到条数就够了',
+        '逐条用 in 判断是否包含"退款"，把符合的数目累计起来',
+        '把整个列表用加号拼成一个长字符串，再数"退款"出现了几次',
+        '用 append 把所有不含"退款"的留言从列表里删掉'],
+      answer: 1,
+      why: 'len(msgs) 数的是留言总数，不是符合条件的条数；拼成长字符串会把不同留言连在一起，边界对不上；append 是"加"，删留言要用 pop 或 remove，而且删完原始数据就没了。逐条判断再计数才是对的做法。',
+      ref: 1, refText: '来源 [1] 列表支持索引与切片、可用 in 判断' },
+
+    { level: 2, text: '关于 append() 和 extend()，下面哪种说法是对的？',
+      options: [
+        '两者完全一样，只是名字不同',
+        'append 把参数当成一项加到末尾，extend 把参数里的元素逐个加进去',
+        'append 一次加一串，extend 一次加一项',
+        '两者都会返回一个新列表，原列表保持不变'],
+      answer: 1,
+      why: '官方文档给出的等价写法最能说明问题：append 类似于 a[len(a):] = [x]，extend 类似于 a[len(a):] = iterable。另外这两个方法和 insert、remove、sort 一样，返回值都是 None，不会返回新列表。',
+      ref: 2, refText: '来源 [2] append 与 extend 的等价写法' },
+
+    { level: 3, text: '记录 s = \'王某某，男，45岁\'，要取出"男"这个字段。下面哪种判断最站得住？',
+      options: [
+        '用 s[4] 直接取最省事，反正它现在就是第 5 个字',
+        '用 s.split(\'，\')[1] 取更好：按分隔符切开再按位置取，字段顺序是明确的',
+        '字符串不能拆开，只能手工把"男"复制出来',
+        '要先做 len(s) 检查，长度不足 3 就不能拆'],
+      answer: 1,
+      why: '两种写法当下都能取到"男"，但 s[4] 依赖"姓名恰好两个字、逗号恰好是全角"这些没写下来的假设；记录来源一改（比如姓名变成三个字），s[4] 就取错了。先按分隔符切再按字段位置取，意图写在代码里，别人也看得懂。',
+      ref: 2, refText: '来源 [2] 列表的索引与切片' },
+
+    { level: 3, text: '一批新闻标题要交给第 3 课的机器学习，每条还要带一个"栏目"标签。用列表还是字典？',
+      options: [
+        '全都用列表，列表最灵活，什么都能装',
+        '用列表装多条样本（一条一项），用字典描述单条样本（标题、栏目各自有名字）',
+        '全都用字典，字典查找更快',
+        '两个都不用，直接把所有内容写进一个长字符串'],
+      answer: 1,
+      why: '"一条样本 = 一组特征 + 一个标签"，落地成代码就是列表装多条、字典描述单条——这正是概念 10 要展开的结构。全用列表时"第 0 项是标题还是栏目"要靠记忆；全用字典则没法自然地表示"一批"；塞进一个长字符串就再也拆不回来了。',
+      ref: 1, refText: '来源 [1] 列表可嵌套，可包含不同类型元素' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

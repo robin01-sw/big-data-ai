@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>情感分析 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 4 课 · 序号 15 / 17</div>
+  <h1>情感分析</h1>
+  <div class="badges">
+    <span class="badge">概念卡 15</span>
+    <span class="badge">前置：文本分类 · 中文分词 · 模型评估</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">8 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">情感分析就是让机器判断一段文本是正面、负面还是中性。</p>
+    <p>但它比"分对类别"难得多：反讽、双重否定、领域差异都会让模型翻车。
+       情感词典法看词、机器学习看统计规律、大模型看上下文，三者能力与成本差别很大，
+       而且没有一种可以省掉人工复核。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>情感分析像给一屋子人做情绪点名。词典法相当于手里拿一份"好词坏词"名单，谁提到名单上的词就记一笔——很快，但一句反话会被记成夸奖。机器学习像先看过一万条已经标好情绪的留言，自己摸索出规律，但它只认自己看过的那个圈子。大模型像请一位读过很多书的人来听，能听出反话，只是要花成本，且他的判断仍需你复核。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能用自己的话说清情感分析在做什么，以及它与文本分类是什么关系。</li>
+  <li>能说出情感词典法、机器学习、大模型三条路线各自的能力边界与成本差别。</li>
+  <li>能指出三个最容易让情感分析出错的典型语言现象。</li>
+  <li>能对一批评论跑一次情感分析，并写清这次分析的方法与局限。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>情感分析是不是就是"数正面词、减负面词"？</summary>
+  <div class="body">
+    情感词典法基本就是这么做的：分词后逐个查情感词典，把正面词加分、负面词减分，看总分落在哪一侧。
+    这条路线的优点是透明、可解释、不依赖训练数据；缺点是它只看词不看语境，
+    遇到反讽、双重否定、条件句就会出错。领域奠基者明确提出过一条判断：
+    <strong>拥有情感词典是必要的，但远远不足以实现准确的情感分析</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>为什么模型在电商评论上很准，换到新闻评论就不准了？</summary>
+  <div class="body">
+    因为模型学的是<strong>它见过的那个领域里的用词习惯</strong>，不是"情感"本身。
+    snownlp 的官方说明就写得很直白：它的情感训练数据主要是买卖商品时的评价，
+    用在其他领域效果可能不好。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    新闻评论里的"这操作真行""还能这么干"，在电商语料里几乎不出现，
+    模型没有对应的经验，自然判错。这在术语上叫<strong>领域不匹配</strong>。
+  </div>
+</details>
+
+<details>
+  <summary>准确率 90% 是不是就够了？</summary>
+  <div class="body">
+    不够，而且 90% 这个数字本身可能没说清任何事。至少要问三件事：
+    正类、负类各自的精确率和召回率分别是多少<sup class="cite"><a href="#ref-5">[5]</a></sup>；
+    错误是否<strong>集中在某一类</strong>（比如全部错在反讽上，那就不是随机误差，而是系统性偏差）；
+    以及样本里正负比例是否悬殊（如果九成都是正面，那全判正面也有 90%）。
+  </div>
+</details>
+
+<details>
+  <summary>大模型能取代前两种方法吗？</summary>
+  <div class="body">
+    目前不能一概而论。大模型在理解反讽、上下文和"给出理由"上明显更强，适合样本量不大、
+    需要解释性的任务；但它的成本、速度、可复现性都不如本地模型，同一句话问两次答案也可能不同。
+    更实际的做法是<strong>分工</strong>：用本地模型或词典法跑全量数据，
+    用大模型处理抽样出来的疑难样本，再用人工核对模型的分歧点。
+  </div>
+</details>
+
+<details>
+  <summary>我能不能直接把模型结果写进稿子里？</summary>
+  <div class="body">
+    不能把模型输出当成事实。模型给出的是<strong>概率</strong>，不是"读者满意度"这类事实。
+    学术界的通行做法是：任何自动化标注都必须与人工标注的<strong>黄金标准</strong>在抽样上比对一致性，
+    并像报告标注员间一致性一样报告这个一致性——未经校验的自动化流程，
+    只会快速产出看起来很权威的胡说。<sup class="cite"><a href="#ref-8">[8]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>情感分析（sentiment analysis），也叫意见挖掘（opinion mining），是判断一段文本所表达的
+   <strong>主观倾向</strong>——正面、负面或中性——的计算任务。它的核心任务包括三项：
+   找出被评价的对象及其方面、判定每个方面上的意见极性、然后把结果汇总呈现。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>为什么</h3>
+<p>两个原因。第一是<strong>规模</strong>：两万条评论靠人读，读不完也读不准。
+   第二是<strong>定量本身就是判断依据</strong>：领域奠基者反复强调过一点——
+   "50% 的人说某件东西差"和"5% 的人说它差"是完全不同的两件事，
+   所以意见汇总必须给出<strong>比例</strong>，而不只是几个典型例子。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   对新闻工作来说，这正好对应一条编辑常识：<em>举三个例子不能证明一种趋势</em>。</p>
+
+<h3>怎么工作</h3>
+<p>三条主流路线，能力与成本依次上升：</p>
+<ol>
+  <li><strong>情感词典法</strong>：先分词（常用 jieba 这类工具）<sup class="cite"><a href="#ref-6">[6]</a></sup>，再逐个查情感词典。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+      中文最常用的资源之一是《情感词汇本体库》，它继承了 Ekman 的六大类基本情绪，
+      并扩展为 <strong>7 大类 21 小类</strong>，同时标注了情感强度和极性。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+      优点是透明可解释，缺点是不看语境。</li>
+  <li><strong>机器学习法</strong>：把文本用词袋或 TF-IDF 变成数字向量，
+      再用人工标注过的样本训练一个分类器，输出各类别的概率。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+      优点是能学出统计数据里说不出但有效的用词规律，可复现、速度快；缺点是严重依赖标注质量与领域匹配。</li>
+  <li><strong>大模型法</strong>：把文本和要求一起放进提示词，让大模型直接判断并给出理由。
+      优点是能处理反讽和上下文，且能输出可读的解释；缺点是成本、速度、可复现性都更差。</li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 300" role="img" aria-label="情感分析三条技术路线的流程对比">
+  <defs>
+    <marker id="carrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">情感分析的三条路线：能力与成本依次上升</text>
+
+  <text x="20" y="46" font-size="12.5" font-weight="700" fill="#7b8294">① 情感词典法 · 透明但不看语境</text>
+  <rect x="20" y="56" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">一段评论</text>
+  <text x="95" y="96" text-anchor="middle" font-size="11" fill="#7b8294">原始中文文本</text>
+  <path d="M174 84L186 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="190" y="56" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">分词</text>
+  <text x="265" y="96" text-anchor="middle" font-size="11" fill="#7b8294">jieba 切词</text>
+  <path d="M344 84L356 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="360" y="56" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="435" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">查情感词典</text>
+  <text x="435" y="96" text-anchor="middle" font-size="11" fill="#7b8294">7 大类 21 小类</text>
+  <path d="M514 84L526 84" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="530" y="56" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="605" y="78" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">加总得分</text>
+  <text x="605" y="96" text-anchor="middle" font-size="11" fill="#a8554a">正 / 负 / 中性</text>
+
+  <text x="20" y="138" font-size="12.5" font-weight="700" fill="#7b8294">② 机器学习法 · 快且可复现，但依赖标注与领域</text>
+  <rect x="20" y="148" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">一段评论</text>
+  <text x="95" y="188" text-anchor="middle" font-size="11" fill="#7b8294">原始中文文本</text>
+  <path d="M174 176L186 176" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="190" y="148" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">文本向量化</text>
+  <text x="265" y="188" text-anchor="middle" font-size="11" fill="#7b8294">词袋 / TF-IDF</text>
+  <path d="M344 176L356 176" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="360" y="148" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="435" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">已训练的分类器</text>
+  <text x="435" y="188" text-anchor="middle" font-size="11" fill="#7b8294">从标注样本学规律</text>
+  <path d="M514 176L526 176" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="530" y="148" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="605" y="170" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">正 / 负概率</text>
+  <text x="605" y="188" text-anchor="middle" font-size="11" fill="#a8554a">0.87 是概率</text>
+
+  <text x="20" y="230" font-size="12.5" font-weight="700" fill="#7b8294">③ 大模型法 · 懂语境，成本与不确定性最高</text>
+  <rect x="20" y="240" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="262" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">评论 + 提示词</text>
+  <text x="95" y="280" text-anchor="middle" font-size="11" fill="#7b8294">说清要求和输出格式</text>
+  <path d="M174 268L186 268" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="190" y="240" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="262" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">大模型</text>
+  <text x="265" y="280" text-anchor="middle" font-size="11" fill="#7b8294">读上下文</text>
+  <path d="M344 268L356 268" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="360" y="240" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="435" y="262" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">判断 + 理由</text>
+  <text x="435" y="280" text-anchor="middle" font-size="11" fill="#7b8294">可读到自然语言解释</text>
+  <path d="M514 268L526 268" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+  <rect x="530" y="240" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="605" y="262" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">抽样人工核查</text>
+  <text x="605" y="280" text-anchor="middle" font-size="11" fill="#a8554a">三条路线都省不掉</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>真实的工程应用：把"意见摘要"画成条形图。</strong>
+   在电商与产品搜索场景里，一种成熟做法叫<strong>基于方面的意见摘要</strong>
+   （aspect-based opinion summary，早期也叫 feature-based opinion summary）。
+   它不满足于给整条评论打一个"正面"标签，而是把评论拆到具体方面上——
+   电池续航、屏幕、售后——然后按方面汇总正负比例，用条形图呈现给用户。
+   这样用户不必读完几百条评论，也能看到"续航好评多、售后差评多"。
+   这个方法最早由 Hu 与 Liu 在 KDD-2004 提出，后来在 Google Product Search
+   一类产品里被实际采用。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<p><strong>同一思路在新闻场景的用法：</strong>面对两千条新闻评论，
+   不要只输出"正面 62%"，而要输出<strong>分议题的正负比例</strong>——
+   讨论价格时偏负面、讨论服务时偏正面。这才是能支撑报道结构的结论，
+   也才是"定量"真正发挥作用的地方。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<div class="flag">
+  <span class="lbl">课堂实测案例（示意，非公开报道）</span>
+  <p style="margin:6px 0 0">第 4 课动手 A 会用 snownlp 跑一批新闻评论。预期会看到：
+      它在电商式的直白评价上表现正常，但在新闻评论的<strong>反讽与网络化表达</strong>上明显失准。
+      原因就写在它的官方说明里——情感训练数据以商品评价为主。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+      这是一个刻意设计的"失败演示"，用来让领域不匹配的后果可见。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>文本分类</strong></td>
+      <td>文本分类是一大类任务，标签由你定义；情感分析是其中一个特例，标签固定为情绪倾向。</td>
+      <td>分类问"属于哪一类"，情感分析问"态度是正是负"。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>基于方面的情感分析<br />（ABSA）</strong></td>
+      <td>普通情感分析给整段文本一个标签；ABSA 要先找出被评价的对象或方面，再分别判定极性。</td>
+      <td>一句话里同时有夸有骂时，普通方法只能给一个标签，ABSA 能拆开。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>主题模型 / 词频统计</strong></td>
+      <td>主题模型和词频回答"大家在谈什么"；情感分析回答"大家态度如何"。两者互补，不能互相替代。</td>
+      <td>知道"在谈价格"和知道"对价格不满"是两件事。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注</strong></td>
+      <td>人工标注由训练过的标注员给材料贴标签；AI 情感标注由模型执行同一套判定，原理相同、执行者不同。</td>
+      <td>两者都要报告标注规则与一致性<sup class="cite"><a href="#ref-7">[7]</a></sup>，AI 只是把标注员换成了模型。<sup class="cite"><a href="#ref-8">[8]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Opinion Mining, Sentiment Analysis, and Opinion Spam Detection</strong> · Bing Liu（UIC）<br />
+    <a href="https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html" target="_blank" rel="noopener">https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">该领域奠基研究者的综述主页。本卡的"是什么/为什么"、ABSA 的由来、
+      "词典不足以保证准确"与"定量比例"两处判断均出自此页。</span>
+  </li>
+  <li id="ref-2">
+    <strong>大连理工大学情感词汇本体库</strong> · 信息检索研究室<br />
+    <a href="https://github.com/Warren1212/DLUT-Emotionontology" target="_blank" rel="noopener">https://github.com/Warren1212/DLUT-Emotionontology</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">7 大类 21 小类的中文情感词典与强度、极性标注。原始引用：徐琳宏, 林鸿飞, 潘宇, 等.
+      《情感词汇本体的构造》，情报学报, 2008, 27(2): 180-185。注意其许可协议仅限学术研究，
+      商用需联系 irlab@dlut.edu.cn。</span>
+  </li>
+  <li id="ref-3">
+    <strong>snownlp · Simplified Chinese Text Processing</strong> · isnowfy<br />
+    <a href="https://github.com/isnowfy/snownlp" target="_blank" rel="noopener">https://github.com/isnowfy/snownlp</a>
+    <span class="badge">开源项目</span><br />
+    <span class="note">中文情感分析与文本分类的轻量库。其 README 明确写道：情感分析的训练数据主要是
+      买卖商品时的评价，所以对其它领域可能效果不好——本卡"领域不匹配"的依据。</span>
+  </li>
+  <li id="ref-4">
+    <strong>ChineseNlpCorpus · 中文 NLP 语料与数据集</strong><br />
+    <a href="https://github.com/SophonPlus/ChineseNlpCorpus" target="_blank" rel="noopener">https://github.com/SophonPlus/ChineseNlpCorpus</a>
+    <span class="badge">数据集</span><br />
+    <span class="note">含 weibo_senti_100k（10 万余条微博情感标注，正负各约 5 万）、
+      simplifyweibo_4_moods（36 万余条四类情感）、ChnSentiCorp_htl_all（7000 余条酒店评论）。
+      适合做本卡的动手数据来源。</span>
+  </li>
+  <li id="ref-5">
+    <strong>Working With Text Data（scikit-learn 官方教程）</strong><br />
+    <a href="https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html" target="_blank" rel="noopener">scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">从词袋、TF-IDF 到训练分类器与评估的完整流程，含朴素贝叶斯与 SVM 示例。
+      提醒：stable 版下这篇教程路径已调整，带版本号的链接是永久有效的。</span>
+  </li>
+  <li id="ref-6">
+    <strong>jieba · 中文分词</strong> · fxsjy<br />
+    <a href="https://github.com/fxsjy/jieba" target="_blank" rel="noopener">https://github.com/fxsjy/jieba</a>
+    <span class="badge">开源项目</span><br />
+    <span class="note">三条路线里"分词"这一步的常用实现，支持精确模式、全模式与自定义词典。</span>
+  </li>
+  <li id="ref-7">
+    <strong>Computing Krippendorff's Alpha-Reliability</strong> · Klaus Krippendorff, University of Pennsylvania<br />
+    <a href="https://www.asc.upenn.edu/sites/default/files/2021-03/Computing%20Krippendorff%27s%20Alpha-Reliability.pdf" target="_blank" rel="noopener">asc.upenn.edu/…/Computing Krippendorff's Alpha-Reliability.pdf</a>
+    <span class="badge">学术论文</span><br />
+    <span class="note">标注员间一致性的标准方法原始说明。alpha 的取值范围与解读方式见原文；
+      该 PDF 有反爬保护，本卡只用于确认方法的出处与定义。</span>
+  </li>
+  <li id="ref-8">
+    <strong>Calculating inter-coder reliability in media content analysis using Krippendorff's Alpha</strong> · De Swert, K.<br />
+    <a href="https://polcomm.org/wp-content/uploads/ICR01022012.pdf" target="_blank" rel="noopener">polcomm.org/wp-content/uploads/ICR01022012.pdf</a>
+    <span class="badge">学术论文</span><br />
+    <span class="note">直接面向<strong>人工标注一致性</strong>的操作指南：建议报告变量级信度而非平均分，
+      alpha 低于 .80 时需说明背景，低于 .667 的结果应当弃用。
+      本卡"AI 打标签要按标注一致性来报告"的做法依据此篇。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>逐条打开了来源 1–6</strong>，确认页面存在且内容与引用一致。
+        其中来源 1 的"词典必要但不足"与"定量比例"两处判断，已回到原页面确认表述。</li>
+    <li><strong>来源 3 的领域限制</strong>不采信二手转述，核对的是 snownlp 仓库 README 原文。</li>
+    <li><strong>来源 2 的类别数（7 大类 21 小类）</strong>在仓库 README 与官网介绍中交叉比对一致。</li>
+    <li><strong>来源 5 的链接</strong>发现 stable 版路径已失效，改用带版本号的永久链接并通过访问验证。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>来源 7（Krippendorff 原始 PDF）有反爬保护，<strong>未能逐字核实正文</strong>，
+        本卡只引用其方法定义，未引用具体数值结论；信度阈值的引用改从来源 8 取得。</li>
+    <li>"课堂实测案例"一节标明为<strong>示意</strong>，具体错例需要在第 4 课动手 A 中实地跑出后再补录。</li>
+    <li>来源 8 的 PDF 正文为压缩流，<strong>阈值表述来自检索索引而非逐页阅读</strong>，
+        正式引用前建议自行下载核对一次。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 情感分析 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 15 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '情感分析要做的事情，最准确的描述是下面哪一项？',
+      options: [
+        '判断一段文本表达的主观倾向是正面、负面还是中性',
+        '把一段文本归到体育、财经、科技这类题材类别里',
+        '统计一段文本里出现了多少次某个关键词',
+        '把一段中文翻译成另一种语言'],
+      answer: 0,
+      why: '情感分析判断的是主观倾向（极性），不是题材类别，也不是关键词计数。给文本贴题材标签属于文本分类。',
+      ref: 5, refText: '来源 [5] 文本向量化与分类的基本流程' },
+
+    { level: 0, text: '下面哪一项不属于本卡介绍的、情感分析的三条主流技术路线？',
+      options: ['情感词典法', '机器学习分类器', '大模型判断', '主题模型'],
+      answer: 3,
+      why: '三条路线是情感词典法、机器学习法、大模型法。主题模型回答的是"大家在谈什么"，不是"态度如何"，属于另一个任务。',
+      ref: 1, refText: '来源 [1] 方法综述与任务界定' },
+
+    { level: 1, text: '情感词典法为什么会在"这电影可真行"这类句子上出错？',
+      options: [
+        '因为它算得不够快，来不及处理整段文本',
+        '因为它只按词查表，识别不了反讽，会把贬义表达当成褒义',
+        '因为它没有训练数据，无法运行',
+        '因为中文没有空格，没法分词'],
+      answer: 1,
+      why: '词典法逐个词查极性再加总，不看语境。反讽把褒义词用在贬义位置，词典法无从判断，这正是"词典必要但远不足以保证准确"的原因。',
+      ref: 1, refText: '来源 [1] 关于词典方法局限的判断' },
+
+    { level: 1, text: 'snownlp 在新闻评论上比在电商评价上更容易出错，最直接的原因是什么？',
+      options: [
+        '新闻评论的句子更长，模型处理不了长句',
+        '它的情感训练数据主要是商品评价，与新闻评论的用词习惯不匹配',
+        '新闻评论里没有情感词，词典查不到',
+        '新闻评论的正负样本数量不均衡'],
+      answer: 1,
+      why: '这是典型的领域不匹配：模型学到的是训练语料那个领域的用词习惯，不是"情感"本身。该限制写在 snownlp 的 README 里。',
+      ref: 3, refText: '来源 [3] snownlp README 中关于训练数据的说明' },
+
+    { level: 2, text: '你要分析两万条新闻评论，要求结果可复现、单条成本低、能重复跑同样的口径。哪种做法最合适？',
+      options: [
+        '逐条让大模型判断，因为它最懂语境',
+        '用词典法，因为它最透明，不需要任何标注',
+        '用人工标注样本训练一个机器学习分类器，再跑全量数据',
+        '放弃定量分析，只挑几条典型评论写进稿子'],
+      answer: 2,
+      why: '两万条这个量级，成本与可复现性是硬约束。本地分类器训练一次可以反复跑、结果稳定；大模型逐条成本高且回答可能有波动；词典法不看语境会系统性偏差；只挑典型例子则无法支撑"趋势"这类结论。',
+      ref: 5, refText: '来源 [5] 用标注样本训练分类器的流程' },
+
+    { level: 2, text: '模型对某条评论输出"正面 0.87"。下面哪种表述是站得住的？',
+      options: [
+        '87% 的读者对这件事是满意的',
+        '这条评论有 87% 的概率被判断为正面倾向，该结果需经人工抽样核查',
+        '这条评论一定在夸这件事',
+        '模型已经证实了舆论总体是正面的'],
+      answer: 1,
+      why: '0.87 是模型给出的概率，不是读者满意度这类事实，也不能外推成总体结论。未经与人工标注比对，自动化标注只能作为待核查的判断。',
+      ref: 8, refText: '来源 [8] 自动化标注必须与人工标注比对' },
+
+    { level: 3, text: '某情感分析模型报告准确率 90%。要判断它能不能用，下面哪一步最该先做？',
+      options: [
+        '直接采用，90% 已经足够高',
+        '只要换更大的模型把准确率提到 95% 就可以',
+        '分别看正负类的精确率与召回率，并检查错误是否集中在某一类现象上',
+        '把准确率四舍五入写成"约九成读者持正面态度"'],
+      answer: 2,
+      why: '总体准确率会掩盖两类问题：类别间表现不均衡、以及错误是否系统性。如果错误几乎全部集中在反讽上，那就不是随机误差，需要单独说明而不是靠换更大的模型掩盖。',
+      ref: 5, refText: '来源 [5] 分类器评估与混淆矩阵' },
+
+    { level: 3, text: '用 AI 给 5000 条评论做情感标注后，要让它达到人工标注可接受的标准，最关键的一步是什么？',
+      options: [
+        '在稿子里注明"本分析由 AI 完成"就足够了',
+        '抽一个样本与人工标注的黄金标准比对，报告标注一致性，而不只是报准确率',
+        '把 AI 的标签再喂给另一个 AI 交叉验证一次',
+        '把标注结果全部人工重标一遍，AI 只作为参考'],
+      answer: 1,
+      why: '人工标注要求报告标注规则与标注员间一致性；自动标注替换的是执行者，不是这个要求。做法是在抽样上与人工标注的黄金标准比对并报告一致性，这正是"未经校验的自动化流程只会快速产出权威的胡说"的含义。',
+      ref: 8, refText: '来源 [8] 标注一致性的报告要求' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

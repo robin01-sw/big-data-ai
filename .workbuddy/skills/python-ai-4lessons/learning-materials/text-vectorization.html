@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>文本向量化 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 3 课 · 序号 12 / 17</div>
+  <h1>文本向量化</h1>
+  <div class="badges">
+    <span class="badge">概念卡 12</span>
+    <span class="badge">前置：中文分词 · 特征与标签</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">文本向量化就是把一段文字变成一串数字。</p>
+    <p>先给全部文本建一张词典，每条文本照着词典数一遍，变成又长又稀的向量；
+       用 TF-IDF 给"这条常见、别条少见"的词加重。代价是词序丢了，
+       "我打你"和"你打我"是同一个向量。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>文本向量化像把一篇文章变成一张超长的物品清单。图书馆先编好一本总册子，把馆内出现过的所有词都列进去，每来一篇文章，就照着册子从头点数：这个词出现了几次就填几。绝大多数格子是 0——一篇短文用不到几千个词。这样的清单能直接拿去做比较和分类，代价是它只记有哪些词、各几个，不管先后顺序。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释机器为什么只认数字，以及为什么文本必须先转成数值向量。</li>
+  <li>能用自己的话说清词袋模型的直觉，说清"词典"和"计数向量"分别指什么。</li>
+  <li>能解释 TF-IDF 为什么给"本文里常见、别处少见"的词更高权重。</li>
+  <li>能指出词袋模型丢掉了什么信息，并举出一个因此判断错误的具体例子。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>为什么非得把文字变成数字？</summary>
+  <div class="body">
+    因为分类、回归这些模型做的都是数值运算：比较大小、算距离、加权求和，
+    它们接收的输入必须是数字。
+    官方教程一开头就写道：为了对文本文档做机器学习，
+    首先需要把文本内容转成数值特征向量。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    换个说法：分词之后得到的是"词"，向量化之后得到的才是模型能吃的"数"。
+  </div>
+</details>
+
+<details>
+  <summary>词袋模型到底"袋"在哪？</summary>
+  <div class="body">
+    "袋"的意思是它把词当成一堆散装的物件，只关心某个词在不在袋子里、有几个，
+    不关心它们进来的先后顺序。具体做法是两步：先给训练集里出现的每个不同的词分配一个固定整数编号，构成一本"词典"；再对每篇文档统计每个词出现了几次，
+    把次数填到对应编号的位置上。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    于是每篇文档就变成了一个和词典一样长的向量。
+  </div>
+</details>
+
+<details>
+  <summary>TF-IDF 比单纯数词频好在哪？</summary>
+  <div class="body">
+    单纯数词频，长文档天然占便宜——写得越长，每个词的次数都更高，
+    即使两篇在谈同一件事。一个补救办法是把次数除以本文总词数，
+    得到词频（tf）。再做一层修正：如果一个词在语料里很多文档中都出现，
+    说明它的区分力弱，应该把权重压下来，这个下调就是
+    "反文档频率"（idf）。两者相乘就是 tf-idf。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    效果上，"联赛""芯片"这类只在少数标题里出现的词权重高，
+    "记者""我校"这类几乎每条都有的词权重被压低。
+  </div>
+</details>
+
+<details>
+  <summary>几千列、大部分格子是 0，有什么问题吗？</summary>
+  <div class="body">
+    有，而且很实际。官方教程举过一个具体数字：如果语料里有十万个不同的词、
+    一万篇文档，按稠密数组存需要 4GB 内存，几乎没法用。
+    但一条文档其实只用到几千个不同的词，所以这种数据被称为"高维稀疏"的。
+    工程上的解法是只存非零的部分，scipy 的稀疏矩阵就是干这个的。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-4">[4]</a></sup>
+    概念上的含义更要紧：几千列里绝大多数是 0，意味着每条样本携带的信息其实很有限。
+  </div>
+</details>
+
+<details>
+  <summary>词袋会丢什么？</summary>
+  <div class="body">
+    丢的是词序。"我打你"和"你打我"这两个句子，用到的词完全相同、
+    每个词各出现一次，所以在词袋里它们是<strong>同一个向量</strong>，
+    模型没有任何依据把两者区分开。同样的道理，否定词也容易失效——
+    "不看好"和"看好"只差一个字，词袋只知道多了一个"不"。
+    一种常见的补救是把相邻的两个词作为一个单元一起统计
+    （也就是二元词组），代价是词典会膨胀得很快。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>文本向量化是把文本转成数值特征向量的过程。官方教程给的做法叫词袋
+   （bag of words）：第一步，给训练集中出现的每个词分配一个固定整数编号，
+   比如建一本"词 → 编号"的字典；第二步，对第 i 篇文档，统计每个词 w 出现的次数，
+   存到 <code>X[i, j]</code>，其中 j 是词 w 在字典里的编号。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   需要注意的是，这里的<code>n_features</code>等于语料中不同词的数量——
+   在实际文本语料里，这个数字通常在十万以上。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>为什么</h3>
+<p>两个原因。第一是<strong>模型只吃数字</strong>：分类器看到的是一个矩阵，
+   每一行是一条文本，每一列是一个词，格子里的数是权重。
+   第二是<strong>只有变成数字才能比较</strong>：两条文本相似不相似，
+   在文本形态下没法计算，变成向量之后才谈得上"用词重合度高不高"。
+   这里有一个容易忽略的后果：向量化的每一维都来自词表，
+   而词表由分词和过滤规则决定——所以分词切碎了，维度就跟着碎，
+   而且这一步的结果是不可逆的，出了错只能回到分词重来。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>怎么工作</h3>
+<p>三步，scikit-learn 把它们封在一起，可以单独用也可以串成流水线：</p>
+<ol>
+  <li><strong>建词典并计数。</strong><code>CountVectorizer</code> 把文档集合转成
+      token 计数矩阵，并产出 <code>vocabulary_</code>（词到列号的映射）；
+      不能整除的语料规模不会自动解决，所以它可以设
+      <code>max_df</code>、<code>min_df</code> 丢掉太常见或太罕见的词，
+      也可以用 <code>stop_words</code> 传停用词表。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>加权。</strong>先做词频归一化（tf），再乘上反文档频率（idf），
+      得到 tf-idf 权重。<code>TfidfVectorizer</code> 等价于
+      <code>CountVectorizer</code> 加一个 <code>TfidfTransformer</code>，
+      并会把结果按 l2 归一化，方便直接算两条文本的相似度。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></li>
+  <li><strong>喂给分类器。</strong>得到的矩阵形状是"文档数 × 词表大小"，
+      行是样本、列是特征，直接交给分类器训练。<sup class="cite"><a href="#ref-5">[5]</a></sup></li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 412" role="img" aria-label="从新闻标题到词袋计数矩阵、TF-IDF 加权，以及词序丢失导致的问题">
+  <defs>
+    <marker id="varrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">从 300 条标题到一张"300 行 × 数千列"的数字表</text>
+
+  <text x="20" y="44" font-size="12.5" font-weight="700" fill="#7b8294">① 建词典：给语料里出现过的每个不同的词编一个固定列号</text>
+  <rect x="20" y="54" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="95" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">300 条标题</text>
+  <text x="95" y="94" text-anchor="middle" font-size="11" fill="#7b8294">原始中文文本</text>
+  <path d="M174 82L186 82" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#varrow)"/>
+  <rect x="190" y="54" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="265" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">分词 + 去停用词</text>
+  <text x="265" y="94" text-anchor="middle" font-size="11" fill="#7b8294">剩下几千个不同的词</text>
+  <path d="M344 82L356 82" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#varrow)"/>
+  <rect x="360" y="54" width="150" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="435" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">词典（列号表）</text>
+  <text x="435" y="94" text-anchor="middle" font-size="11" fill="#7b8294">经济→0 增长→1 …</text>
+  <path d="M514 82L526 82" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#varrow)"/>
+  <rect x="530" y="54" width="150" height="56" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="605" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">每一列 = 一个词</text>
+  <text x="605" y="94" text-anchor="middle" font-size="11" fill="#a8554a">列数常达十万级</text>
+
+  <text x="20" y="140" font-size="12.5" font-weight="700" fill="#7b8294">② 数词：每行是一条标题的向量，绝大多数格子是 0</text>
+
+  <rect x="20" y="150" width="84" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="62" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#4a5160">经济</text>
+  <rect x="104" y="150" width="76" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="142" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#4a5160">增长</text>
+  <rect x="180" y="150" width="76" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="218" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#4a5160">球迷</text>
+  <rect x="256" y="150" width="76" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="294" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#4a5160">芯片</text>
+  <rect x="332" y="150" width="88" height="30" rx="4" fill="#f1ede3" stroke="#e6e3dc"/>
+  <text x="376" y="170" text-anchor="middle" font-size="11" font-weight="700" fill="#4a5160">… 数千列</text>
+
+  <rect x="20" y="180" width="84" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="62" y="199" text-anchor="middle" font-size="11" fill="#4a5160">2</text>
+  <rect x="104" y="180" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="142" y="199" text-anchor="middle" font-size="11" fill="#4a5160">1</text>
+  <rect x="180" y="180" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="218" y="199" text-anchor="middle" font-size="11" fill="#c9c4b8">0</text>
+  <rect x="256" y="180" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="294" y="199" text-anchor="middle" font-size="11" fill="#c9c4b8">0</text>
+  <rect x="332" y="180" width="88" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="376" y="199" text-anchor="middle" font-size="11" fill="#c9c4b8">0 0 0 …</text>
+
+  <rect x="20" y="208" width="84" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="62" y="227" text-anchor="middle" font-size="11" fill="#c9c4b8">0</text>
+  <rect x="104" y="208" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="142" y="227" text-anchor="middle" font-size="11" fill="#c9c4b8">0</text>
+  <rect x="180" y="208" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="218" y="227" text-anchor="middle" font-size="11" fill="#4a5160">3</text>
+  <rect x="256" y="208" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="294" y="227" text-anchor="middle" font-size="11" fill="#4a5160">1</text>
+  <rect x="332" y="208" width="88" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="376" y="227" text-anchor="middle" font-size="11" fill="#c9c4b8">0 0 0 …</text>
+
+  <rect x="20" y="236" width="84" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="62" y="255" text-anchor="middle" font-size="11" fill="#4a5160">1</text>
+  <rect x="104" y="236" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="142" y="255" text-anchor="middle" font-size="11" fill="#c9c4b8">0</text>
+  <rect x="180" y="236" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="218" y="255" text-anchor="middle" font-size="11" fill="#c9c4b8">0</text>
+  <rect x="256" y="236" width="76" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="294" y="255" text-anchor="middle" font-size="11" fill="#4a5160">2</text>
+  <rect x="332" y="236" width="88" height="28" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="376" y="255" text-anchor="middle" font-size="11" fill="#c9c4b8">0 0 0 …</text>
+
+  <rect x="440" y="150" width="240" height="56" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="456" y="172" font-size="12" font-weight="700" fill="#4a5160">再乘 TF-IDF 权重</text>
+  <text x="456" y="190" font-size="11" fill="#7b8294">本文里常见、别处少见 → 权重高</text>
+  <text x="456" y="203" font-size="11" fill="#7b8294">几乎每条都有 → 权重被压低</text>
+
+  <rect x="440" y="212" width="240" height="52" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="456" y="233" font-size="12" font-weight="700" fill="#4a5160">高维且稀疏</text>
+  <text x="456" y="251" font-size="11" fill="#7b8294">一行几千格里 99% 以上是 0，</text>
+  <text x="456" y="263" font-size="11" fill="#7b8294">所以程序只存非零的部分</text>
+
+  <text x="20" y="298" font-size="12.5" font-weight="700" fill="#7b8294">③ 代价：词的顺序被丢掉了</text>
+  <rect x="20" y="308" width="200" height="48" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="120" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">"我打你"</text>
+  <text x="120" y="348" text-anchor="middle" font-size="11" fill="#7b8294">我×1 打×1 你×1</text>
+  <rect x="244" y="308" width="200" height="48" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="344" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">"你打我"</text>
+  <text x="344" y="348" text-anchor="middle" font-size="11" fill="#7b8294">你×1 打×1 我×1</text>
+  <path d="M448 332L472 332" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#varrow)"/>
+  <rect x="476" y="308" width="204" height="48" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="578" y="330" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">完全相同的向量</text>
+  <text x="578" y="348" text-anchor="middle" font-size="11" fill="#a8554a">模型无法区分这两句</text>
+
+  <text x="20" y="384" font-size="11.5" fill="#7b8294">"我打你"和"你打我"用到的词完全一样，向量也就一模一样——这是词袋模型最著名的局限。</text>
+  <text x="20" y="404" font-size="11.5" fill="#7b8294">常见的补救是把相邻两个词作为一个单元一起统计（二元词组），代价是列数会迅速膨胀。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>三百条标题变成一张表之后，模型学会了一件错事。</strong>
+   2024 年春天，某新闻学院的一门课上，学生小组领到的作业是：抓取校媒和本市两家媒体的三百条标题，训练一个能把标题分成体育、财经、科技三类的分类器。
+   他们先做分词，再去掉停用词，最后用 <code>CountVectorizer</code> 转成矩阵，
+   打印形状是 300 行、两千八百多列——也就是说，全部标题合起来只用了不到三千个不同的词。</p>
+
+<p>第一个发现是稀疏得超乎预期：每行平均只有六到八个格子是非零的，
+   连百分之一都不到。这也解释了他们后来观察到的一件事——
+   当语料里没有停用词过滤时，"记者""我校""报道"这类几乎每条标题都出现的词，
+   会稳稳排在权重榜前列，却完全帮不上分类；
+   换成 <code>TfidfVectorizer</code> 之后，"联赛""球队""芯片""涨幅"这些词的权重才浮上来，
+   测试集上的表现也跟着好了一截。</p>
+
+<p>第二个发现让他们印象更深。小组从测试集里挑错例来看，
+   发现有几条被判错的标题长得几乎一样——
+   《球迷不满球队输球》和《球队不满球迷输球》。
+   两条标题用到的词完全相同，每个词各出现一次，
+   所以在词袋里它们是同一个向量。分类器并没有犯错，
+   它只是拿到了一份无法区分这两句话的输入。
+   他们后来把相邻两个词当成一个单元重新统计了一遍，
+   这两条确实被分开了，但矩阵的列数从两千八百涨到了近三万，
+   运行时间也明显变长。这就是词袋这条路要付的代价：想保留一点词序，就得让维度膨胀很多。</p>
+
+<div class="flag">
+  <span class="lbl">课堂推演案例（示意，非公开研究）</span>
+  <p style="margin:6px 0 0">上例的小组、时间、列数与行数是按官方教程给出的量级推演的，
+     不对应任何可公开查证的真实作业。可核查的部分是机制本身：
+     词袋的两步做法与"n_features 是语料中不同词的数量"、词频归一化与 tf-idf 的下调逻辑、十万词级别语料的稀疏性与内存问题，均出自 scikit-learn 官方教程<sup class="cite"><a href="#ref-1">[1]</a></sup>；
+     二元词组的设置见 <code>CountVectorizer</code> 的
+     <code>ngram_range</code> 参数说明<sup class="cite"><a href="#ref-2">[2]</a></sup>。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>词袋模型（BoW）<br />与 TF-IDF</strong></td>
+      <td>词袋只数每个词出现了几次；TF-IDF 在此基础上按"这个词在整个语料里有多普遍"重新给每一维加权。</td>
+      <td>词袋数词，TF-IDF 给词称重。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>词嵌入 / 语义向量</strong></td>
+      <td>词袋的每一维对应词表里的一个词，靠"用词是否重合"比较两条文本；词嵌入把语义相近的词放到相近的位置，能反映"球队"与"球迷"的关联。</td>
+      <td>词袋是数词，词嵌入是算语义。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>中文分词</strong></td>
+      <td>分词决定词表里有哪些条目，也就决定了向量的维度；向量化是分词的下一环，两者是上下游关系。</td>
+      <td>分词切词，向量化数词。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>特征与标签</strong></td>
+      <td>向量里每一个格子就是一个特征；矩阵的列全是特征，行是样本，标签是每一行对应的答案。</td>
+      <td>矩阵的列是特征，答案那一列是标签。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工分类统计</strong></td>
+      <td>人工统计的传统做法是统计各类目出现的频次，如某主题在三个月内出现多少次；词袋与 TF-IDF 是把这件事交给程序，把"类目"换成"词"、把"计数"换成"加权计数"。</td>
+      <td>都在做"什么出现得多"的量化，区别是类目由人定义还是由词表自动决定。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Working With Text Data（scikit-learn 官方教程 · 1.4 带版本号永久链接）</strong><br />
+    <a href="https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html" target="_blank" rel="noopener">scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">本卡词袋与 TF-IDF 部分的全部依据。原文写明"为了对文本文档做机器学习，
+      首先需要把文本内容转成数值特征向量"；词袋的两步做法（给每个词分配固定整数编号、
+      统计每篇文档里每个词的出现次数存到 X[i, j]）；"n_features 是语料中不同词的数量，
+      这个数字通常大于 100,000"；一万篇 × 十万词按稠密数组存需 4GB 内存的算例；
+      "长文档计数天然更高，所以除以总词数得到 tf"；
+      以及"对在语料中很多文档里出现的词下调权重，这个下调叫 tf-idf"。教程同时说明
+      CountVectorizer 支持 n 元词组。提醒：stable 版下该教程路径已调整，
+      带版本号的链接是永久有效的。</span>
+  </li>
+  <li id="ref-2">
+    <strong>CountVectorizer（scikit-learn API 文档）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">"把一组文本文档转换成 token 计数矩阵"，输出为 scipy 稀疏表示；
+      若未提供词典，特征数等于从数据中分析得到的词表大小。本卡"二元词组"的补救办法出自
+      <code>ngram_range</code> 参数（默认 (1,1)，取 (1,2) 表示一元加二元词组），
+      停用词与低频词过滤出自 <code>stop_words</code>、<code>max_df</code>、<code>min_df</code>。
+      文档中的示例也直观展示了词表与计数矩阵的对应关系。</span>
+  </li>
+  <li id="ref-3">
+    <strong>TfidfVectorizer（scikit-learn API 文档）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">"把原始文档集合转换成 TF-IDF 特征矩阵"，等价于 CountVectorizer
+      后面接一个 TfidfTransformer；<code>use_idf</code> 控制是否启用反文档频率重加权，
+      <code>idf_</code> 属性保存反文档频率向量；<code>norm</code> 默认 l2，
+      即每行向量归一化，这样两条文本的余弦相似度就等于它们的点积。
+      本卡"TF-IDF 给区分力弱的词降权"的依据。</span>
+  </li>
+  <li id="ref-4">
+    <strong>Glossary of Common Terms and API Elements（scikit-learn 术语表）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/glossary.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/glossary.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">sparse matrix 的定义出处："一种二维数值数据的表示方式，
+      在几乎全部元素为零时比对应的稠密 numpy 数组更省内存"，
+      并说明 scikit-learn 使用 <code>scipy.sparse</code> 框架。
+      本卡"只存非零部分"的依据。</span>
+  </li>
+  <li id="ref-5">
+    <strong>Getting Started（scikit-learn 官方入门）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/stable/getting_started.html" target="_blank" rel="noopener">https://scikit-learn.org/stable/getting_started.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">样本矩阵 X 的尺寸通常为 (n_samples, n_features)，
+      即样本为行、特征为列；部分估计器可处理稀疏矩阵。本卡"矩阵的列就是特征"
+      以及"向量化输出可直接交给分类器"的依据。</span>
+  </li>
+  <li id="ref-6">
+    <strong>About the Database（DOCA · 变量数据库）</strong> · 苏黎世大学 IKMZ 传播与媒体研究所<br />
+    <a href="https://www.hope.uzh.ch/doca/aboutthedatabase" target="_blank" rel="noopener">https://www.hope.uzh.ch/doca/aboutthedatabase</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">开放获取的变量数据库，目标是把各研究用到的变量编目、系统化并加以评估，
+      为变量定义与操作化提供起点，并强调研究与研究之间的可比性；
+      收录时优先选择报告了信度的操作化方案。它存在的意义正好说明：自动化计数换掉的只是执行手段，
+      "类目是什么、怎么定义"这一层仍然要由研究者写清并接受核查。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>逐条打开了来源 1–6</strong>，确认页面存在且内容与引用一致。
+        其中来源 1 的词袋两步做法、十万词的量级、4GB 内存算例与 tf-idf 的下调逻辑，
+        均回到原页面逐句核对。</li>
+    <li><strong>来源 1 的链接</strong>专门确认过：stable 版路径已调整，
+        本卡改用带版本号的永久链接并访问验证通过；这一提醒也写在来源条目里。</li>
+    <li><strong>来源 2 与来源 3 的参数说明</strong>逐项核对，
+        确认 <code>ngram_range</code> 默认 (1,1)、<code>norm</code> 默认 l2、
+        <code>CountVectorizer</code> 输出为稀疏表示。</li>
+    <li><strong>"我打你 / 你打我"这一例子</strong>属于对词袋定义的直接推演
+        （两句话词频完全一致），并非从文档中摘抄的原文示例，
+        已在正文中按机制说明的方式表述，未标注为引用。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>"应用案例"一节标明为<strong>示意</strong>：小组、时间、列数与行数均为按官方量级推演的数字，
+        不对应任何可公开查证的真实作业。</li>
+    <li>官方教程是以<strong>英文语料</strong>（二十个新闻组的帖子）为例的，
+        中文语料的词表规模与稀疏程度会不同；
+        本卡正文中的"两千八百多列""不到三千个不同的词"属案例推演，
+        不是官方文档给出的数字。</li>
+    <li>本卡未展开词嵌入、预训练语言模型等后续路线，
+        只在一处辨析表里点出方向，避免超出第 3 课范围。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 文本向量化 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 12 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '文本向量化要解决的问题是什么？',
+      options: [
+        '把文本翻译成另一种语言',
+        '把文本转成机器能处理的数值特征向量',
+        '把长文本自动压缩成短文本',
+        '按字数给文本排序'],
+      answer: 1,
+      why: '分类、回归这类模型做的都是数值运算，输入必须是数字。官方教程一开头就写明：为了对文本文档做机器学习，首先需要把文本内容转成数值特征向量。',
+      ref: 1, refText: '来源 [1] 为什么必须先把文本转成数值向量' },
+
+    { level: 0, text: '词袋模型里的"词典"指的是什么？',
+      options: [
+        '一本纸质汉语词典的电子版',
+        '给语料中出现的每个不同的词分配一个固定整数编号，得到的词到编号的对照表',
+        '做关键词提取时用来过滤虚词的停用词表',
+        'jieba 的 userdict.txt 自定义词典'],
+      answer: 1,
+      why: '这是词袋的第一步：给训练集中出现的每个词分配一个固定整数编号，构成"词 → 编号"的字典。编号对应向量里的列号，所以词典有多长，向量就有多少维。',
+      ref: 1, refText: '来源 [1] 词袋表示的第一步与 vocabulary 的作用' },
+
+    { level: 1, text: 'TF-IDF 中，"一个词在本文里出现得多、在其他文本里很少见"说明什么？',
+      options: [
+        '说明这个词可能拼写有误',
+        '说明这个词对区分这类文本比较有用，应当给它更高的权重',
+        '说明这条文本太短，统计不可靠',
+        '说明这个词是停用词，应该删掉'],
+      answer: 1,
+      why: 'tf-idf 的设计逻辑就是给在不同文档间分布不均匀的词更高权重，把几乎每篇都出现的词权重压低。前者是区分信号，后者是背景噪声。',
+      ref: 3, refText: '来源 [3] use_idf 与反文档频率重加权' },
+
+    { level: 1, text: '为什么说词袋向量是"稀疏"的？',
+      options: [
+        '因为文本里用到的词都很少',
+        '因为一条文本只会用到词典里很小一部分词，向量里绝大多数格子的值是 0',
+        '因为向量里的数值都是小数',
+        '因为分词会把长词切碎'],
+      answer: 1,
+      why: '词袋向量的长度等于词表大小，但单条文档只会命中其中很少的列。术语表对稀疏矩阵的定义正是"几乎全部元素为零时比稠密数组更省内存"，所以程序只存非零的部分。',
+      ref: 4, refText: '来源 [4] 稀疏矩阵的定义' },
+
+    { level: 2, text: '你手上有 300 条标题，要训练一个三分类器。下面哪种处理顺序是对的？',
+      options: [
+        '先训练分类器，跑不动再补分词和向量化',
+        '先分词，再去停用词，再用向量化转成"文档数 × 词表大小"的矩阵，然后训练',
+        '直接把标题原文交给分类器，让模型自己处理文字',
+        '先按标题长度排序，再分词'],
+      answer: 1,
+      why: '顺序是分词 → 过滤 → 向量化 → 训练。向量化输出的矩阵就是分类器的输入，行是样本、列是特征；跳过分词或向量化，分类器拿不到可用的数值输入。',
+      ref: 2, refText: '来源 [2] 从文本到计数矩阵的转换流程' },
+
+    { level: 2, text: '语料里"记者""我校""报道"这类词几乎每条标题都有。用 TF-IDF 处理时它们会怎样？',
+      options: [
+        '权重会很高，因为它们出现的次数最多',
+        '权重会被压低，因为它们在几乎所有文本里都出现，区分力弱',
+        '会被自动当作标点删除',
+        '权重完全不受影响，只有次数起作用'],
+      answer: 1,
+      why: 'idf 就是为这件事设计的：一个词在越多文档里出现，它的 idf 越小，乘上去之后权重被压低。相反，只在少数文档里出现的词会获得更高权重。',
+      ref: 3, refText: '来源 [3] 反文档频率对高频通用词的下调' },
+
+    { level: 3, text: '用词袋模型训练的分类器把《球迷不满球队输球》和《球队不满球迷输球》判成了同一类。最直接的原因是什么？',
+      options: [
+        '训练样本数量不够，再多加几百条就能解决',
+        '这两条用到的词完全一样，词袋只记有哪些词、各几个，丢掉了顺序，所以它们对应同一个向量',
+        '停用词表太短，没有过滤掉关键词',
+        '分类器算法选错了，换一个算法即可'],
+      answer: 1,
+      why: '这是词袋最著名的局限：只统计词的出现，不记录顺序。两句的词频完全一致，向量就是同一个，分类器拿到的输入本身无法区分它们。补救办法之一是统计相邻两个词组成的二元词组，代价是列数迅速膨胀。',
+      ref: 1, refText: '来源 [1] 词袋的做法与 n 元词组的补救' },
+
+    { level: 3, text: '关于"词袋 / TF-IDF 与人工标注的类目计数"，下面哪一项判断站得住？',
+      options: [
+        '两者毫无关系，一个是技术问题，一个是研究方法问题',
+        '两者都在做"什么内容出现得多"的量化，区别是类目由研究者定义还是由词表自动决定，因此自动化结果同样要回到类目定义上核查',
+        '用了 TF-IDF 之后就不再需要人工定义类目了',
+        '词袋模型的结果可以直接替代人工标注，无须与人工结果比对'],
+      answer: 1,
+      why: '人工标注统计的是类目频次，词袋统计的是词频次——本质上是同一类量化操作，只是"类目"的来源不同。DOCA 这类数据库把各研究的变量定义与操作化公开出来，正是为了让这一类量化可比、可核查，这一点不会因为换成了自动统计而消失。',
+      ref: 6, refText: '来源 [6] 类目与操作化必须写清并公开' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

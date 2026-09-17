@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>文件读写 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 2 课 · 序号 08 / 17</div>
+  <h1>文件读写</h1>
+  <div class="badges">
+    <span class="badge">概念卡 08</span>
+    <span class="badge">前置：字符串 · for 循环 · 函数</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">文件读写就是让程序把磁盘上的内容读进来，把结果写回去。</p>
+    <p>open() 打开文件，with 让它用完自动关闭，比手写 close() 更保险。中文乱码多半是编码不对：
+       新文件统一用 encoding="utf-8"，遇到老 GBK 文件要显式声明。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>文件读写像到档案馆调卷还卷。调卷要报出卷号，管理员按号把卷宗递出来；用完必须还回去，
+     否则架上会一直挂着未归还的记录。with 就像进馆时登记一次、出馆自动注销，不必惦记还有哪本没还。
+     档案馆也可能用不同年代的编码造册，老卷宗按新规则读，看到的就全是乱码。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释 open() 与 with open() 的区别，并说出为什么推荐 with。</li>
+  <li>能区分读文本的几种方式（一次读完、逐行读、读成列表），并按文件大小选择合适的做法。</li>
+  <li>能说明中文乱码与 encoding 的关系，并知道遇到 GBK 老文件时怎么处理。</li>
+  <li>能用 pathlib.Path 与 .glob() 遍历一个文件夹，取出其中所有稿件的路径。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>手写 close() 也能关文件，为什么还推荐 with？</summary>
+  <div class="body">
+    因为 with 省掉的是"万一出错怎么办"。官方教程的说法是：处理文件对象时最好使用 <code>with</code> 关键字，
+    它的优点是子句体结束后文件会正确关闭，<strong>即便触发异常也可以</strong>；
+    而且比等效的 <code>try</code>-<code>finally</code> 代码块简短得多。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    官方还给了一条警告：调用 <code>f.write()</code> 时如果没有用 with、也没有调用 close()，
+    即使程序正常退出，也可能导致内容没有完整写入磁盘。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    对写文件来说，这不是风格问题，而是数据完整性问题。
+  </div>
+</details>
+
+<details>
+  <summary>读中文文件为什么会出现乱码？</summary>
+  <div class="body">
+    因为文件的<strong>实际编码</strong>和读取时<strong>声明的编码</strong>不一致。
+    官方教程建议：除非确定需要用别的编码，否则一律写 <code>encoding="utf-8"</code>，
+    因为 UTF-8 是现代事实上的标准；不指定编码时用的是与平台有关的默认值。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    处理早年的 GBK 老文件，就在打开时显式写 <code>encoding="gbk"</code>；
+    如果文件里还夹杂个别无法解码的字符，可以用 <code>errors="ignore"</code> 跳过——但要清楚这会丢字符，
+    廖雪峰教程把它称为"最简单的方式"，并未说它无损。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>一次读完整篇，还是逐行读？</summary>
+  <div class="body">
+    看文件大小。官方教程给的判断很实用：文件小，<code>f.read()</code> 一次性读最方便；
+    不确定大小、或者文件很大，就用循环遍历文件对象逐行读，官方说这种操作"能高效利用内存，
+    快速，且代码简单"；需要按行列表处理时用 <code>f.readlines()</code> 或 <code>list(f)</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    这里的陷阱是：<code>read()</code> 会把整个文件读进内存，几千篇稿件合起来读一次，
+    程序会明显变慢甚至卡住。
+  </div>
+</details>
+
+<details>
+  <summary>怎么把一个文件夹里的稿件都取出来，而不是一篇篇写路径？</summary>
+  <div class="body">
+    用 <code>pathlib</code> 的 <code>Path</code> 加通配符。<code>glob()</code> 的官方定义是
+    "解析相对于此路径的通配符 pattern，产生所有匹配的文件"，例如
+    <code>Path('.').glob('*.py')</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    把它和 for 循环组合起来，就是"遍历整个文件夹"：
+    <code>for 路径 in 稿件夹.glob("*.txt"):</code>。
+    需要注意官方的一条提醒：<strong>路径不会以特定顺序返回，需要固定顺序时要自己对结果排序</strong>。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    做可复现的统计时，这一句很关键。
+  </div>
+</details>
+
+<details>
+  <summary>为什么用路径对象，而不直接拼字符串？</summary>
+  <div class="body">
+    因为路径不是普通文本。官方文档说明，pathlib 提供表示文件系统路径的类，
+    其语义<strong>适用于不同的操作系统</strong>；不熟悉该模块时该用的就是 <code>Path</code>，
+    它在运行代码的平台上实例化为具体路径。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    用字符串拼路径，得自己操心分隔符是 <code>/</code> 还是 <code>\</code>；
+    用 <code>Path</code>，<code>稿件夹 / "2026-05" / "001.txt"</code> 这样的写法在 Windows 和 macOS 上都能跑，
+    而且路径对象自带 <code>.name</code>、<code>.suffix</code>、<code>.glob()</code>、<code>.read_text()</code>
+    这些顺手的方法。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>文件读写是让程序<strong>和磁盘打交道</strong>：把文件内容读进内存变成字符串或列表，
+   或者把内存里的结果写成文件保存下来。读的时候用 <code>open()</code> 打开文件对象，
+   常用参数是文件名、模式（<code>'r'</code> 读、<code>'w'</code> 写、<code>'a'</code> 追加）和 <code>encoding</code>；
+   写的时候用 <code>write()</code> 把字符串落盘。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+   模式里的 <code>'w'</code> 有个必须记住的后果：<strong>同名文件会被覆盖</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>为什么</h3>
+<p>因为程序处理完的东西必须留下来，才能被下一段程序接着用。前面几张卡做的事都在内存里：
+   变量一关就没了，列表是临时搭的。文件读写是把成果<strong>落到磁盘</strong>的那一步，
+   也是"一批材料"变成"一张表"的关键一步。新闻生产里这件事本来就有正式做法：
+   新闻机构之间交换与归档文本、图片、音视频稿件时用的 NewsML-G2，是国际新闻电信理事会维护的
+   行业标准，它不只是包裹正文，还要带上元数据、稿件管理信息与打包方式。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   换句话说，"稿件怎么存、靠什么认出来"在新闻业里是有标准的；而把一批稿件合并成结构化的表，
+   是让后续统计与建模有据可依的前提。</p>
+
+<h3>怎么工作</h3>
+<p>读的流程是：打开文件、读取内容、关闭。写文件是同一个流程换个模式。
+   逐行处理用 <code>for 行 in 文件对象</code>，处理整个文件夹用 <code>Path.glob()</code> 拿路径、
+   循环逐篇读；把结果写成表格用标准库的 <code>csv</code> 模块，
+   官方示例在打开文件时写了 <code>newline=''</code>，并提示需要指定编码时传 <code>encoding</code> 参数。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<pre><code>from pathlib import Path
+import csv
+
+稿件夹 = Path("稿件/2026-05")
+合并表 = []
+
+def 清洗文本(文本):
+    """去掉首尾空白与多余标点，供批量处理调用。"""
+    文本 = 文本.strip().replace("\u3000", "")
+    return 文本.replace("，", ",").replace("。", ".")
+
+for 路径 in sorted(稿件夹.glob("*.txt")):            # 排序，保证每次跑口径一致
+    原文 = 路径.read_text(encoding="utf-8")          # 老文件改用 encoding="gbk"
+    合并表.append({"文件名": 路径.name, "正文": 清洗文本(原文)})
+
+with open("干净语料.csv", "w", encoding="utf-8", newline="") as f:
+    写入器 = csv.DictWriter(f, fieldnames=["文件名", "正文"])
+    写入器.writeheader()
+    写入器.writerows(合并表)</code></pre>
+
+<blockquote>
+  <strong>这张表的去向：</strong>本卡产出的 <code>干净语料.csv</code> 是第 3 课与第 4 课的<strong>唯一输入</strong>。
+  第 3 课把它变成特征与标签，第 4 课的情感分析也在这张表上跑。表里的列名、清洗口径一旦定下，
+  后面两课都沿用同一份——所以这一步值得慢慢做，而不是先跑通再说。
+</blockquote>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 380" role="img" aria-label="从稿件文件夹到干净语料.csv，再到第 3 课与第 4 课的链路示意">
+  <defs>
+    <marker id="garrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">从 80 篇稿件到一张干净语料.csv：第 3、4 课的唯一输入</text>
+  <text x="20" y="40" font-size="11.5" fill="#7b8294">第 2 课的最后一站，也是后面两课的起点</text>
+
+  <rect x="20" y="74" width="146" height="76" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="93" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">稿件文件夹</text>
+  <text x="93" y="120" text-anchor="middle" font-size="11" fill="#7b8294">80 个 .txt</text>
+  <text x="93" y="138" text-anchor="middle" font-size="11" fill="#7b8294">命名不统一</text>
+
+  <path d="M166 112L182 112" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#garrow)"/>
+
+  <rect x="186" y="74" width="160" height="76" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="266" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">Path.glob("*.txt")</text>
+  <text x="266" y="120" text-anchor="middle" font-size="11" fill="#7b8294">取出所有路径</text>
+  <text x="266" y="138" text-anchor="middle" font-size="11" fill="#7b8294">记得排序</text>
+
+  <path d="M346 112L362 112" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#garrow)"/>
+
+  <rect x="366" y="74" width="160" height="76" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="446" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">逐篇读取</text>
+  <text x="446" y="120" text-anchor="middle" font-size="11" fill="#7b8294">read_text(encoding=…)</text>
+  <text x="446" y="138" text-anchor="middle" font-size="11" fill="#7b8294">老文件用 gbk</text>
+
+  <path d="M526 112L542 112" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#garrow)"/>
+
+  <rect x="546" y="74" width="154" height="76" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="623" y="100" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">调用清洗函数</text>
+  <text x="623" y="120" text-anchor="middle" font-size="11" fill="#7b8294">同一套规则</text>
+  <text x="623" y="138" text-anchor="middle" font-size="11" fill="#7b8294">80 篇口径一致</text>
+
+  <path d="M623 150L623 188" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#garrow)"/>
+
+  <rect x="480" y="192" width="200" height="60" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="580" y="217" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">干净语料.csv</text>
+  <text x="580" y="236" text-anchor="middle" font-size="11" fill="#a8554a">文件名 + 正文 两列</text>
+
+  <path d="M580 252L580 268L455 268L455 282" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#garrow)"/>
+  <path d="M580 252L580 268L625 268L625 282" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#garrow)"/>
+
+  <rect x="380" y="286" width="150" height="46" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="455" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">第 3 课</text>
+  <text x="455" y="324" text-anchor="middle" font-size="11" fill="#7b8294">文本向量化等</text>
+
+  <rect x="550" y="286" width="150" height="46" rx="8" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="625" y="308" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">第 4 课</text>
+  <text x="625" y="324" text-anchor="middle" font-size="11" fill="#7b8294">情感分析等</text>
+
+  <text x="380" y="278" font-size="11" font-weight="700" fill="#c0392b">唯一输入</text>
+
+  <text x="20" y="352" font-size="11.5" fill="#7b8294">链路：80 篇稿件 → 逐篇读取 → 同一套清洗规则 → 合并成一张表 → 第 3、4 课都只用这张表。</text>
+  <text x="20" y="370" font-size="11.5" fill="#7b8294">代价提示：read_text 一次读一篇没问题，别用 read() 把 80 篇一次性全读进内存。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>80 篇稿件，一张表。</strong>2026 年 5 月，一个系列报道收尾时，编辑部手上有 80 篇稿件，
+   分散在一个文件夹里：有的是通讯员发来的 <code>.txt</code>，文件名从 <code>稿1.txt</code> 到
+   <code>最终版2.txt</code> 什么都有；有的段落开头带全角空格，有的句子里混着半角逗号。
+   要统计"这组报道里提到某关键词的稿件有多少篇"，第一步不是分析，而是把 80 个文件变成一张能统计的表。</p>
+
+<p>做法是四步：<code>Path.glob("*.txt")</code> 一次取出文件夹里所有稿件路径；
+   循环逐篇用 <code>read_text(encoding="utf-8")</code> 读成字符串
+   （遇到早年存的 GBK 文件，就显式改成 <code>encoding="gbk"</code>）；<sup class="cite"><a href="#ref-4">[4]</a></sup>
+   把正文交给上一张卡写的清洗函数；最后把文件名和清洗后的正文写进
+   <code>干净语料.csv</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup><sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<p>有两个细节值得单独记住。第一，<code>glob()</code> <strong>不保证返回顺序</strong>，
+   官方文档明确提示需要特定顺序时应自行排序；<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   在这个例子里就是 <code>sorted(稿件夹.glob("*.txt"))</code>——
+   否则同样一份数据跑两次，表里行的顺序可能不同，后续核对会白白多花时间。
+   第二，写 csv 时如果用了 <code>DictWriter</code>，列名要事先定清楚，
+   因为列名一旦定下，第 3、4 课都得跟着它走。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<div class="flag">
+  <span class="lbl">示意</span>
+  <p style="margin:6px 0 0">上面的稿件数量、文件名与时间线是课程设计的推演，用于说明批量处理的步骤与陷阱，
+      不是对某家媒体真实归档流程的记录。可核查的部分是官方与教程给出的规则：
+      with 的优点与写文件警告、encoding 的建议、glob() 返回顺序不固定、
+      csv 写入时的 newline 与 encoding 参数。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup><sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>open() 与 with open()</strong></td>
+      <td>open() 只负责打开，关不关由人记得；with 在语句块结束时自动关闭，出错也会关，并且写入落盘更可靠。</td>
+      <td>open 是开门，with 是"门会自己关上"。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>路径字符串拼接</strong></td>
+      <td>字符串拼接要自己处理分隔符，换系统就可能出错；<code>Path</code> 的语义在不同操作系统上都成立，还自带 <code>.name</code>、<code>.glob()</code> 等方法。</td>
+      <td>路径不是普通文本，交给路径对象处理更稳。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>二进制模式 'rb' / 'wb'</strong></td>
+      <td>文本模式读出来是字符串，会按编码解码、并把换行符统一成 <code>\n</code>；二进制模式读出来是字节串，不能指定 encoding。</td>
+      <td>处理文字用文本模式，处理图片音视频用二进制模式。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>内容交换与归档规范<br />（NewsML-G2）</strong></td>
+      <td>行业标准规定内容条目交换时要连同元数据、管理信息与打包方式一起传；本卡做的是把一批本地文件合并成一张表，属于自建的小口径。</td>
+      <td>行业标准让不同机构认得出内容条目，本地表格让同一批内容条目能被程序算得出来。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>7. 输入与输出 · 7.2 读写文件（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/inputoutput.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/inputoutput.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">原文要点：open(filename, mode, encoding=None) 的三个常用参数；'w' 会覆盖同名文件；
+      建议使用 encoding="utf-8"，因为 UTF-8 是现代事实上的标准，不指定时用平台相关默认值；
+      "在处理文件对象时，最好使用 with 关键字"，块结束会正确关闭文件、即便触发异常也可以；
+      未用 with 且未 close() 时，即使程序正常退出也可能导致写入不完整；
+      逐行遍历文件对象"能高效利用内存，快速，且代码简单"。</span>
+  </li>
+  <li id="ref-2">
+    <strong>内置函数 · open()</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/functions.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">open() 的完整签名与 mode 字符表（r 读、w 截断写入、a 追加、b 二进制、t 文本、+ 更新）；
+      并说明文本模式下内容以 str 返回、字节先按指定 encoding 解码，
+      encoding "仅应在文本模式下使用"。本卡"是什么"一节的依据。</span>
+  </li>
+  <li id="ref-3">
+    <strong>pathlib —— 面向对象的文件系统路径</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/pathlib.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/pathlib.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">模块语义适用于不同操作系统；不确定用哪个类时就用 <code>Path</code>，它在当前平台实例化为具体路径。
+      Path.glob() 解析通配符产生所有匹配文件，read_text()/write_text() 支持 encoding 参数；
+      并明确提醒"路径不会以特定的顺序返回，如果你需要特定的顺序，请对结果进行排序"。</span>
+  </li>
+  <li id="ref-4">
+    <strong>文件读写（Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/io/file/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/io/file/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">用 try…finally 与 with 的对比解释"为什么 with 更省事"；
+      字符编码一节给出读取 GBK 文件的写法 <code>open(..., encoding='gbk')</code>，
+      以及遇到个别无法解码字符时用 <code>errors='ignore'</code> 跳过；
+      写文件一节提醒必须 close() 才保证数据全部落盘，并用 'a' 模式追加。</span>
+  </li>
+  <li id="ref-5">
+    <strong>csv —— CSV 文件读写</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/csv.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/csv.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">reader / writer 与 DictReader / DictWriter 的官方用法；
+      若 csvfile 是文件对象，打开时应设置 <code>newline=''</code>；
+      需要非系统默认编码时通过 open 的 encoding 参数指定；
+      DictWriter 的 fieldnames 为必填参数，用于确定写入顺序。</span>
+  </li>
+  <li id="ref-6">
+    <strong>NewsML-G2 — the news industry's standard for exchanging text, images, video, and audio news</strong> · IPTC（国际新闻电信理事会）<br />
+    <a href="https://iptc.org/standards/newsml-g2/" target="_blank" rel="noopener">https://iptc.org/standards/newsml-g2/</a>
+    <span class="badge">行业标准</span><br />
+    <span class="note">新闻稿件交换与归档的行业标准：以统一格式承载正文、元数据（描述内容的数据）、
+      稿件管理信息、打包方式与传输信息，并提供 News Item、Package Item、News Message 等结构。
+      它说明"稿件怎么存、靠什么认出来"在新闻业是有正式规范的，本卡据此说明批量处理需要统一口径。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草，
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li>来源 1—6 <strong>逐条打开确认页面存在</strong>，并核对内容与引用一致；
+        来源 4 确认新路径为 <code>/books/python/io/file/index.html</code>。</li>
+    <li>"最好使用 with 关键字""即便触发异常也可以自动关闭""未 close() 可能导致写入不完整"三处
+        <strong>回到来源 1 的 7.2 节原文逐句核对</strong>，未采用二手整理。</li>
+    <li><code>glob()</code> "返回顺序不固定、需要顺序请排序"这一条<strong>在来源 3 原文中核对</strong>，
+        并已写进本卡正文与示例代码。</li>
+    <li>csv 的 <code>newline=''</code> 与 encoding 说明<strong>对照来源 5 原文</strong>，
+        未凭记忆书写。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>应用案例中的稿件数量、文件名与流程为<strong>课程推演</strong>，已在正文用"示意"标注；
+        实际媒体归档流程可能另有系统与规范，本卡未做调查。</li>
+    <li>示例中 <code>sorted(稿件夹.glob(...))</code> 是<strong>本卡给出的做法</strong>，
+        来源 3 只说明"需要顺序时自行排序"，并未指定用 sorted；此写法属本人补充。</li>
+    <li>来源 6 只用于说明"行业有正式稿件交换与归档标准"这一事实，
+        本卡<strong>未逐条核对 NewsML-G2 规范文本</strong>，也未涉及具体字段。</li>
+    <li>"干净语料.csv 是第 3、4 课唯一输入"一句属于<strong>本项目课程设计约定</strong>，
+        不是外部来源的结论，正文中已按课程说明处理，未挂来源角标。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 文件读写 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 8 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '文件读写里，with 语句带来的主要好处是什么？',
+      options: [
+        '语句块结束后文件会自动关闭，即使中途出错也会关',
+        '可以让文件读得更快',
+        '可以把中文自动翻译成英文',
+        '可以省掉写文件名的步骤'],
+      answer: 0,
+      why: '官方教程说明 with 的优点是子句体结束后文件会正确关闭，即便触发异常也可以，而且比等效的 try-finally 更简短。它解决的是"忘记关文件"的风险。',
+      ref: 1, refText: '来源 [1] 7.2 节关于 with 关键字的原文' },
+
+    { level: 0, text: '要把一个用 GBK 编码保存的老文件正确读成中文，应该怎么做？',
+      options: [
+        '把文件名改成英文即可',
+        '打开时显式指定 encoding="gbk"',
+        '把文件多读几遍，程序会自动纠正编码',
+        '把文件内容复制到新文件里再读'],
+      answer: 1,
+      why: '乱码来自"文件实际编码"与"读取时声明的编码"不一致。read_text 与 open 都支持 encoding 参数，老文件就按它的实际编码声明。',
+      ref: 4, refText: '来源 [4] 字符编码一节：读取 GBK 文件的写法' },
+
+    { level: 1, text: '读一个中文文件时屏幕上出现乱码，最合理的排查方向是什么？',
+      options: [
+        '文件太大，程序读了一半就乱了',
+        'Python 不支持中文文本',
+        '文件实际使用的编码与读取时声明的编码不一致',
+        '文件缺少换行符，导致解析错位'],
+      answer: 2,
+      why: '文本模式下内容是"按编码解码"得到的字符串，声明错编码就会解出一堆乱码字符。官方建议新文件统一用 UTF-8，历史文件按实际编码声明。',
+      ref: 1, refText: '来源 [1] 关于 encoding 与解码的说明' },
+
+    { level: 1, text: '要处理一个几百 MB 的文本文件，只做逐行统计，最合适的读法是哪个？',
+      options: [
+        '用 f.read() 一次性读进内存，再慢慢处理',
+        '先把文件拆成多个小文件再说',
+        '用 f.readlines() 全部读成列表',
+        '直接遍历文件对象，一行一行处理'],
+      answer: 3,
+      why: '官方教程指出逐行遍历文件对象"能高效利用内存，快速，且代码简单"；read() 会把整个文件读进内存，readlines() 也需要把全部行装进列表，大文件下都不划算。',
+      ref: 1, refText: '来源 [1] 文件对象的方法与逐行遍历' },
+
+    { level: 2, text: '要把一个文件夹里所有 .txt 稿件的路径取出来逐篇处理，最合适的写法是？',
+      options: [
+        '用 Path("稿件夹").glob("*.txt") 取出所有匹配路径，再配合循环',
+        '手工把每个文件名写进一个列表',
+        '用 open() 直接打开文件夹名',
+        '把所有文件先合并成一个大文件'],
+      answer: 0,
+      why: 'glob() 的职责就是"解析通配符 pattern，产生所有匹配的文件"。取出路径后配合循环逐篇读取即可；官方还提醒返回顺序不确定，需要固定顺序时要排序。',
+      ref: 3, refText: '来源 [3] Path.glob() 的官方定义与示例' },
+
+    { level: 2, text: '用 csv 模块往文件里写表，官方示例在 open() 里额外写了什么？',
+      options: [
+        '把模式写成 rb 二进制模式',
+        'newline=""（并可按需指定 encoding）',
+        '必须加上 errors="ignore"',
+        '必须把文件名写成绝对路径'],
+      answer: 1,
+      why: '官方 csv 文档提示：如果 csvfile 是文件对象，打开它时应设置 newline=""；需要非系统默认编码时通过 open 的 encoding 参数指定。',
+      ref: 5, refText: '来源 [5] csv.reader / csv.writer 的打开方式' },
+
+    { level: 3, text: '同样能定位到文件，为什么更推荐用 pathlib 的路径对象，而不是自己拼字符串？',
+      options: [
+        '因为字符串拼接速度慢很多，会明显拖慢程序',
+        '因为 Python 已经不再支持用字符串表示路径',
+        '因为路径对象的语义在不同操作系统上都成立，还自带 name、glob()、read_text() 等方法',
+        '因为路径对象会自动备份被修改的文件'],
+      answer: 2,
+      why: 'pathlib 官方定位就是"表示文件系统路径的类，其语义适用于不同的操作系统"。用字符串拼接要自己处理分隔符差异，而路径对象自带取名、通配、读写等方法，可读性也更好。',
+      ref: 3, refText: '来源 [3] pathlib 模块的定位与 Path 类' },
+
+    { level: 3, text: '把 80 篇稿件合并成一张干净语料.csv，从"能不能复现"的角度看，最关键的要求是什么？',
+      options: [
+        '表里只保留最有代表性的十篇，方便阅读',
+        '每篇稿件的正文都要人工再读一遍确认',
+        '把原始稿件删掉，只保留这张表',
+        '列名与清洗口径固定下来，并且每次跑的顺序一致，让结果可以被同样地重跑一遍'],
+      answer: 3,
+      why: '这张表是第 3、4 课的唯一输入，需要能被反复使用。列名与清洗口径固定、遍历顺序固定，才谈得上复现；而删掉原始材料会让任何核对都无从下手。行业标准把元数据与内容一起归档，也是同一个道理。',
+      ref: 6, refText: '来源 [6] 新闻稿件交换与归档中的元数据与结构' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

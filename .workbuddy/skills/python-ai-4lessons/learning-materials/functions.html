@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>函数 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 2 课 · 序号 07 / 17</div>
+  <h1>函数</h1>
+  <div class="badges">
+    <span class="badge">概念卡 07</span>
+    <span class="badge">前置：条件判断 · for 循环</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">函数就是把一段做事步骤打包，起个名字，之后随叫随用。</p>
+    <p>用 def 写一次，之后反复调用；参数是递进去的原料，return 是递出来的结果。
+       要分清 return 与 print：print 只在屏幕上显示，return 把结果交回给程序继续用。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>函数像编辑部的一张通稿模板。模板里把格式写死：先写来源、再写正文、最后附联系方式；
+     以后每来一条消息，套一次模板就成稿，不必每次重新想格式。模板要改，只改一处，
+     所有套用它的稿子一起跟着变。递进去的那条消息就是参数，成稿就是 return 交回来的结果。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释函数把什么封装了起来，并举出一个"改一处、全部生效"的实际例子。</li>
+  <li>能区分 return 与 print 各自在做什么，并判断调用之后能不能拿到结果继续用。</li>
+  <li>能写出一个带参数的 def 函数，用能看懂的名字说明它做什么。</li>
+  <li>能判断一段逻辑该不该封装成函数，说出至少两条判断依据。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>代码能跑就行，为什么还要包成函数？</summary>
+  <div class="body">
+    因为重复的代码会<strong>各自长大</strong>。清洗留言的三步——去首尾空格、去多余标点、统一全半角——
+    如果在脚本里抄了三遍，某天发现标点规则要调整，就得记住改三处，漏掉一处结果就前后不一致。
+    包成函数后，改一处、所有调用一起生效；而且函数名本身就是一句说明，
+    读到 <code>清洗文本(留言)</code> 的人不需要逐行猜这段在干什么。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>return 和 print 到底差在哪里？（这是最容易混的一处）</summary>
+  <div class="body">
+    <strong>print 是给人看的，return 是给程序用的。</strong>
+    <code>print()</code> 把内容送到屏幕上，函数执行完就结束了，调用处拿到的东西是 <code>None</code>；
+    <code>return</code> 把结果交回给调用它的那一行，可以继续赋值、比较、写进文件。
+    官方教程在讲函数定义时说得很清楚：<code>return</code> 语句返回函数的值，
+    不带表达式参数时返回 <code>None</code>，函数执行完退出也返回 <code>None</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    典型症状是：函数里写了 <code>print(结果)</code> 却没有 <code>return</code>，
+    调用处拿到的变量是 <code>None</code>，后面所有基于它的操作都会失败。
+  </div>
+</details>
+
+<details>
+  <summary>参数是什么？不传参行不行？</summary>
+  <div class="body">
+    参数是函数的<strong>原料入口</strong>。定义时写在括号里的名字叫形参，调用时递进去的具体值叫实参，
+    两者按位置一一对应。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+    不传参当然也行，但要区分两种情况：一种是这个函数确实不需要外部输入（比如把当天的日期拼成文件名）；
+    另一种是"看起来不用传"，其实把关键字写死在函数里了，以后想改就得动函数体。
+    廖雪峰教程还提醒一个反直觉的点：<strong>默认参数必须指向不可变对象</strong>，
+    默认值写成列表这类可变对象，会出现"函数记住了上一次调用"的怪现象。<sup class="cite"><a href="#ref-4">[4]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>函数名怎么起才不算白起？</summary>
+  <div class="body">
+    官方风格指南的建议很实在：函数名用小写，必要时用下划线分隔单词，
+    目的是"提高可读性"。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+    对新闻场景来说，一个好名字能让代码接近一句业务说明——<code>判断是否本地新闻(稿件)</code>
+    比 <code>f1(稿件)</code> 有价值得多。另外两条相关建议也值得记住：
+    变量名沿用同样的约定；不要用 <code>l</code>、<code>O</code>、<code>I</code>
+    这类单字符名字，因为它们在某些字体里和数字 1、0 长得几乎一样。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>什么情况下不必封装？</summary>
+  <div class="body">
+    两种情况不必：<strong>只用一次</strong>的、<strong>只有两三行</strong>的逻辑，
+    硬拆成函数反而让人跳来跳去地读代码。判断方法很朴素——
+    如果这段逻辑在第二个地方也需要，或者需要改的时候希望"一改全生效"，
+    那就封装；如果它只是某个流程里的一个步骤、且不会重复出现，就先让它待在原地。
+    函数的价值来自复用和统一口径，不是来自数量。教程谈到函数定义时也是这个分寸：
+    先确定函数名和参数个数，<strong>如果有必要</strong>再对参数做类型检查<sup class="cite"><a href="#ref-2">[2]</a></sup>——
+    "有没有必要"靠场景判断，本来就没有一条硬规则。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>函数是一段<strong>有名字的操作</strong>：定义时用 <code>def</code> 写清函数名、括号里的参数和冒号，
+   然后在缩进块里写函数体，需要交回结果就用 <code>return</code>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   定义完成之后，函数名就指向这段操作，可以反复调用；也可以把它赋给另一个名字，
+   两者指向同一个函数对象。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   函数是"打包"，循环是"重复"，条件判断是"分流"——第 2 课的三个概念在这里第一次合流。</p>
+
+<h3>为什么</h3>
+<p>因为新闻工作里的规则要<strong>可复用、口径统一</strong>。一条清洗规则一旦写成函数，
+   处理 5 条留言和处理 500 条留言用的是同一份实现，不存在"上午清得严、下午清得松"。
+   这一点在正式的人工标注工作里也有对应：标注手册要把类目定义、判定规则写清楚，
+   让不同标注员执行同一套标准；把这份手册写成函数，等于把它变成可执行、可复查的版本。
+   国家标准的标点规范也正是同一类"统一口径"的努力——《标点符号用法》逐条规定了句号、
+   顿号、问号的形式与位置，还专门增加了使用中文输入软件处理标点的规范。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   把这类规则封装进函数，才是几十上百条留言处理起来不走样的前提。</p>
+
+<h3>怎么工作</h3>
+<p>一次调用的完整过程是三步：<strong>递参数进来</strong>、<strong>在函数内部用局部变量干活</strong>、
+   <strong>用 return 交结果出去</strong>。官方教程说明，函数执行时使用自己的局部符号表，
+   参数按位置（或按关键字）传进去；一旦执行到 <code>return</code>，函数就结束并返回结果。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   需要注意的是 <code>return</code> 和 <code>print</code> 走的是两条路：
+   前者把值交给调用处，后者只是显示出来。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<pre><code>def 清洗文本(文本):
+    """去掉首尾空格、压缩多余标点、统一全半角标点。"""
+    文本 = 文本.strip()                      # 去首尾空格
+    for 全角, 半角 in {"，": ",", "。": ".", "：": ":", "；": ";"}.items():
+        文本 = 文本.replace(全角, 半角)       # 统一标点形状
+    文本 = 文本.replace("...", "").replace("!!", "")   # 压缩多余标点
+    return 文本                              # 交回结果，而不是打印
+
+干净留言 = [清洗文本(留言) for 留言 in 留言列表]
+print("清洗后共", len(干净留言), "条")       # 这才是给人看的输出</code></pre>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 340" role="img" aria-label="函数封装示意：三步操作打包成一个名字，参数进、结果出，可反复调用">
+  <defs>
+    <marker id="parrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="20" font-size="14" font-weight="700" fill="#1f2330">函数把三步操作打包成一个名字：参数进去，结果回来</text>
+  <text x="20" y="40" font-size="11.5" fill="#7b8294">def 只写一份，处理几百条留言时反复调用同一份逻辑</text>
+
+  <rect x="20" y="110" width="140" height="64" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="90" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">一条留言</text>
+  <text x="90" y="152" text-anchor="middle" font-size="11" fill="#7b8294">带空格、半角标点</text>
+
+  <path d="M160 142L188 142" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#parrow)"/>
+  <text x="174" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#7b8294">参数</text>
+
+  <rect x="192" y="66" width="312" height="186" rx="10" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="348" y="90" text-anchor="middle" font-size="12.5" font-weight="700" fill="#c0392b">def 清洗文本(文本):</text>
+
+  <rect x="212" y="102" width="272" height="32" rx="6" fill="#ffffff" stroke="#f0d5cd"/>
+  <text x="348" y="123" text-anchor="middle" font-size="11.5" fill="#4a5160">① 文本.strip() 去首尾空格</text>
+
+  <rect x="212" y="140" width="272" height="32" rx="6" fill="#ffffff" stroke="#f0d5cd"/>
+  <text x="348" y="161" text-anchor="middle" font-size="11.5" fill="#4a5160">② replace() 统一全角与半角标点</text>
+
+  <rect x="212" y="178" width="272" height="32" rx="6" fill="#ffffff" stroke="#f0d5cd"/>
+  <text x="348" y="199" text-anchor="middle" font-size="11.5" fill="#4a5160">③ 压缩多余的连续标点</text>
+
+  <text x="348" y="234" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">return 清洗后的文本</text>
+
+  <path d="M504 142L534 142" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#parrow)"/>
+  <text x="519" y="132" text-anchor="middle" font-size="11" font-weight="700" fill="#7b8294">return</text>
+
+  <rect x="538" y="110" width="160" height="64" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="618" y="134" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">结果交给调用处</text>
+  <text x="618" y="152" text-anchor="middle" font-size="11" fill="#7b8294">可继续统计、写文件</text>
+
+  <rect x="192" y="268" width="94" height="34" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="239" y="290" text-anchor="middle" font-size="11.5" fill="#4a5160">调用 1</text>
+  <rect x="300" y="268" width="94" height="34" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="347" y="290" text-anchor="middle" font-size="11.5" fill="#4a5160">调用 2</text>
+  <rect x="408" y="268" width="94" height="34" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="455" y="290" text-anchor="middle" font-size="11.5" fill="#4a5160">调用 3 …</text>
+
+  <path d="M347 268L347 256" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+    stroke-dasharray="4 3" marker-end="url(#parrow)"/>
+
+  <text x="20" y="322" font-size="11.5" fill="#7b8294">改一处、全部生效：要调整清洗规则，只改 def 里面的三步，所有调用跟着变。</text>
+  <text x="20" y="338" font-size="11.5" fill="#7b8294">若把 return 写成 print，调用 1/2/3 拿到的都是 None，后面的统计就无从下手。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一个清洗函数，处理几百条留言。</strong>2026 年 5 月，编辑部整理一次民生议题讨论的读者留言。
+   原始材料的模样很难直接统计：有的行首带好几个空格，有的句子里混着半角逗号和全角逗号，
+   有的末尾拖着一串感叹号或省略号。要统计"提到某关键词的留言有多少条"，
+   第一步必须先把这些表面差异抹平，否则同一条留言换个标点写法就会被判成两条不同的材料。</p>
+
+<p>第一版脚本把三步操作直接写在循环里，跑通了。第二周要做第二次统计（换成另一个议题的关键词），
+   于是把循环体复制过去——问题在这里出现：复制之后有人顺手把"压缩多余标点"那一步删掉了，
+   两次统计的清洗口径不一样，数字也就没法放在同一张表里比较。
+   第三版改成了函数：三步写进 <code>清洗文本()</code>，两个统计脚本都调用同一个函数。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+
+<p>这个改动带来的直接好处是"数字可比"。数据新闻手册在讲处理数据的步骤时，
+   把清洗和标准化列为拿到数据集后的第一件大事，并举过取值不统一的例子：
+   同一个性别字段里可能同时出现 Male、M、1、MALE 等写法，
+   不先统一成一套取值，后面的统计就没有意义。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   函数的角色正是把"统一"这件事固定下来。</p>
+
+<div class="flag">
+  <span class="lbl">示意</span>
+  <p style="margin:6px 0 0">上面的编辑部场景、时间与两版脚本的经过是课程设计的推演，
+      用于说明"复制代码"与"封装函数"的差别，不是对某家媒体实际作业的记录。
+      可核查的部分是语言规则：def 定义函数、return 返回值、无 return 时返回 None，
+      以及官方关于函数命名与默认参数的建议。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>变量</strong></td>
+      <td>变量给<strong>一条数据</strong>起名字；函数给<strong>一段操作</strong>起名字。两者都"随叫随用"，但一个存值、一个做事。</td>
+      <td>变量回答"这个值叫什么"，函数回答"这件事叫什么"。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>print()</strong></td>
+      <td>print 把内容送到屏幕，属于输出动作，函数本身仍以 None 收场；return 把结果交回调用处，可以被继续使用。</td>
+      <td>print 是喊给别人听，return 是把东西递到手上。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>for 循环</strong></td>
+      <td>循环负责把同一件事重复若干遍；函数负责把一组步骤命名打包。两者配合的常见写法是"在循环里调用函数"。</td>
+      <td>循环决定做几遍，函数决定每一遍怎么做。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>标注手册</strong></td>
+      <td>标注手册用自然语言写清类目定义与判定规则；把规则写成函数，等于给这份手册做了"可执行版本"。</td>
+      <td>手册是给人照着做，函数是给机器照着做，要求都是同一条规则对所有材料一致。<sup class="cite"><a href="#ref-6">[6]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>4.8 定义函数（Python 官方中文教程 4. 更多控制流工具）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/controlflow.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">原文要点：用 def 定义函数，函数语句从下一行开始且必须缩进；
+      return 返回函数的值，不带表达式参数时返回 None，函数执行完退出也返回 None；
+      函数调用时实参引入局部符号表，函数名与函数对象关联后可被再次指向。
+      本卡"是什么/怎么工作"两节及 return 的说明均据此。</span>
+  </li>
+  <li id="ref-2">
+    <strong>定义函数（Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/function/define-function/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/function/define-function/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">原文说明：一旦执行到 return，函数就执行完毕并返回结果；
+      函数体内部可以先用条件判断和循环实现复杂逻辑；没有 return 时自动返回 None；
+      定义函数时需要确定函数名与参数个数，必要时可先做参数类型检查。</span>
+  </li>
+  <li id="ref-3">
+    <strong>内置函数 · print()</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/library/functions.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/library/functions.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">print(*objects, sep=' ', end='\n', file=None, flush=False) 的官方签名，
+      说明它的职责是把对象输出到文件或标准输出，而不是把值交回给调用处——
+      这正是本卡单独讲 return 与 print 区别的依据。</span>
+  </li>
+  <li id="ref-4">
+    <strong>函数的参数（Python 教程）</strong> · 廖雪峰<br />
+    <a href="https://liaoxuefeng.com/books/python/function/parameter/index.html" target="_blank" rel="noopener">https://liaoxuefeng.com/books/python/function/parameter/index.html</a>
+    <span class="badge">教程站点</span><br />
+    <span class="note">位置参数按顺序赋值；默认参数放在必选参数之后；
+      "默认参数必须指向不变对象"，否则会出现函数记住上一次调用结果的怪现象。
+      本卡"参数"相关回答的依据。</span>
+  </li>
+  <li id="ref-5">
+    <strong>PEP 8 – Style Guide for Python Code（Naming Conventions 一节）</strong> · Guido van Rossum, Barry Warsaw, Alyssa Coghlan<br />
+    <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">https://peps.python.org/pep-0008/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">Function and Variable Names 原文为"Function names should be lowercase,
+      with words separated by underscores as necessary to improve readability"，
+      变量名沿用同样约定；Names to Avoid 一节要求不要用 l、O、I 作单字符变量名，
+      因为某些字体里它们与数字 1、0 难以区分。</span>
+  </li>
+  <li id="ref-6">
+    <strong>《标点符号用法》GB/T 15834—2011</strong> · 中华人民共和国国家质量监督检验检疫总局、中国国家标准化管理委员会<br />
+    <a href="https://www.moe.gov.cn/ewebeditor/uploadfile/2015/01/13/20150113091548267.pdf" target="_blank" rel="noopener">moe.gov.cn/ewebeditor/uploadfile/2015/01/13/20150113091548267.pdf</a>
+    <span class="badge">国家标准</span><br />
+    <span class="note">教育部网站上的标准全文（PDF）。它逐条规定汉语书面语标点符号的形式与用法，
+      并在第 5 章增加了使用中文输入软件处理标点符号的规范——这正是"全角、半角标点需要统一"
+      这件事的规范来源，也说明清洗文本不是随手发明，而是有标准可依。注意：该 PDF 为图片版，
+      本卡未能逐字核实，详见下方缺口记录。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草，
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li>来源 1—6 <strong>逐条打开确认页面存在</strong>，并核对内容与引用一致；
+        来源 2、来源 4 确认新路径分别为 <code>/books/python/function/define-function/index.html</code>
+        与 <code>/books/python/function/parameter/index.html</code>。</li>
+    <li>"无 return 时返回 None"这一句<strong>在来源 1 与来源 2 中分别核对</strong>，
+        两处表述一致，未采用二手转述。</li>
+    <li>函数命名规则<strong>回到来源 5 的 Naming Conventions 原文确认</strong>，
+        包括"lowercase, with words separated by underscores"与避免 l、O、I 单字符名两条。</li>
+    <li>全角、半角标点的说法<strong>与来源 6 的第 5 章说明对齐</strong>，
+        但该 PDF 为图片版，无法逐字读正文，见下方缺口。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>来源 6 的 PDF <strong>正文为图片扫描件（无文本层）</strong>，本卡只依据其标题、发布机构
+        与已有材料中对该标准第 4、5 章结构的描述进行引用，<strong>未能逐字核实</strong>；
+        正式引用前建议下载原件对照。</li>
+    <li>应用案例中的媒体场景、时间与两版脚本的经过是<strong>课程推演</strong>，已在正文用"示意"标注。</li>
+    <li>代码示例中的清洗规则（<code>"..."</code>、<code>"!!"</code> 的压缩）是<strong>教学简化</strong>，
+        并非标准推荐的清洗流程；实际处理中文留言时还应考虑全角空格、换行符等情形。</li>
+    <li>本卡<strong>未展开</strong>可变参数 <code>*args</code> 与关键字参数 <code>**kw</code>，
+        只提到默认参数一处风险；来源 4 对此有完整说明，留待后续需要时查阅。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 函数 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 7 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '在 Python 里定义一个函数，用的关键字是哪一个？',
+      options: ['def', 'return', 'for', 'import'],
+      answer: 0,
+      why: '用 def 定义函数，依次写出函数名、括号中的参数和冒号，然后在缩进块里写函数体；return 负责交回结果。',
+      ref: 1, refText: '来源 [1] 4.8 定义函数' },
+
+    { level: 0, text: '想把函数内部算好的结果交给调用它的那一行继续使用，应该用哪个语句？',
+      options: ['print', 'return', 'input', 'pass'],
+      answer: 1,
+      why: 'return 把值交回调用处；print 只是把内容显示到屏幕上，调用处拿不到这个结果。',
+      ref: 3, refText: '来源 [3] print() 的职责是输出而非返回值' },
+
+    { level: 1, text: '一个函数里只写了 print(结果)，没有写 return。在调用处把返回值赋给变量，这个变量是什么？',
+      options: [
+        '就是被打印出来的那段文本',
+        '程序会报错，无法运行',
+        'None，因为函数没有交回任何值',
+        '空字符串 ""，因为它没有长度'],
+      answer: 2,
+      why: '官方教程写明：return 语句返回函数的值；函数执行完毕退出也返回 None。print 只是输出动作，不会改变返回值。',
+      ref: 1, refText: '来源 [1] 关于 return 与 None 的说明' },
+
+    { level: 1, text: '关于函数的参数，下面哪种说法与官方建议相符？',
+      options: [
+        '默认参数应当写成列表，方便每次往里追加',
+        '默认参数必须写在必选参数之前，否则无法调用',
+        '函数只能有一个参数，多了要用循环代替',
+        '默认参数必须指向不可变对象，写成列表会出现跨调用累积的怪现象'],
+      answer: 3,
+      why: '默认值在定义时就求值，写成列表这类可变对象会被后续调用共享，于是出现"函数记住了上次结果"的现象；正确做法是用 None 作默认值再在函数内新建列表。',
+      ref: 4, refText: '来源 [4] 默认参数必须指向不变对象' },
+
+    { level: 2, text: '同一段清洗逻辑在三个脚本里各抄了一份。要在下个月调整清洗规则，最该做的是什么？',
+      options: [
+        '把这段逻辑封装成函数，三个脚本都调用它，以后只改函数体',
+        '把三份都改一遍，并记住以后每次都要改三处',
+        '把三份代码分别存成不同的文件名，避免互相影响',
+        '干脆不再调整规则，保持现状'],
+      answer: 0,
+      why: '封装的核心收益就是"改一处、全部生效"。三份副本意味着三次修改机会、三次漏改风险，而且不同脚本的口径可能悄悄分叉。',
+      ref: 2, refText: '来源 [2] 函数定义与 return 的执行说明' },
+
+    { level: 2, text: '写了一个 def 清洗文本(文本): …，然后这样调用：清洗文本(留言)。这里的"文本"和"留言"分别是什么？',
+      options: [
+        '两者都只是随便起的名字，位置对了就行，与含义无关',
+        '文本是定义时的形参名，留言是调用时递进去的实参值',
+        '文本是函数名，留言是返回值',
+        '留言是形参名，文本是实参值'],
+      answer: 1,
+      why: '定义时括号里写的是形参名，调用时递进去的具体值叫实参；形参和实参按位置对应。取一个能说明含义的名字，是为了让人一眼看懂函数在做什么。',
+      ref: 4, refText: '来源 [4] 位置参数按位置顺序赋值' },
+
+    { level: 3, text: '下面哪种情况更接近"不必封装成函数"？',
+      options: [
+        '这段逻辑在三个脚本里都要用，而且以后可能还要调整',
+        '这段逻辑包含 20 行循环与判断，容易写错',
+        '这段逻辑只用一次、只有两三行，且不会重复出现',
+        '这段逻辑需要经常单独测试它的输入输出'],
+      answer: 2,
+      why: '函数的价值来自复用与统一口径，不是来自数量。只用一次、只有两三行的逻辑硬拆成函数，只会让阅读时来回跳转；会重复、会变动、需要单独验证的逻辑才值得封装。',
+      ref: 2, refText: '来源 [2] 何时需要函数与参数检查' },
+
+    { level: 3, text: '把标注手册写成函数，相比"标注员照着手册逐条判断"，最本质的差别是什么？',
+      options: [
+        '函数一定比人判断得更准确，不需要再抽查',
+        '函数可以自动发现规则表里的类目重叠问题',
+        '函数不需要标注手册，可以直接从数据里学出类目',
+        '函数把规则固定成同一份实现，不会因人、因时段而漂移，但规则本身仍由人制定'],
+      answer: 3,
+      why: '函数保证的是执行的一致性——同一份代码对所有材料用同一条规则。类目怎么定、边界怎么划、什么算命中，仍然需要人先写清楚；也正因为规则由人定，抽样复核依然不能省。',
+      ref: 6, refText: '来源 [6] 清洗与标准化的意义：统一口径才有可能比较' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

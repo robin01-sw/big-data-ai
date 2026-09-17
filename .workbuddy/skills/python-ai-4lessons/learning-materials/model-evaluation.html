@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>模型评估 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 4 课 · 序号 14 / 17</div>
+  <h1>模型评估</h1>
+  <div class="badges">
+    <span class="badge">概念卡 14</span>
+    <span class="badge">前置：文本分类 · 特征与标签</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">6 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">准确率会骗人：判断模型要看它错在哪、错得多贵。</p>
+    <p>一千条留言里只有一条广告，全判成正常也有 99.9% 准确率。
+       要分开看：精确率问"判成广告的有多少真"，召回率问"真广告抓到多少"。
+       两者此消彼长，取哪个看漏报和误报哪个更贵。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>评估模型像给新来的校对员算绩效。只看"他判对了几成"会出问题：一百篇里九十九篇本来就没写错，他不动笔也能拿九十九分。所以要分开看：把没写错的稿子误判成有错几次（误报），真正有错的稿子漏掉几次（漏报）。两种错的代价不一样，值班主任按更怕哪种来定标准；还要翻他的改稿记录，看错集中在哪类句子上。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释为什么样本不均衡时，准确率会给出误导性的结论。</li>
+  <li>能说出混淆矩阵四个格子分别在数什么，以及精确率、召回率各自问的是什么问题。</li>
+  <li>能举例说明精确率与召回率此消彼长，并说明新闻场景下该怎么取舍。</li>
+  <li>能判断一份模型评估报告能不能支撑结论，并说出它还缺哪几样东西。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>准确率 99.9%，是不是说明这个模型很好？</summary>
+  <div class="body">
+    先问样本是什么样的。如果一千条留言里只有一条是广告，模型把一千条全判成"正常"，
+    准确率就是 99.9%，但它一条广告也没抓到，完全没用。
+    官方文档对此有一句很直接的说明：平衡准确率正是为了
+    <strong>避免在不均衡数据集上得到虚高的性能估计</strong>；
+    如果常规准确率高于随机水平只是因为模型"占了不均衡测试集的便宜"，
+    那么平衡准确率会掉到 1 除以类别数那么低。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>精确率和召回率到底在问什么？</summary>
+  <div class="body">
+    官方文档的两句定义可以直接背下来：<strong>精确率是分类器"不把负样本标成正样本"的能力</strong>，
+    <strong>召回率是分类器"把所有正样本找出来"的能力</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    换成新闻场景的话：精确率问"被判成广告的里面，有多少真的是广告"（误报少不少）；
+    召回率问"真正的广告里，我抓到了多少"（漏报少不少）。
+  </div>
+</details>
+
+<details>
+  <summary>两个都高不行吗？</summary>
+  <div class="body">
+    很难。判定标准放严一点，被判成广告的变少，误报少了、精确率上去了，
+    但真广告也跟着被漏掉，召回率就下来了；标准放松则反过来。
+    官方文档里画精确率—召回率曲线的做法，就是
+    <strong>通过改变判定阈值</strong>来看这两个指标怎么一起变。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    所以真正要回答的问题不是"能不能都高"，而是"在这个场景里，哪种错更贵"。
+  </div>
+</details>
+
+<details>
+  <summary>为什么不能拿训练用的数据来考模型？</summary>
+  <div class="body">
+    官方文档把这件事说成"方法论错误"，理由很形象：
+    <strong>一个只会重复它刚看过的样本标签的模型，能拿到满分，却无法对没见过的数据做出任何有用的预测</strong>。
+    这种情况就叫过拟合。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    就像背练习题答案去考试——练习册上全对，一换题就不会。
+    所以要把数据留出一部分当测试集，只用它来考。
+  </div>
+</details>
+
+<details>
+  <summary>数字都算完了，接下来做什么？</summary>
+  <div class="body">
+    打开错例，一条一条看。这是本卡最想强调的一步。
+    官方教程里那个例子很能说明为什么：模型在测试集上拿到 91.3% 的准确率，
+    但混淆矩阵显示，无神论与基督教两个类的稿件最常被互相认错，
+    而它们和"计算机图形"几乎不混。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    看完这个矩阵，你才知道该去补哪一类标注、该不该把两类合并。
+    只看那个 91.3%，什么都学不到——<strong>指标告诉你有多少错，错例告诉你错在哪</strong>。
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>模型评估是判断"这个模型到底能不能用"的一整套方法。它至少包含四层：
+   一个总体数字（准确率）、一张四格表（混淆矩阵）、一组按类别分开看的指标
+   （精确率、召回率、F1），以及防止自欺欺人的数据划分（训练集/测试集）。
+   官方文档对混淆矩阵的定义是：<strong>矩阵中第 i 行第 j 列的数字，是真实属于第 i 类、
+   却被预测成第 j 类的样本数量</strong>。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>为什么</h3>
+<p>因为<strong>错误的代价从来不对称</strong>。把一条读者正常的吐槽误判成广告并折叠，
+   代价是那位读者觉得"我被无故禁言了"；把一条真广告放过去，代价是评论区被刷爆。
+   一件是可见的信任损失，一件是可见的版面脏乱，两者不可换算。
+   所以评估不能只回答"错了多少"，还要回答"错的都是哪种错"。
+   这也是人工标注工作里早就有的道理：<strong>不能只报一个笼统的一致率</strong>，
+   要讲清用的是哪个系数、算在哪个变量上、达到什么水平，
+   否则一个漂亮的总数什么也没证明。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+   行业规范层面，《Paris Charter on AI and Journalism》也把
+   "新闻中使用的 AI 系统须经独立评估"写成一条基本原则。<sup class="cite"><a href="#ref-5">[5]</a></sup></p>
+
+<h3>怎么工作</h3>
+<ol>
+  <li><strong>先算混淆矩阵</strong>，把"真实类别 × 模型预测"交叉成四个格子。
+      所有后面的指标都是从这四个格子推出来的。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>再算精确率与召回率</strong>。精确率 = 命中 ÷（命中 + 误报），
+      召回率 = 命中 ÷（命中 + 漏报）。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>用一个数概括两边</strong>：F1 是精确率与召回率的加权调和平均，
+      β 取 1 时两者同等重要。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+      如果场景明显偏向一边，就调 β 或干脆分别报两个数。</li>
+  <li><strong>把数据分开</strong>：训练用一部分，测试用另一部分，
+      并且测试集只在最后用一次——否则参数会被反复调成"刚好适合这个测试集"，
+      评估结果就不再代表泛化能力。<sup class="cite"><a href="#ref-2">[2]</a></sup></li>
+  <li><strong>打开错例做错误分析</strong>。把分错的样本逐条读一遍，
+      按现象归类（是反讽？是两类本身就挨得近？是标注本身标错了？），
+      再决定下一步是补标注、改类别定义，还是合并类别。</li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 380" role="img" aria-label="混淆矩阵四个格子与精确率、召回率的关系">
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">混淆矩阵：四个格子，两种错的代价不一样</text>
+
+  <text x="230" y="76" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7b8294">模型判为"广告"</text>
+  <text x="390" y="76" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7b8294">模型判为"正常"</text>
+
+  <text x="142" y="124" text-anchor="end" font-size="11.5" font-weight="700" fill="#7b8294">真实是广告</text>
+  <text x="142" y="184" text-anchor="end" font-size="11.5" font-weight="700" fill="#7b8294">真实是正常</text>
+
+  <rect x="150" y="90" width="160" height="60" rx="7" fill="#eef7f1" stroke="#cfe4d8"/>
+  <text x="230" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#1d5c37">命中（抓到了）</text>
+  <text x="230" y="134" text-anchor="middle" font-size="10.5" fill="#2e7d4f">真广告被判成广告</text>
+
+  <rect x="310" y="90" width="160" height="60" rx="7" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="390" y="116" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">漏报（放走了）</text>
+  <text x="390" y="134" text-anchor="middle" font-size="10.5" fill="#a8554a">真广告被判成正常</text>
+
+  <rect x="150" y="150" width="160" height="60" rx="7" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="230" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">误报（误伤了）</text>
+  <text x="230" y="194" text-anchor="middle" font-size="10.5" fill="#a8554a">正常留言被判成广告</text>
+
+  <rect x="310" y="150" width="160" height="60" rx="7" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="390" y="176" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">正常放过</text>
+  <text x="390" y="194" text-anchor="middle" font-size="10.5" fill="#7b8294">本来就该这样</text>
+
+  <rect x="490" y="90" width="210" height="120" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="502" y="112" font-size="11.5" font-weight="700" fill="#4a5160">精确率 = 命中 ÷（命中 + 误报）</text>
+  <text x="502" y="130" font-size="10.5" fill="#7b8294">问：判成广告的里面，有多少真是</text>
+  <text x="502" y="156" font-size="11.5" font-weight="700" fill="#4a5160">召回率 = 命中 ÷（命中 + 漏报）</text>
+  <text x="502" y="174" font-size="10.5" fill="#7b8294">问：真正的广告里，抓到了多少</text>
+  <text x="502" y="198" font-size="10.5" fill="#c0392b">F1 = 两者的调和平均，一个数概括两边</text>
+
+  <rect x="20" y="236" width="680" height="126" rx="10" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="36" y="260" font-size="12.5" font-weight="700" fill="#4a5160">三件必须记住的事</text>
+  <text x="36" y="284" font-size="11.5" fill="#7b8294">① 准确率只数对角线：命中 + 正常放过，再除以总数。样本极不均衡时它会虚高。</text>
+  <text x="36" y="306" font-size="11.5" fill="#7b8294">② 精确率与召回率此消彼长：判定标准放严，误报少了、漏报多了，两个很难同时高。</text>
+  <text x="36" y="328" font-size="11.5" fill="#7b8294">③ 算完数字不算完。一定要打开错例逐条看：错的是哪一类、错在什么句子上。</text>
+  <text x="36" y="350" font-size="11.5" fill="#a8554a">如果错误集中在某一类现象上，那不是随机误差，而是系统性问题，换更大的模型也盖不住。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>真实的参照：官方教程里的那组数字。</strong>
+   在 20 newsgroups 语料上，朴素贝叶斯在测试集上拿到 83.5% 的准确率，
+   换成线性支持向量机后升到 91.3%。教程接着做的事情才是关键——
+   它没有停在 91.3%，而是打印了一张分类报告和一张混淆矩阵。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   报告里分四个类别各自列出精确率、召回率与 F1，一眼能看出哪一类拖后腿；
+   混淆矩阵则显示，无神论与基督教两个类的稿件最常被互相认错，
+   而它们和"计算机图形"几乎不混。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   这两件事合起来才构成一个可用的评估：一个总数、一张分表、一句关于错误在哪的解释。</p>
+
+<div class="flag">
+  <span class="lbl">示意案例（推演，非公开报道）</span>
+  <p style="margin:6px 0 0">某新闻网站的读者留言区要自动标记广告与引流评论，同时编辑部还在用另一个模型
+      把来稿按题材归档。两个任务，两种取舍：</p>
+  <ul>
+    <li><strong>评论审核系统先保精确率</strong>。误报一条正常吐槽，读者会觉得被无故禁言，
+        这种信任损失不可逆；漏掉几条广告，第二天补删还来得及。所以判定标准定严一点，
+        宁可放过，不可错杀。</li>
+    <li><strong>稿件归档系统先保召回率</strong>。分错类的稿件会被编辑看到，纠正成本很低；
+        但漏掉某一类的稿件，意味着这一类稿件的统计数字偏低——这个数字如果进了季度报告，
+        就是错的。所以宁可错杀，不可放过。</li>
+  </ul>
+  <p style="margin:6px 0 0">这两个取舍都不是模型决定的，是编辑部根据两种错的代价决定的。
+      它属于"口径"，必须在定标注规则的时候就写下来，而不是等看到结果再挑一个好看的数字。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>文本分类</strong></td>
+      <td>文本分类负责产出一批标签，模型评估负责判断这批标签值不值得信。没有评估，分类结果只是一堆未经检验的判断。</td>
+      <td>分类是干活，评估是验活。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>交叉验证</strong></td>
+      <td>训练集/测试集划分只切一次，结果依赖那一次切法的运气；交叉验证把数据轮流切成 k 份，每次留一份考、其余训练，把 k 次结果平均。</td>
+      <td>单次划分是抽一次考，交叉验证是换几套卷子反复考。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的一致性检验</strong></td>
+      <td>两者都在回答"凭什么相信这些标签"，但参照物不同：人工标注的一致性检验比的是<strong>人与人的一致程度</strong>，模型评估比的是<strong>模型与人工标注的一致程度</strong>。</td>
+      <td>一致性检验问"两个标注员会不会做同样判断"，评估问"模型像不像那个标注员"。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>错误分析</strong></td>
+      <td>评估给的是数字（错了多少、错在哪一类），错误分析给的是原因（为什么错）。数字会掩盖问题，错例才会暴露问题。</td>
+      <td>混淆矩阵告诉你哪两个类别爱混，错例告诉你它们为什么爱混。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>3.3. Metrics and scoring: quantifying the quality of predictions（scikit-learn 官方文档 1.4）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/1.4/modules/model_evaluation.html" target="_blank" rel="noopener">https://scikit-learn.org/1.4/modules/model_evaluation.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">本卡的核心依据。原文要点：混淆矩阵中"第 i 行第 j 列是真实属于第 i 类却被预测为第 j 类的样本数"；
+      精确率是"不把负样本标成正样本的能力"、召回率是"找出所有正样本的能力"；
+      F1 是精确率与召回率的加权调和平均，β 取 1 时两者同等重要；
+      平衡准确率"避免在不均衡数据集上得到虚高的性能估计"；
+      精确率—召回率曲线通过改变判定阈值来看两者如何一起变化。</span>
+  </li>
+  <li id="ref-2">
+    <strong>3.1. Cross-validation: evaluating estimator performance（scikit-learn 官方文档 1.4）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/1.4/modules/cross_validation.html" target="_blank" rel="noopener">https://scikit-learn.org/1.4/modules/cross_validation.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">过拟合的原始表述在此："用同一批数据既学参数又做检验是方法论错误——一个只会重复它刚见过的样本标签的模型能拿到满分，
+      却无法对没见过的数据做出任何有用的预测。这种情况就叫过拟合。"
+      并说明交叉验证如何用 k 折轮换缓解单次划分的偶然性。本卡"背练习题"打比方的出处。</span>
+  </li>
+  <li id="ref-3">
+    <strong>Working With Text Data（scikit-learn 官方教程 1.4）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html" target="_blank" rel="noopener">https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">本卡与序号 13「文本分类」共用。这里引用的是它的评估部分：朴素贝叶斯 83.5%、
+      SVM 91.3%，随后打印分类报告（分四类的精确率/召回率/F1）与混淆矩阵，
+      并明确指出无神论与基督教两类最常被互相认错、而与计算机图形几乎不混。</span>
+  </li>
+  <li id="ref-4">
+    <strong>An Introduction to Content Analysis（ERIC Digest ED458218）</strong> · Steve Stemler · ERIC Clearinghouse on Assessment and Evaluation（美国马里兰大学）<br />
+    <a href="https://purl.fdlp.gov/GPO/LPS26359" target="_blank" rel="noopener">https://purl.fdlp.gov/GPO/LPS26359</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">2001 年发布。提出信度的两种含义：稳定性（同一标注员重复是否一致）与
+      <strong>可重复性（不同人是否把同一段文本归进同一类）</strong>；并提醒标注方案的制定者
+      因为长期共处会形成"默契"，导致他们报告的一致性系数被人为抬高。
+      本卡用它说明"模型评估与标注员之间的一致性检验是同一类问题"。这也是本卡的非技术类来源之一。</span>
+  </li>
+  <li id="ref-5">
+    <strong>New charter provides ethical framework for AI in journalism</strong> · African Centre for Media Excellence（ACME）<br />
+    <a href="https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism" target="_blank" rel="noopener">https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism</a>
+    <span class="badge">行业规范</span><br />
+    <span class="note">2023-11-13 报道 2023-11-10 于巴黎和平论坛发布的《Paris Charter on AI and Journalism》。
+      其中"新闻中使用的 AI 系统必须经受独立、全面的评估"是本卡"评估不是可选项"的行业规范依据。
+      原始 PDF 正文为压缩流，本卡引用的是这家媒体支持机构的公开报道，未引述逐字条款。</span>
+  </li>
+  <li id="ref-6">
+    <strong>Content Analysis: Coding Text and Media Systematically</strong> · CASRAI（研究管理信息标准推进联盟）<br />
+    <a href="https://casrai.org/guides/content-analysis" target="_blank" rel="noopener">https://casrai.org/guides/content-analysis</a>
+    <span class="badge">方法指南</span><br />
+    <span class="note">指出"简单的一致率直观，但会高估信度，因为它没有扣除仅凭偶然就会达成的一致"；
+      并要求研究报告应写清"用的是哪个系数、算在哪个分析单位上、覆盖语料的多大比例、
+      把什么水平当作可接受"，而不是丢出一个光秃秃的百分比。
+      本卡"不能只报一个总体数字"的依据，也是本卡的非技术类来源之一。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。来源 1、2、3 与序号 13、15 两张卡共用同一批
+     scikit-learn 官方文档，复核时一并检查过。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1 的五处关键表述逐句回原文核对</strong>：混淆矩阵第 i 行第 j 列的定义、
+        精确率与召回率的能力表述、F1 的加权调和平均与 β=1 的含义、
+        平衡准确率"避免不均衡数据集上的虚高估计"、
+        以及"通过改变判定阈值"画出精确率—召回率曲线。均已确认为原文表述。</li>
+    <li><strong>核对时发现两处需要修正的常见说法</strong>：一是官方文档在
+        <code>accuracy_score</code> 一节并没有直接写"样本不均衡时准确率会误导"，
+        这个提醒实际出现在 <code>balanced_accuracy_score</code> 一节；
+        二是文档写的是"精确率的贡献被 β 加权"，并非"β 决定召回率的权重"。
+        本卡按原文的实际位置与措辞引用，未沿用二手转述。</li>
+    <li><strong>来源 2 的过拟合原句逐字核对</strong>（"a model that would just repeat the labels of the samples
+        that it has just seen would have a perfect score but would fail to predict anything useful on yet-unseen data"）。</li>
+    <li><strong>来源 3 的 83.5% 与 91.3% 两个数字回原文核对</strong>，并确认混淆矩阵中"无神论与基督教最常互认"
+        是原文的说明文字，不是本卡推断。</li>
+    <li><strong>来源 4、6 均逐条打开确认存在</strong>，且页面内容与本卡引用一致。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 1 的抓取结果末尾被截断</strong>（3.3.2.17 之后的回归、聚类等章节未取到）。
+        本卡只引用了截断之前已确认的段落，未涉及被截断部分的内容。</li>
+    <li><strong>来源 5 引述的是报道而非《Paris Charter》原文</strong>。原始 PDF 本次只能取到压缩后的正文流，
+        无法逐字核对，因此本卡未引述任何条款编号与逐字原文。</li>
+    <li><strong>"评论审核系统先保精确率、稿件归档系统先保召回率"一段标明为示意</strong>，
+        是推演出的取舍场景，不是某个编辑部的公开决定。它用于说明"取舍由代价决定"这一原则，
+        具体阈值需要在课程练习中结合自己的数据定。</li>
+    <li><strong>本卡没有讨论多分类下的宏平均与微平均差异</strong>，因为它需要先理解加权方式，
+        超出零基础一节课的容量，留到实际动手遇到时再查官方文档的对应小节。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 模型评估 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 14 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '混淆矩阵的四个格子，数的是什么？',
+      options: [
+        '真实类别与模型预测类别的四种组合各有多少条',
+        '模型训练用了多少条、测试用了多少条',
+        '每个类别里有多少个不同的词',
+        '模型运行一次要花多少秒'],
+      answer: 0,
+      why: '官方定义是：矩阵中第 i 行第 j 列的数字，是真实属于第 i 类却被预测成第 j 类的样本数量。所有后面的指标都是从这四个格子推出来的。',
+      ref: 1, refText: '来源 [1] 混淆矩阵的定义' },
+
+    { level: 0, text: '哪个指标回答的是"真正的广告里，抓到了多少"？',
+      options: ['准确率', '精确率', '召回率', 'F1'],
+      answer: 2,
+      why: '召回率 = 命中 ÷（命中 + 漏报），衡量的是"把所有正样本找出来"的能力。精确率问的是另一个方向："被判成广告的里面有多少真是"。',
+      ref: 1, refText: '来源 [1] 精确率与召回率的定义' },
+
+    { level: 1, text: '一千条留言里只有一条是广告，模型把一千条全判成"正常"，准确率 99.9%。这个模型的问题出在哪？',
+      options: [
+        '它的运行速度太慢',
+        '样本类别极不均衡，准确率被数量占绝对多数的类别主导，模型一条广告也没抓到',
+        '它没有使用向量化，所以无法运行',
+        '准确率算错了，应该重新计算'],
+      answer: 1,
+      why: '官方文档说，平衡准确率正是为了"避免在不均衡数据集上得到虚高的性能估计"；如果常规准确率高于随机水平只是因为模型占了不均衡测试集的便宜，平衡准确率会掉到 1 除以类别数那么低。',
+      ref: 1, refText: '来源 [1] 平衡准确率与不均衡数据' },
+
+    { level: 1, text: '为什么要留出一部分数据专门做测试集，不能拿训练用的数据来考模型？',
+      options: [
+        '因为训练数据太多，程序处理不完',
+        '因为考试数据必须和练习数据不同的格式',
+        '因为只会重复刚见过样本的模型能拿满分，却对没见过的数据毫无预测能力，这叫过拟合',
+        '因为测试集越小，准确率越高'],
+      answer: 2,
+      why: '官方文档把这称为"方法论错误"：一个只会重复它刚看过的样本标签的模型可以拿到满分，却做不出任何有用的新预测。就像背练习题答案去考试，练习册上全对，一换题就不会。',
+      ref: 2, refText: '来源 [2] 过拟合与训练/测试集划分' },
+
+    { level: 2, text: '编辑器要上线一个评论区广告标记功能。误报（把读者正常吐槽当成广告折叠）会引发信任损失，且不可逆；漏报几条广告第二天还能补删。这个场景下应当优先保证哪个指标？',
+      options: [
+        '精确率，让被判成广告的尽量都是真广告，宁可放过不可错杀',
+        '召回率，先把所有可疑的广告都抓出来',
+        '准确率，因为它是总体指标',
+        'F1，因为它两边都照顾'],
+      answer: 0,
+      why: '误报的代价高于漏报时，判定标准应当放严，优先保住精确率。反过来，如果漏报的代价更高（比如稿件自动归档漏掉某一类会让统计数字偏低），就应当优先保住召回率。',
+      ref: 1, refText: '来源 [1] 精确率与召回率的取舍' },
+
+    { level: 2, text: '一份评估报告写着"精确率 0.95，召回率 0.40"。对"把所有广告都标记出来"这个任务来说，该怎么读这组数字？',
+      options: [
+        '非常理想，精确率高达 0.95',
+        '判成广告的确实基本都是真广告，但六成的真广告被漏掉了，对"尽量抓全"这个目标是明显不够的',
+        '说明模型训练失败，应该整个丢弃',
+        '说明测试集太小，数字不可信'],
+      answer: 1,
+      why: '精确率高说明误报少，召回率低说明漏报多。这组数字适合"宁可放过不可错杀"的场景，但若是"尽量抓全"，就必须回头放松判定阈值，接受更多误报来换召回率。两个指标必须一起读。',
+      ref: 1, refText: '来源 [1] 精确率—召回率随阈值变化' },
+
+    { level: 3, text: '同学交给你一份模型评估，只写了一行"准确率 92%"。要判断这个模型能不能用于稿件自动归档，最该先补上什么？',
+      options: [
+        '把 92% 四舍五入写成约九成，方便进结论',
+        '换成更大的模型，把数字提到 95%',
+        '按类别分别看精确率与召回率、附上混淆矩阵，并检查错误是否集中在某几类上',
+        '在报告里注明"本评估由 AI 完成"'],
+      answer: 2,
+      why: '一个总体数字会同时掩盖两件事：类别之间的表现是否均衡，以及错误是否系统性。官方教程的做法正是先给总数，再给分四类的分类报告与混淆矩阵，并指出哪两个类最爱混。人工标注的做法也要求交代标注规则与一致性检验，而不是只报一个数。',
+      ref: 3, refText: '来源 [3] 分类报告与混淆矩阵的用法' },
+
+    { level: 3, text: '模型在测试集上报告 96%，但编辑部用在实际稿件上效果差很多。下面哪个解释最有可能，也最该先去查？',
+      options: [
+        '模型算错了，重新跑一遍就好',
+        '测试集里的样本与编辑部实际的稿件不是一回事，需要按真实场景重新抽样评估并打开错例看',
+        '准确率高就一定没问题，问题出在编辑不会用',
+        '把测试集换得更大一些，数字自然会上去'],
+      answer: 1,
+      why: '在某一批数据上表现好，不代表在另一批数据上表现好——这正是"过拟合"与"数据分布不一致"的共同表现。唯一可靠的做法是回到实际场景重新抽样评估，并打开错例逐条看：错的是哪一类、错在什么句子上。只看数字永远查不出这件事。',
+      ref: 2, refText: '来源 [2] 评估结果只代表被考的那批数据' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

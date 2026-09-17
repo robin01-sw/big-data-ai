@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>文本分类 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 4 课 · 序号 13 / 17</div>
+  <h1>文本分类</h1>
+  <div class="badges">
+    <span class="badge">概念卡 13</span>
+    <span class="badge">前置：文本向量化 · 特征与标签</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">5 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">文本分类就是让机器把文本归进人预先定好的类别里。</p>
+    <p>标签由人定义，机器只负责分配：先人工标注一批样本，转成数字向量训练模型，
+       再让它给新文本贴标签。朴素贝叶斯只统计"这类文本里某个词出现得多不多"，
+       不做复杂推理，很适合文本。<sup class="cite"><a href="#ref-2">[2]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>文本分类像图书馆上架：书架上的分类牌是馆长事先定好的，机器只负责把还回来的书按牌子放上去，它不会自己发明新牌子。要让它学会放书，得先由人示范一批——这本放这里、那本放那里。看够了之后，它能把成堆的书自己归位；但碰到既像体育又像财经的两可之书，它一定会放错，这类边界书只能由人抽出来处理。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能解释文本分类里"特征"和"标签"分别指什么，以及标签是谁定的。</li>
+  <li>能说出文本分类的四个步骤，并指出其中哪几步必须由人来做。</li>
+  <li>能举出新闻编辑部里三个适合交给文本分类的任务。</li>
+  <li>能判断一个任务在什么情况下不该交给文本分类，并说明理由。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>文本分类和情感分析是什么关系？</summary>
+  <div class="body">
+    情感分析是文本分类的一个特例：它的类别被固定成正面、负面、中性。
+    文本分类是一大类任务，类别由你按需要定义——体育/财经/科技、违规/不违规、
+    涉事方 A/涉事方 B，都可以。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    所以"分类"问的是"属于哪一类"，"情感分析"问的是"态度是正是负"。
+  </div>
+</details>
+
+<details>
+  <summary>标签难道不是机器自己学会的吗？</summary>
+  <div class="body">
+    不是。机器只学会"怎么把一段文本分配到已有的类别上"，它不会替你决定有哪些类别，
+    也无法判断你的类别划分合不合理。scikit-learn 的官方教程里，
+    载入语料时要用 <code>categories</code> 参数显式写出要哪四个类别；
+    模型输出的也只是类别的编号，编号对应的名字由人给出。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    一句话：<strong>标签由人定义，机器只负责分配</strong>。
+  </div>
+</details>
+
+<details>
+  <summary>朴素贝叶斯凭什么能做文本分类？</summary>
+  <div class="body">
+    它只做一件事：统计"在某一类文本里，某个词出现得多不多"，
+    然后把每个词当成一条独立证据来投票，票数最高的那一类就是它的答案。
+    它不做推理，也不看词序。官方文档的说明是：朴素贝叶斯在
+    <strong>文档分类与垃圾邮件过滤</strong>上表现很好，所需的训练数据量小、速度极快。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+    代价是它给出的概率值不宜当真——文档明确提醒它是"a bad estimator"，
+    <code>predict_proba</code> 的输出不能太认真对待。<sup class="cite"><a href="#ref-2">[2]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>那它做不到什么？</summary>
+  <div class="body">
+    三件事：不能定义标签；不能判断你的分类口径对不对；边界样本一定出错。
+    官方教程里的例子很能说明问题：在 20 newsgroups 语料上训练后，
+    看混淆矩阵会发现，无神论与基督教这两个类的稿件最常被互相认错，
+    而它们和"计算机图形"几乎不混。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+    也就是说，<strong>类别本身挨得近的地方，就是错误集中的地方</strong>。
+  </div>
+</details>
+
+<details>
+  <summary>几百篇稿件自动归档，人还要做什么？</summary>
+  <div class="body">
+    人的活儿在两头。前头：定类别、写清楚每一类的判定标准、亲手标注一批样本当示范。
+    后头：处理机器拿不准的边界稿件，并定期抽查机器分好的结果。
+    调查记者国际联盟（ICIJ）在整理 Pandora Papers 时就是这样做的——
+    先把海量文件用机器学习分拣（他们的比喻是"先像一个垃圾邮件过滤器"），
+    再由记者接手判断。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+    <strong>先分大类，人只处理边界情况</strong>，这就是分工。
+    新闻行业的规范也把这一层写成了原则：AI 系统须经独立评估，人类决策必须保持在中心位置，
+    媒体对已发布内容承担编辑责任。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>文本分类（text classification，也叫文本分类任务、文本归类）是让机器把一段文本分配到一个
+   <strong>预先定义好的类别</strong>里的计算任务。它属于"监督学习"：每个类别都要先有一批
+   已经贴好标签的样本来做示范，模型从这些示范里学规律，再拿去判断没见过的文本。</p>
+<p>它和人工标注其实是同一件事的两副面孔：人工标注要求"按一套明确的规则
+   把文本归到类别里，以便计数和比较"<sup class="cite"><a href="#ref-4">[4]</a></sup>，
+   文本分类只不过把执行这套规则的标注员换成了模型。</p>
+
+<h3>为什么</h3>
+<p>两个理由。第一是<strong>规模</strong>：几百篇稿件人还能读，几千条读者留言、几十万份文件，
+   人读不完也读不一致。数据新闻领域有一条不成文的规矩说得很直白——
+   <strong>当人已经没法自己分析这些数据时（几百上千行以上），就该把机器请进来</strong>。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   第二是<strong>口径统一</strong>：机器按同一套规则跑一万条，不会像人一样越读越累、
+   前后松紧不一。但这也意味着，口径本身定得含糊，机器会忠实地把含糊放大一万倍。</p>
+
+<h3>怎么工作</h3>
+<p>四个步骤，其中第一步和最后一步必须由人来做：</p>
+<ol>
+  <li><strong>人工标注一批</strong>。人先定好类别，并写清楚每类的判定标准，然后亲手标注一批样本。
+      这批样本是后面所有事情的基准。</li>
+  <li><strong>文本向量化</strong>。机器看不懂文字，只看得懂数字。用词袋或 TF-IDF
+      把每段文本变成一串数字——这一步就是第 3 课讲过的<a href="text-vectorization.html">文本向量化</a>。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>训练分类器</strong>。把"数字向量 + 人工标签"喂给算法。
+      文本任务里常用的起点是朴素贝叶斯的多项式版本，官方教程正是用它做基准。<sup class="cite"><a href="#ref-1">[1]</a></sup></li>
+  <li><strong>预测新文本并核查</strong>。新文本走一遍同样的向量化流程，模型输出类别。
+      但结果不能直接采用：边界样本一定会被分错，需要由人抽出来处理。</li>
+</ol>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 320" role="img" aria-label="文本分类的四个步骤与人的分工">
+  <defs>
+    <marker id="carrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#b8b2a6" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">文本分类的四步：只有第一步和最后一步必须由人来做</text>
+
+  <text x="81" y="42" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c0392b">人来做</text>
+  <text x="375" y="42" text-anchor="middle" font-size="11.5" font-weight="700" fill="#7b8294">机器来做</text>
+  <text x="657" y="42" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c0392b">人来做</text>
+
+  <rect x="20" y="52" width="122" height="74" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="81" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">① 人工标注</text>
+  <text x="81" y="96" text-anchor="middle" font-size="10.5" fill="#a8554a">先定类别</text>
+  <text x="81" y="112" text-anchor="middle" font-size="10.5" fill="#a8554a">再贴一批标签</text>
+
+  <path d="M144 89L160 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="164" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="225" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">② 向量化</text>
+  <text x="225" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">词袋 / TF-IDF</text>
+  <text x="225" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">文字变成数字</text>
+
+  <path d="M288 89L304 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="308" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="369" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">③ 训练</text>
+  <text x="369" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">朴素贝叶斯等</text>
+  <text x="369" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">学"怎么分配"</text>
+
+  <path d="M432 89L448 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="452" y="52" width="122" height="74" rx="8" fill="#ffffff" stroke="#e6e3dc"/>
+  <text x="513" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#4a5160">④ 预测</text>
+  <text x="513" y="96" text-anchor="middle" font-size="10.5" fill="#7b8294">新稿件的类别</text>
+  <text x="513" y="112" text-anchor="middle" font-size="10.5" fill="#7b8294">一并输出概率</text>
+
+  <path d="M576 89L592 89" fill="none" stroke="#b8b2a6" stroke-width="1.6" marker-end="url(#carrow)"/>
+
+  <rect x="596" y="52" width="122" height="74" rx="8" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="657" y="76" text-anchor="middle" font-size="12" font-weight="700" fill="#c0392b">⑤ 处理边界</text>
+  <text x="657" y="96" text-anchor="middle" font-size="10.5" fill="#a8554a">抽错例复核</text>
+  <text x="657" y="112" text-anchor="middle" font-size="10.5" fill="#a8554a">机器一定出错</text>
+
+  <rect x="20" y="152" width="680" height="148" rx="10" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="36" y="176" font-size="12.5" font-weight="700" fill="#4a5160">朴素贝叶斯的直觉：只数词，不推理</text>
+  <text x="36" y="200" font-size="11.5" fill="#7b8294">它统计"在某一类文本里，某个词出现得多不多"，再把每个词当成一条独立证据投票，票多的那一类胜出。</text>
+  <text x="36" y="222" font-size="11.5" fill="#7b8294">好处是训练样本要得少、跑得极快；代价是它看不到词序和上下文，所以边界样本必错。</text>
+  <text x="36" y="248" font-size="11.5" fill="#7b8294">20 newsgroups 的例子里，无神论与基督教两类最常被互相认错，但它们和"计算机图形"几乎不混。</text>
+  <text x="36" y="270" font-size="11.5" fill="#7b8294">这说明错误不是随机分布的：类别之间挨得越近，混淆就越多，这些正是要交回给人处理的样本。</text>
+  <text x="36" y="290" font-size="11.5" fill="#a8554a">注意：这里说的"分对/分错"，本身要用下一张卡的评估方法来判断，不能只看一个准确率。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>真实的一次：ICIJ 用机器学习分拣 Pandora Papers。</strong>
+   2021 年，调查记者国际联盟（ICIJ）拿到构成 Pandora Papers 的海量文件后，
+   记者们的原话是"被淹没了"——在能开始讲故事之前，他们得先知道手头有什么、哪些不需要。
+   他们用机器学习做排序和聚类。ICIJ 研究编辑 Emilia Díaz-Struck 描述第一步时打了个比方：
+   "首先，它像一个垃圾邮件过滤器"，这种过滤器常用的正是贝叶斯方法，
+   去算一封邮件是垃圾邮件的概率有多大。
+   她没有把这件事说成魔法："它有很强的人工成分……它不是魔法，需要相当的时间和资源。"
+   文件最终被压成可处理的组别，而"把点连起来"这个动作，是由全球 600 多名记者完成的。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   这个案例说明的正是本卡的分工：<strong>机器负责把大堆分成小堆，人负责判断小堆里哪一条是新闻</strong>。</p>
+
+<div class="flag">
+  <span class="lbl">示意案例（推演，非公开报道）</span>
+  <p style="margin:6px 0 0">某都市报地方新闻部每天收到约 800 篇稿件与供稿，题材从政务、财经到教育、体育混杂。
+      编辑部把类别定为六类，由两位编辑先给 300 篇稿件贴标签并写清判定标准；
+      用这 300 篇训练一个朴素贝叶斯分类器，跑完全量；随后只把模型给出的
+      "低把握度"稿件约 40 篇、以及每周随机抽样的 30 篇交给编辑复核。
+      可以预期的结果是：政务与财经两类会互相认错（因为常同时出现"预算""项目"这类词），
+      而体育类几乎不会错到教育类去。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+      这个数字是推演的，实际数量需要在第 4 课的动手环节里实地跑出来再补录。</p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>情感分析</strong></td>
+      <td>情感分析是文本分类里的一个特例，类别被固定成正面、负面、中性；文本分类的类别由你自己按需要定义。</td>
+      <td>分类问"属于哪一类"，情感分析问"态度是正是负"。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>聚类</strong></td>
+      <td>聚类没有预设类别，机器自己按相似度分组，分完还得人来给每组起名字；文本分类的类别是人事先定好并标注过的。</td>
+      <td>聚类让机器发明分类牌，文本分类只让它往牌子上放书。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>中文分词</strong></td>
+      <td>分词把一段话切成词，是向量化之前的准备动作；文本分类是在切好的词上找类别规律。分词错了，后面的分类一定跟着错。</td>
+      <td>分词决定"按什么单位看文本"，分类决定"这段文本算哪一类"。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong>人工标注的规则表</strong></td>
+      <td>人工标注要求按明确的规则把文本归入互斥且穷尽的类别<sup class="cite"><a href="#ref-4">[4]</a></sup>；
+          文本分类是这套规则交给机器执行。规则与一致性报告的要求不变，变的是执行者。</td>
+      <td>两者都在贴标签；区别在于标签是训练过的标注员贴的，还是模型贴的。<sup class="cite"><a href="#ref-4">[4]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>Working With Text Data（scikit-learn 官方教程 1.4）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html" target="_blank" rel="noopener">https://scikit-learn.org/1.4/tutorial/text_analytics/working_with_text_data.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">一篇可以直接照着跑的完整流程：加载 20 newsgroups 语料 → CountVectorizer 提取特征 →
+      TfidfTransformer → MultinomialNB 训练 → 在测试集上评估。载入语料时要用 <code>categories</code>
+      参数显式写出要哪几个类别，说明类别集合是人给定的；文中还指出混淆矩阵显示无神论与基督教两类最常互相被认错。
+      提醒：stable 版下这篇教程路径已调整，带版本号的链接才永久有效。</span>
+  </li>
+  <li id="ref-2">
+    <strong>1.9. Naive Bayes（scikit-learn 官方文档 1.4）</strong> · scikit-learn 开发者<br />
+    <a href="https://scikit-learn.org/1.4/modules/naive_bayes.html" target="_blank" rel="noopener">https://scikit-learn.org/1.4/modules/naive_bayes.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">给朴素贝叶斯下定义：以"给定类别时各特征条件独立"为假设。原文写明它在
+      "document classification and spam filtering"上表现很好，所需训练数据少、速度极快；
+      同时明确提醒它是 "a bad estimator"，<code>predict_proba</code> 的概率输出不宜太当真。
+      本卡"只统计词频、不做推理"与"概率别当结论"两处依据此页。</span>
+  </li>
+  <li id="ref-3">
+    <strong>Bring in the machines: AI-powered investigative journalism</strong> · Monika Sengul-Jones · DataJournalism.com（欧洲新闻中心）<br />
+    <a href="https://datajournalism.com/read/longreads/machine-learning-investigative-journalism" target="_blank" rel="noopener">https://datajournalism.com/read/longreads/machine-learning-investigative-journalism</a>
+    <span class="badge">行业资源</span><br />
+    <span class="note">2021-12-01 发布。ICIJ 处理 Pandora Papers 的经过：记者"被淹没"、机器学习先像
+      "一个垃圾邮件过滤器"那样分拣、600 多名记者接力完成。文中 ICIJ 研究编辑的两句直接引语
+      （"它有很强的人工成分""它不是魔法，需要相当的时间和资源"）以及"每一步都有记者在回路中"的表述，
+      是本卡"先分大类、人只处理边界"这一分工的依据，也是本卡的非技术类来源。</span>
+  </li>
+  <li id="ref-4">
+    <strong>An Introduction to Content Analysis（ERIC Digest ED458218）</strong> · Steve Stemler · ERIC Clearinghouse on Assessment and Evaluation（美国马里兰大学）<br />
+    <a href="https://purl.fdlp.gov/GPO/LPS26359" target="_blank" rel="noopener">https://purl.fdlp.gov/GPO/LPS26359</a>
+    <span class="badge">学术资源</span><br />
+    <span class="note">2001 年发布的研究方法入门综述。给出的定义是"一种系统的、
+      可重复的技术，按明确的标注规则把大量文字压缩成较少的类别"；并说明类别必须
+      <strong>互斥且穷尽</strong>，否则"会摧毁这一方法的效用"。本卡用它的定义说明：类别必须互斥且穷尽，
+      这是标注规则设计的基本要求。
+      联邦寄存图书馆计划（FDLP）托管版本，可直接打开。</span>
+  </li>
+  <li id="ref-5">
+    <strong>New charter provides ethical framework for AI in journalism</strong> · African Centre for Media Excellence（ACME）<br />
+    <a href="https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism" target="_blank" rel="noopener">https://acme-ug.org/2023/11/13/new-charter-provides-ethical-framework-for-ai-in-journalism</a>
+    <span class="badge">行业规范</span><br />
+    <span class="note">2023-11-13 报道 2023-11-10 于巴黎和平论坛发布的《Paris Charter on AI and Journalism》
+      （无国界记者组织与 16 家机构共同发布）。要点：AI 系统须经独立评估；人类决策必须保持在新闻工作的中心；
+      媒体对已发布内容承担编辑责任。本卡"机器分大类、人保留最终判断"的行业规范依据。
+      原始 PDF 正文为压缩流，本卡引用的是这家媒体支持机构的公开报道。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草；
+     所有事实性表述都挂了来源角标。来源 1、2 与情感分析卡（序号 15）共用同一批 scikit-learn 官方文档，
+     复核时一并检查过。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>来源 1、2、3、4、5 均逐条打开确认存在</strong>，且页面内容与本卡引用一致。</li>
+    <li><strong>来源 1 的两处关键表述回原文核对</strong>：<code>categories</code> 参数由使用者显式指定；
+        混淆矩阵中无神论与基督教两类最常互相被认错。两处均确认为原文表述。</li>
+    <li><strong>来源 2 的三处表述逐句核对</strong>：条件独立假设、"document classification and spam filtering"
+        与训练数据少、速度快、"a bad estimator"。均确认为原文。</li>
+    <li><strong>来源 4 的定义与"互斥且穷尽"逐句核对</strong>，包括其英文原句与出处（ERIC Digest ED458218）。</li>
+    <li><strong>来源 5 为二手报道</strong>，已核对到它明确写出 Charter 的发布日期、发布场合与合作机构数量。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li><strong>来源 1 的链接</strong>用的是带版本号的永久地址（1.4 版）。stable 版路径已调整，
+        若日后需要，请以 scikit-learn 官网当前目录为准。</li>
+    <li><strong>来源 5 引述的是报道而非《Paris Charter》原文</strong>。原始 PDF
+        （thomsonfoundation.org 托管）本次访问只能取到压缩后的正文流，无法逐字核对措辞，
+        因此本卡只引用该报道中已明确写出的要点，未引述任何条款编号与逐字原文。</li>
+    <li><strong>"800 篇稿件归档"一节标明为示意</strong>，是推演出来的场景与预期混淆模式，
+        不是公开报道，具体错例需要在第 4 课的动手环节里实地跑出后再补录。</li>
+    <li><strong>未找到可访问的中文新闻编辑部文本分类实证研究</strong>，
+        因此案例部分以国际调查报道的公开案例为主，中文语料的动手细节留到课程练习中补充。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或"我的理解"。</p>
+</div>
+
+<footer>
+  概念学习卡 · 文本分类 · 生成于 2026-09-17 · 属于《Python 与 AI 四节课学习地图》概念库第 13 张<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '文本分类这件事，最准确的描述是下面哪一项？',
+      options: [
+        '让机器把文本归入人预先定义好的类别里',
+        '让机器自己发明一套新的类别体系',
+        '判断一段文本的语气是褒是贬',
+        '把一段话压缩成几个关键词'],
+      answer: 0,
+      why: '标签由人定义，机器只负责分配。让机器自己发明类别属于聚类；判断褒贬属于情感分析，是文本分类的一个特例。',
+      ref: 1, refText: '来源 [1] 分类语料与类别由使用者指定' },
+
+    { level: 0, text: '下面哪一项不是本卡介绍的文本分类四个步骤之一？',
+      options: [
+        '人工标注一批样本',
+        '把文本转成数字向量',
+        '由模型自己定义新的标签类别',
+        '用训练好的模型预测新文本'],
+      answer: 2,
+      why: '类别在第一步之前就由人定好了，模型学到的是"怎么把文本分配到已有类别上"，它不定义类别。',
+      ref: 1, refText: '来源 [1] 类别集合由使用者显式给定' },
+
+    { level: 1, text: '朴素贝叶斯为什么适合做文本分类？',
+      options: [
+        '因为它能理解词序和上下文',
+        '因为它把每个词当作独立证据统计出现频率，需要的训练数据少、速度极快',
+        '因为它不需要任何标注数据就能工作',
+        '因为它能自动判断你的标签定义得好不好'],
+      answer: 1,
+      why: '官方文档说明它假设"给定类别时各特征条件独立"，在文档分类与垃圾邮件过滤上表现良好，所需训练数据少、速度极快。它只数词，不做推理，也因此看不到词序。',
+      ref: 2, refText: '来源 [2] 朴素贝叶斯的假设与适用场景' },
+
+    { level: 1, text: '"文本分类不能定义标签"这句话，具体是什么意思？',
+      options: [
+        '模型无法输出类别的名称',
+        '有哪几个类别必须由人预先给出，模型只学怎么分配',
+        '模型不能处理中文文本',
+        '模型只能分两个类别'],
+      answer: 1,
+      why: '模型输出的只是类别编号，编号对应的名字和类别集合本身都由人给出。口径与类别划分是人的责任，这也是人工标注对标注规则的要求。',
+      ref: 1, refText: '来源 [1] target_names 由类别列表决定' },
+
+    { level: 2, text: '编辑部有 800 篇稿件要按题材归档，希望成本低、结果可复现、能反复跑同一口径。最合适的做法是？',
+      options: [
+        '让编辑逐篇读完再手工分类',
+        '人工标注一批稿件训练分类器，跑完全量后由编辑只处理边界稿件',
+        '每一篇都发给大模型逐篇判断',
+        '只按标题里是否出现某个关键词硬匹配'],
+      answer: 1,
+      why: '这个量级下成本与可复现性是硬约束。人工标注一批再训练分类器，训练一次可反复跑、结果稳定；逐篇用大模型成本高且回答可能有波动；纯关键词匹配会把"体育产业的投融资"这类稿件全部判错。',
+      ref: 3, refText: '来源 [3] 何时把机器请进来、人在回路中' },
+
+    { level: 2, text: '模型把一篇"体育产业投融资"的稿件判成了财经类。最合理的处理是？',
+      options: [
+        '认为模型坏了，推倒重来',
+        '把它当作边界样本交给人判断，并记录下这一类混淆',
+        '把财经类整个删掉，避免混淆',
+        '把这次结果直接算作正确，保住准确率'],
+      answer: 1,
+      why: '官方教程的混淆矩阵已经说明，类别之间本身挨得近的样本必然混淆（无神论与基督教最常互认，而与计算机图形几乎不混）。这类样本正是要交回给人处理的部分，同时应当记录下来，作为改进类别定义或补标注的依据。',
+      ref: 1, refText: '来源 [1] 混淆矩阵揭示的类别相邻性' },
+
+    { level: 3, text: '下面哪种任务最不适合交给文本分类？',
+      options: [
+        '把几百篇稿件按既定题材自动归档',
+        '过滤读者评论区里的垃圾广告',
+        '判断某条评论是否"违反编辑部尚未明确写出的某项口径"',
+        '识别稿件里有没有提到某个议题'],
+      answer: 2,
+      why: '文本分类只能分配已经定义好的标签。口径还没写清楚，就没有可用的标签体系，任务根本无从开始——这正是"机器不能替你定义标签、也不能判断你的口径对不对"的含义。人工标注同样要求类别定义明确到"两个人读了会做同样判断"。',
+      ref: 4, refText: '来源 [4] 类别必须互斥且穷尽、定义必须明确' },
+
+    { level: 3, text: '你和同学对同一批评论做题材分类，他只报了一个数字："准确率 92%"。下一步最该做的是什么？',
+      options: [
+        '直接采信，92% 已经很高',
+        '问清他的标签定义与判定标准，看他分错的是哪些样本，并抽样与人工标注比对',
+        '换一个更大的模型把准确率再提上去',
+        '把这个数字写进结论里'],
+      answer: 1,
+      why: '准确率是一个总数，它会同时掩盖两类问题：标签定义是否清楚、错误是否集中在某几类边界样本上。人工标注的要求也是要交代标注规则、类别定义与一致性检验，而不只是丢出一个数字。',
+      ref: 4, refText: '来源 [4] 标注规则与类别定义的核查要求' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
