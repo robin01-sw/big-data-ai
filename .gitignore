@@ -65,6 +65,14 @@ node_modules/
 data/raw/
 data/interim/
 
+# ---- 例外：课程配套的示例数据与产出物（几十 KB 的小样本，需要入库）----
+# 2026-09-17 加。`*.csv` 这条原意是「不把原始大数据塞进仓库」，但它是无差别的通配，
+# 会连带挡掉第 2 课产出物「干净语料.csv」和课上用的标注/评论数据 ——
+# 做完的东西被静默忽略、`git status` 还显示干净，与之前 `*.ipynb` 是同一类坑。
+# 注意：gitignore 的 `!` 例外**不能救回被排除目录里的文件**，这里排除的是文件本身，所以有效。
+!.workbuddy/skills/python-ai-4lessons/**/*.csv
+!.workbuddy/skills/python-ai-4lessons/**/*.tsv
+
 # ===== Jupyter =====
 .ipynb_checkpoints/
 # 2026-09-17 修正：原先这里有 `*.ipynb`，把 notebook 全挡住了。
