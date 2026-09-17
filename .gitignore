@@ -37,10 +37,14 @@ env/
 .python-version
 
 # ===== WorkBuddy 工具运行时数据 =====
-# 2026-09-17：项目级 skill（.workbuddy/skills/%name%）是刻意入库的共享内容，
-# 但 skills 目录下的嵌套 .workbuddy/ 只是本机工具的工作记忆与内部脚本，
-# 含逐轮工作日志，属于运行时数据，不入库。
-.workbuddy/skills/.workbuddy/
+# 2026-09-17：项目级 skill（.workbuddy/skills/<name>/）是刻意入库的共享内容，
+# 但逐轮工作日志属于运行时数据，不入库。
+# 修正记录：原先写的是 `.workbuddy/skills/.workbuddy/` 整目录忽略 —— 当时工作区
+# 被设成了 `<repo>/.workbuddy/skills`，导致 skill 真实落点变成嵌套的
+# `.workbuddy/skills/.workbuddy/skills/<name>/`，被这条规则连带挡在版本库外
+# （能用的进不了库、进了库的不生效）。现已把工作区指回仓库根、skill 迁到
+# `.workbuddy/skills/<name>/`，忽略规则收窄为只挡 memory。
+.workbuddy/memory/
 
 # ===== Node / VS Code 临时 =====
 node_modules/
