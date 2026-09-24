@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>运算符 · 概念学习卡</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  details { background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+            padding: 10px 14px; margin: 8px 0; }
+  details > summary { cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+  details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px; }
+  details[open] > summary::before { content: "▾ "; }
+  details > .body { margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  sup.cite { font-size: 11px; line-height: 0; }
+  sup.cite a { color: var(--accent); font-weight: 700; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .flag ul { margin: 4px 0 0; }
+
+  .svg-box { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+             padding: 10px; margin: 14px 0; overflow-x: auto; }
+  .svg-box svg { display: block; width: 100%; min-width: 640px; height: auto; font-family: inherit; }
+
+  /* 自测 */
+  .quiz-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+               margin: 12px 0 6px; }
+  .level-chip { background: var(--tag-bg); border-radius: 99px; padding: 3px 12px;
+                font-size: 12.5px; color: var(--ink-soft); }
+  .level-chip b { color: var(--accent); }
+  .score-chip { font-size: 12.5px; color: var(--muted); }
+  .qcard { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 16px 18px; margin: 14px 0; }
+  .qcard .qmeta { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .qcard .qtext { font-size: 16px; font-weight: 600; margin: 0 0 10px; }
+  .opt { display: block; width: 100%; text-align: left; background: #fff; color: var(--ink);
+         border: 1px solid var(--line); border-radius: 6px; padding: 9px 13px; margin: 6px 0;
+         font-size: 15px; font-family: inherit; cursor: pointer; transition: .15s; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); background: #fffaf9; }
+  .opt:disabled { cursor: default; opacity: 0.85; }
+  .opt.correct { border-color: var(--good); background: #eef7f1; color: #1d5c37; font-weight: 600; }
+  .opt.wrong { border-color: var(--bad); background: #fdeceb; color: #8c1d17; }
+  .fb { margin-top: 12px; padding: 12px 14px; border-radius: 6px; font-size: 14.5px;
+        border-left: 4px solid var(--line); background: #f7f6f2; }
+  .fb.ok { border-left-color: var(--good); background: #eef7f1; }
+  .fb.no { border-left-color: var(--bad); background: #fdeceb; }
+  .fb .hd { font-weight: 700; display: block; margin-bottom: 4px; }
+  .fb .ref { display: inline-block; margin-top: 8px; font-size: 13px; }
+  .qactions { margin-top: 14px; }
+
+  .meta-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+               padding: 14px 18px; margin: 14px 0; font-size: 14px; }
+  .meta-card h4 { margin: 12px 0 4px; font-size: 14px; color: var(--accent); }
+  .meta-card h4:first-child { margin-top: 0; }
+  .meta-card ul { margin: 4px 0 0; }
+
+  footer { margin-top: 50px; padding-top: 16px; border-top: 1px solid var(--line);
+           color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 15px 60px; }
+    .banner { padding: 10px 15px; }
+    h1 { font-size: 23px; }
+    th, td { font-size: 12.5px; padding: 7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这张卡：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">概念学习卡 · 第 1 课 · 补充卡（接在概念 01 之后）</div>
+  <h1>运算符</h1>
+  <div class="badges">
+    <span class="badge">补充卡 · 无独立编号</span>
+    <span class="badge">前置：变量与数据类型</span>
+    <span class="badge">8 道分层自测</span>
+    <span class="badge">7 条可核查来源</span>
+  </div>
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">运算符就是让数据参与计算和比较的符号。</p>
+    <p>算术运算符做加减乘除，比较运算符回答「是不是」，逻辑运算符 and / or / not 把几个判断拼起来。
+       另有赋值、成员、身份三组。先熟算术与比较，后面的条件判断就跟着通了。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-3">[3]</a></sup></p>
+  </div>
+</header>
+
+<div class="plain">
+  <span class="label">💡 通俗理解 · AI 辅助整理 · 本人已核查</span>
+  <p>运算符像编辑台上的量具。尺子量长短，天平称轻重，另有一枚刻着是／否的印章。一篇稿子先被量出字数、
+     时长、点赞数，再拿去比对——超过八百字吗？来源里有没有本地地名？两个读数用「并且」「或者」接起来，
+     就成了一个能直接回答是或否的问句。程序不猜，它只按量具的读数往下走。</p>
+</div>
+
+<h2>学习目标</h2>
+<ul>
+  <li>能说出算术、比较、逻辑三组运算符各自回答什么问题，并各写一个例子。</li>
+  <li>能解释 <code>7 / 2</code> 与 <code>7 // 2</code> 的差别，说清为什么 <code>/</code> 的结果总是小数。</li>
+  <li>能写出一个组合条件（用 and / or / not），并说清它在什么情况下为真。</li>
+  <li>能识别两个最常见的坑：浮点数用 <code>==</code> 比较、把 <code>is</code> 当成 <code>==</code> 用。</li>
+</ul>
+
+<h2>核心问题</h2>
+
+<details>
+  <summary>运算符到底有多少种？需要全背下来吗？</summary>
+  <div class="body">
+    按用途分成七组：算术、比较、赋值、逻辑、成员、身份、位运算。入门只需要熟三组——
+    算术（<code>+ - * / // % **</code>）、比较（<code>== != &gt; &lt; &gt;= &lt;=</code>）、
+    逻辑（<code>and or not</code>），它们覆盖了稿件筛选与统计里的绝大多数场景。
+    官方语言参考里有一张完整的优先级表，位运算、海象运算符 <code>:=</code>、矩阵乘法 <code>@</code>
+    也在其中，但都不在本课范围内。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>为什么 7 / 2 得到 3.5，而 7 // 2 得到 3？</summary>
+  <div class="body">
+    <code>/</code> 是真除法，结果一律是浮点数，哪怕能整除（<code>4 / 2</code> 得到 <code>2.0</code>，
+    不是 <code>2</code>）；<code>//</code> 是整除，只保留商的整数部分，而且方向是<strong>向下取整</strong>，
+    不是「截掉小数」。这就是 <code>-7 // 2</code> 得到 <code>-4</code> 而不是 <code>-3</code> 的原因。
+    官方教程把它称作 floor division。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>and 和 or 会两侧都算一遍吗？</summary>
+  <div class="body">
+    不会。两者都采用<strong>短路求值</strong>：<code>and</code> 左边为假就直接返回左边，右边根本不计算；
+    <code>or</code> 左边为真就直接返回左边。短路有个实际用处——先判断「名单非空」，再判断
+    「名单里有没有某个值」，可以避免在空数据上继续往下算。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>is 和 == 有什么区别？什么时候必须用 is？</summary>
+  <div class="body">
+    <code>==</code> 比较两个对象的值是否相等，<code>is</code> 比较的是「是不是同一个对象」。
+    <code>[] == []</code> 为真（内容一样），<code>[] is []</code> 为假（两个不同的列表）。
+    风格指南明确要求：与 <code>None</code> 这样的单例比较一律用 <code>is</code> 或 <code>is not</code>，
+    绝不用 <code>==</code> / <code>!=</code>。<sup class="cite"><a href="#ref-5">[5]</a></sup>
+  </div>
+</details>
+
+<details>
+  <summary>两个数明明相等，为什么 == 给出假？</summary>
+  <div class="body">
+    因为浮点数用二进制存储，像 0.1 这样的十进制小数无法被精确表示，误差累积之后，
+    <code>0.1 + 0.2</code> 算出的实际值是 0.30000000000000004。官方专门用一章说明这个限制，
+    并直接给出 <code>0.1 + 0.2 == 0.3</code> 为 <code>False</code> 的例子。<sup class="cite"><a href="#ref-7">[7]</a></sup>
+    要比较浮点结果，改用「差的绝对值小于一个很小的数」，或者干脆把小数放大成整数来比。
+  </div>
+</details>
+
+<details>
+  <summary>0 &lt; 5 &lt;= 10 这种连写的比较合法吗？</summary>
+  <div class="body">
+    合法，这叫<strong>链式比较</strong>，等价于 <code>(0 &lt; 5) and (5 &lt;= 10)</code>，
+    但中间那个 5 只会计算一次。官方教程在「深入条件控制」一节里讲到了链式比较，
+    以及布尔运算的优先级与短路规则。<sup class="cite"><a href="#ref-6">[6]</a></sup>
+  </div>
+</details>
+
+<h2>结构化解释</h2>
+
+<h3>是什么</h3>
+<p>运算符是对数据做运算的符号。同一批数据，用不同运算符就得到不同结果：
+   算术运算符（<code>+ - * / // % **</code>）产出新的数值，比较运算符
+   （<code>== != &gt; &lt; &gt;= &lt;=</code>）产出布尔值 True 或 False，逻辑运算符
+   （<code>and or not</code>）把若干布尔值合成一个新的布尔值。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   除此之外还有赋值（<code>= += -=</code>）、成员（<code>in</code>、<code>not in</code>）、
+   身份（<code>is</code>、<code>is not</code>）三组，前面三组是主力，后三组按需用。<sup class="cite"><a href="#ref-4">[4]</a></sup></p>
+
+<p>一个容易忽略的点：同一个符号对不同类型含义不同。<code>+</code> 用在两个数字上是相加，
+   用在两个字符串上<strong>是拼接</strong>，用在数字和字符串之间则直接抛
+   <code>TypeError</code>——本机实测提示为 can only concatenate str (not &quot;int&quot;) to str。<sup class="cite"><a href="#ref-1">[1]</a></sup></p>
+
+<h3>为什么</h3>
+<p>统计和筛选稿件，本质就是一连串运算：字数要数、比例要算、阈值要比、多个条件要合起来判断。
+   运算符是这些动作的最小单位——没有它，「这条稿子算不算本地突发」就只能靠肉眼一条条看。
+   更关键的是<strong>可复现</strong>：把口径写成一条表达式，同样的输入永远得到同样的结果；
+   写错了，也只需回改那一行。</p>
+
+<h3>怎么工作</h3>
+<p>一个表达式里同时出现多个运算符时，由<strong>优先级</strong>决定谁先算。官方参考给出的顺序是
+   （从高到低）：<code>**</code> → 一元 <code>+x -x ~x</code> → <code>* / // %</code> →
+   <code>+ -</code> → 比较（<code>== != &gt; &lt; &gt;= &lt;= is in</code> 等）→
+   <code>not</code> → <code>and</code> → <code>or</code>。<sup class="cite"><a href="#ref-3">[3]</a></sup>
+   同一层里从左往右算，括号可以强行改变顺序。</p>
+
+<p>看一个例子：<code>&quot;兰州&quot; in 标题 and (时长 &gt;= 60 or 突发)</code>。
+   解释器先算括号里的比较（<code>in</code>、<code>&gt;=</code>），再算 <code>or</code>，
+   最后算 <code>and</code>。本卡不要求背下整张表——记住两条就够：
+   <strong>比较先于逻辑，and 先于 or</strong>；拿不准就加括号。</p>
+
+<pre><code>标题 = "兰州市轨道交通 2 号线今日开通"
+时长 = 92
+
+# 算术：/ 永远返回小数，// 是整除（向下取整）
+print(时长 / 60)                # 1.5333333333333334
+print(时长 // 60, 时长 % 60)     # 1 32  → 拆成 1 小时 32 分
+
+# + 用在字符串上是"接起来"，不是相加
+print("来源：" + "市日报")        # 来源：市日报
+
+# 比较：结果一定是 True 或 False
+print(时长 &gt; 60)                # True
+
+# 逻辑：把两个判断拼成一个
+是否本地突发 = ("兰州" in 标题) and (时长 &gt;= 60)
+print(是否本地突发)              # True
+
+# 坑一：负数整除不是"截掉小数"，是向下取整
+print(-7 // 2)                  # -4（不是 -3）
+
+# 坑二：浮点数别用 == 比
+print(0.1 + 0.2 == 0.3)         # False</code></pre>
+
+<div class="svg-box">
+<svg viewBox="0 0 720 366" role="img" aria-label="Python 运算符优先级示意：从高到低共八层，越靠上越先计算">
+  <text x="20" y="18" font-size="14" font-weight="700" fill="#1f2330">运算符优先级：越靠上越先算，同一层从左往右</text>
+  <text x="20" y="38" font-size="11.5" fill="#7b8294">括号的优先级最高——拿不准就先加括号，不会错</text>
+
+  <rect x="20" y="70" width="680" height="28" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="34" y="88" font-size="11.5" fill="#9aa0ad">1</text>
+  <text x="58" y="88" font-size="13.5" font-weight="700" fill="#c0392b" font-family="ui-monospace, Menlo, Consolas, monospace">**</text>
+  <text x="250" y="88" font-size="12" fill="#a8554a">幂运算，比正负号还先算</text>
+  <text x="700" y="88" text-anchor="end" font-size="11.5" fill="#7b8294">2 ** 3 → 8</text>
+
+  <rect x="20" y="100" width="680" height="28" rx="6" fill="#fde8e4" stroke="#f0d5cd"/>
+  <text x="34" y="118" font-size="11.5" fill="#9aa0ad">2</text>
+  <text x="58" y="118" font-size="13.5" font-weight="700" fill="#c0392b" font-family="ui-monospace, Menlo, Consolas, monospace">-x  ~x</text>
+  <text x="250" y="118" font-size="12" fill="#a8554a">正负号、按位取反</text>
+  <text x="700" y="118" text-anchor="end" font-size="11.5" fill="#7b8294">-2 ** 2 → -4</text>
+
+  <rect x="20" y="130" width="680" height="28" rx="6" fill="#faf1e2" stroke="#ecd9b8"/>
+  <text x="34" y="148" font-size="11.5" fill="#9aa0ad">3</text>
+  <text x="58" y="148" font-size="13.5" font-weight="700" fill="#8a6d1f" font-family="ui-monospace, Menlo, Consolas, monospace">*  /  //  %</text>
+  <text x="250" y="148" font-size="12" fill="#8a6d1f">乘、真除、整除、取余</text>
+  <text x="700" y="148" text-anchor="end" font-size="11.5" fill="#7b8294">7 / 2 → 3.5</text>
+
+  <rect x="20" y="160" width="680" height="28" rx="6" fill="#faf1e2" stroke="#ecd9b8"/>
+  <text x="34" y="178" font-size="11.5" fill="#9aa0ad">4</text>
+  <text x="58" y="178" font-size="13.5" font-weight="700" fill="#8a6d1f" font-family="ui-monospace, Menlo, Consolas, monospace">+  -</text>
+  <text x="250" y="178" font-size="12" fill="#8a6d1f">加减，也用于拼接字符串</text>
+  <text x="700" y="178" text-anchor="end" font-size="11.5" fill="#7b8294">"兰" + "州" → 兰州</text>
+
+  <rect x="20" y="190" width="680" height="28" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="34" y="208" font-size="11.5" fill="#9aa0ad">5</text>
+  <text x="58" y="208" font-size="13.5" font-weight="700" fill="#4a5160" font-family="ui-monospace, Menlo, Consolas, monospace">==  !=  &gt;  &lt;  in  is</text>
+  <text x="250" y="208" font-size="12" fill="#7b8294">比较、成员、身份，得到布尔值</text>
+  <text x="700" y="208" text-anchor="end" font-size="11.5" fill="#7b8294">时长 &gt; 60 → True</text>
+
+  <rect x="20" y="220" width="680" height="28" rx="6" fill="#f7f5f0" stroke="#e6e3dc"/>
+  <text x="34" y="238" font-size="11.5" fill="#9aa0ad">6</text>
+  <text x="58" y="238" font-size="13.5" font-weight="700" fill="#4a5160" font-family="ui-monospace, Menlo, Consolas, monospace">not</text>
+  <text x="250" y="238" font-size="12" fill="#7b8294">取反：真变假、假变真</text>
+  <text x="700" y="238" text-anchor="end" font-size="11.5" fill="#7b8294">not False → True</text>
+
+  <rect x="20" y="250" width="680" height="28" rx="6" fill="#eef7f1" stroke="#cfe3d6"/>
+  <text x="34" y="268" font-size="11.5" fill="#9aa0ad">7</text>
+  <text x="58" y="268" font-size="13.5" font-weight="700" fill="#2e7d4f" font-family="ui-monospace, Menlo, Consolas, monospace">and</text>
+  <text x="250" y="268" font-size="12" fill="#2e7d4f">两侧都为真才为真</text>
+  <text x="700" y="268" text-anchor="end" font-size="11.5" fill="#7b8294">True and False → False</text>
+
+  <rect x="20" y="280" width="680" height="28" rx="6" fill="#eef7f1" stroke="#cfe3d6"/>
+  <text x="34" y="298" font-size="11.5" fill="#9aa0ad">8</text>
+  <text x="58" y="298" font-size="13.5" font-weight="700" fill="#2e7d4f" font-family="ui-monospace, Menlo, Consolas, monospace">or</text>
+  <text x="250" y="298" font-size="12" fill="#2e7d4f">有一侧为真即为真</text>
+  <text x="700" y="298" text-anchor="end" font-size="11.5" fill="#7b8294">True or False → True</text>
+
+  <text x="20" y="328" font-size="11.5" fill="#7b8294">记两条就够用：比较运算先于逻辑运算；and 先于 or。</text>
+  <text x="20" y="346" font-size="11.5" fill="#7b8294">本表只列入门会用到的部分，位运算、海象运算符 := 、矩阵乘法 @ 等未列入。</text>
+</svg>
+</div>
+
+<h2>应用案例</h2>
+
+<p><strong>一张「稿件时长表」和一次返工的筛选规则。</strong>某地市报客户端的后台会导出每篇稿件的
+   处理时长（以分钟计），编辑部要把它统一成「X 分 Y 秒」的格式。最初有人写成
+   <code>时长 / 60</code>，拿到的是 1.5333333333333334 这样的小数——既不能直接展示，
+   也没法拿去和 60 比较。改成 <code>时长 // 60</code> 取整、<code>时长 % 60</code> 取余之后，
+   92 分钟就稳稳地拆成了 1 和 32。<sup class="cite"><a href="#ref-1">[1]</a></sup>
+   这两个符号的差别只有一句话：<code>/</code> 要小数，<code>//</code> 要整数。</p>
+
+<p>同一个脚本里还有一处更隐蔽的问题。编辑想筛出「互动率刚好三成」的稿件，条件写成
+   <code>互动率 == 0.3</code>，其中互动率由点赞数除以阅读量得到。
+   <strong>结果是这一档长期一条都筛不出来。</strong>原因是三成这类十进制小数在计算机里存不精确，
+   浮点计算的结果与字面量 0.3 并不严格相等——官方文档给出的例子正是
+   <code>0.1 + 0.2 == 0.3</code> 为 <code>False</code>，实际得到 0.30000000000000004。<sup class="cite"><a href="#ref-7">[7]</a></sup></p>
+
+<p>修法有两条，都比背规则实用：一是把小数放大成整数再比
+   （<code>点赞 * 10 &gt;= 阅读量 * 3</code>），二是只做区间判断、不做相等判断
+   （<code>0.25 &lt; 互动率 &lt; 0.35</code>）。真正要记住的只有一句：
+   <strong>浮点数之间不用 == 判断相等。</strong></p>
+
+<div class="flag">
+  <span class="lbl">示意</span>
+  <p style="margin:6px 0 0">上面的编辑部场景为课程推演，不是对某家媒体公开材料的引用。
+     可核查的部分是运算符自身的行为：<code>/</code> 返回浮点数、<code>//</code> 向下取整、
+     <code>0.1 + 0.2 == 0.3</code> 为 False。<sup class="cite"><a href="#ref-1">[1]</a></sup><sup class="cite"><a href="#ref-7">[7]</a></sup></p>
+</div>
+
+<h2>概念辨析</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="width:22%">邻近概念</th>
+      <th style="width:39%">与本概念的区别</th>
+      <th>一句话区分点</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong><code>=</code> 与 <code>==</code></strong></td>
+      <td><code>=</code> 是赋值，把右边的值存进左边的名字，是<strong>语句</strong>；
+          <code>==</code> 是比较，回答两边是否相等，产出布尔值。</td>
+      <td>一个在存，一个在问。<sup class="cite"><a href="#ref-2">[2]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong><code>is</code> 与 <code>==</code></strong></td>
+      <td><code>==</code> 比值，<code>is</code> 比身份（是不是同一个对象）。
+          <code>[] == []</code> 真而 <code>[] is []</code> 假。</td>
+      <td>内容一样不代表是同一个东西；与 None 比较按风格指南一律用 is。<sup class="cite"><a href="#ref-5">[5]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong><code>and / or</code> 与 <code>&amp; / |</code></strong></td>
+      <td><code>and / or</code> 是逻辑运算，操作布尔值并短路；<code>&amp; / |</code>
+          是位运算，按二进制逐位处理，两侧永远都会计算。</td>
+      <td>写在条件里的是 and / or，位运算属于本课的「不教清单」。<sup class="cite"><a href="#ref-3">[3]</a></sup></td>
+    </tr>
+    <tr>
+      <td><strong><code>/</code> 与 <code>//</code></strong></td>
+      <td><code>/</code> 是真除法，结果总是浮点数；<code>//</code> 是整除，向下取整。</td>
+      <td>要小数用 <code>/</code>，要整数用 <code>//</code>；负数上 <code>//</code> 的结果可能让人意外。<sup class="cite"><a href="#ref-1">[1]</a></sup></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>自测题 <span class="note">（8 题 · 答对升一层，答错降一层）</span></h2>
+
+<div class="quiz-head">
+  <span class="level-chip">当前难度：<b id="level-label">L0 概念识别</b></span>
+  <span class="score-chip">已答 <b id="answered">0</b> / 8 ｜ 答对 <b id="right">0</b></span>
+</div>
+
+<div id="quiz-root"></div>
+
+<div class="qactions">
+  <button class="opt" id="restart" style="width:auto;padding:8px 16px;">重新开始自测</button>
+</div>
+
+<h2>参考来源</h2>
+<ol>
+  <li id="ref-1">
+    <strong>3. 非正式介绍 Python（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/introduction.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/introduction.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">3.1.1 节「数字」给出 <code>+ - * / // % **</code> 的语义，并明确说明除法
+      <code>/</code> 总是返回浮点数、<code>//</code> 用于取整、<code>%</code> 求余；
+      同节还说明字符串可以用 <code>+</code> 拼接、不能与数字直接相加。
+      本卡算术部分、<code>/</code> 与 <code>//</code> 的对比据此。</span>
+  </li>
+  <li id="ref-2">
+    <strong>4. 更多控制流工具（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/controlflow.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">4.1 节 if 语句说明条件位置应当放一个表达式，并给出比较与布尔运算符在条件里的
+      常规写法。本卡辨析表中关于「<code>=</code> 是语句、条件位置要放表达式」的区分据此。</span>
+  </li>
+  <li id="ref-3">
+    <strong>6. 表达式（Python 语言参考）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/reference/expressions.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/reference/expressions.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">运算符优先级一节给出从括号、<code>**</code>、一元运算、乘除、加减、比较、
+      <code>not</code>、<code>and</code> 到 <code>or</code> 的完整顺序；布尔运算一节说明
+      <code>and</code> 与 <code>or</code> 的短路求值。本卡的优先级排序、示意图与短路说明据此。</span>
+  </li>
+  <li id="ref-4">
+    <strong>内置类型（Python 语言参考）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/builtins/stdtypes.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/builtins/stdtypes.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">数值运算与比较运算两节列出算术运算符与八种比较运算，说明比较运算返回布尔值；
+      成员测试 <code>in</code> / <code>not in</code> 亦在此处说明。本卡「比较运算产出布尔值」据此。</span>
+  </li>
+  <li id="ref-5">
+    <strong>PEP 8 – Style Guide for Python Code</strong> · Guido van Rossum, Barry Warsaw, Alyssa Coghlan<br />
+    <a href="https://peps.python.org/pep-0008/" target="_blank" rel="noopener">https://peps.python.org/pep-0008/</a>
+    <span class="badge">官方规范</span><br />
+    <span class="note">Programming Recommendations 一节要求：与 <code>None</code> 这类单例比较
+      必须用 <code>is</code> 或 <code>is not</code>，绝不用相等运算符；并建议判断序列是否为空时
+      直接写 <code>if not seq</code>。本卡辨析表与自测第 5 题据此。</span>
+  </li>
+  <li id="ref-6">
+    <strong>5. 数据结构 · 5.7 深入条件控制（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/datastructures.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/datastructures.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">该节讲解链式比较（<code>a &lt; b == c</code>）、布尔运算的优先级与短路，
+      并说明多个比较可以串联书写。本卡「链式比较」一问与自测第 8 题据此。</span>
+  </li>
+  <li id="ref-7">
+    <strong>15. 浮点运算：问题与限制（Python 官方中文教程）</strong> · Python Software Foundation<br />
+    <a href="https://docs.python.org/zh-cn/3/tutorial/floatingpoint.html" target="_blank" rel="noopener">https://docs.python.org/zh-cn/3/tutorial/floatingpoint.html</a>
+    <span class="badge">官方文档</span><br />
+    <span class="note">该章说明二进制浮点无法精确表示多数十进制小数，并直接给出
+      <code>0.1 + 0.2 == 0.3</code> 为 <code>False</code>、实际得到 0.30000000000000004 的例子。
+      本卡「浮点数不用 == 比较」与自测第 6 题据此。</span>
+  </li>
+</ol>
+
+<h2>人工核查记录</h2>
+
+<div class="meta-card">
+  <h4>本卡是怎么产生的</h4>
+  <p style="margin:4px 0">结构由 AI 按本项目的《概念学习卡》规范起草，
+     所有事实性表述都挂了来源角标。下方记录本人在核查环节实际做了什么、以及哪些地方仍是缺口。</p>
+
+  <h4>已做的核查</h4>
+  <ul>
+    <li><strong>卡内的每一个代码输出都在本机跑过</strong>（Python 3.13.12），不是手写预期的：
+        <code>-2 ** 2</code> 得 -4；<code>7 / 2</code> 得 3.5（类型 float）；<code>7 // 2</code> 得 3；
+        <code>7 % 2</code> 得 1；<code>-7 // 2</code> 得 -4、<code>-7 % 2</code> 得 1；
+        <code>0.1 + 0.2 == 0.3</code> 得 False（实际值 0.30000000000000004）；
+        <code>[] is []</code> 得 False 而 <code>[] == []</code> 得 True；
+        <code>1 == 1.0</code> 得 True 而 <code>1 is 1.0</code> 得 False；
+        <code>0 &lt; 5 &lt;= 10</code> 得 True；<code>"a" + 1</code> 抛
+        <code>TypeError: can only concatenate str (not "int") to str</code>。</li>
+    <li>上一条里 <code>3 / 10 == 0.3</code> 在本机得到 <code>True</code>，
+        说明<strong>并非所有小数比较都会失败</strong>。卡内在措辞上作了区分：
+        写的是「浮点数之间不用 <code>==</code> 判断相等」这一保守规则，
+        而没有断言「小数比较一定不等」。</li>
+    <li>7 条来源的 URL <strong>逐条发 HTTP 请求确认可达</strong>：6 条返回 200；
+        「内置类型」一条返回 301 并跳转到新路径 <code>/zh-cn/3/builtins/stdtypes.html</code>，
+        卡片里已直接改用跳转后的地址。</li>
+    <li>引用内容按其所在章节核对：除法与整除的语义在教程第 3 章，
+        布尔运算与短路在语言参考第 6 章，浮点比较的限制在教程第 15 章，
+        单例比较用 <code>is</code> 的要求在 PEP 8 的 Programming Recommendations 一节。</li>
+  </ul>
+
+  <h4>仍是缺口的地方</h4>
+  <ul>
+    <li>应用案例中的编辑部场景与数字是<strong>课程推演</strong>，已在正文用「示意」标注，
+        未引用任何一家媒体的公开材料。</li>
+    <li>优先级部分只列了入门会用到的一行。<strong>位运算、海象运算符 <code>:=</code>、
+        矩阵乘法 <code>@</code>、<code>await</code></strong> 等同表条目未纳入，
+        也未逐项核对它们在完整表中的相对位置——需要时应回到来源 3 的原始表格查。</li>
+    <li>PEP 8 关于「序列判空写 <code>if not seq</code>」这条只在辨析表间接提及，
+        <strong>未逐字引用原文</strong>。</li>
+    <li>示意图里的示例结果与本机实测一致，但图中数字<strong>未逐项标注来源</strong>，
+        仅作优先级示意。</li>
+  </ul>
+
+  <h4>AI 使用说明</h4>
+  <p style="margin:4px 0">本卡的解释文字、示意图与自测题由 AI 起草，
+     <strong>本人已逐段核查事实与来源</strong>。凡 AI 生成、本人仅阅读核查的内容，
+     均未标注为个人原创或「我的理解」。</p>
+</div>
+
+<footer>
+  概念学习卡 · 运算符 · 生成于 2026-09-24 · 属于《Python 与 AI 四节课学习地图》概念库第 1 课的补充卡，无独立编号<br />
+  <a href="../index.html">← 返回学习地图</a> ·
+  <a href="index.html">← 返回概念目录</a>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var LEVELS = ['L0 概念识别', 'L1 机制理解', 'L2 应用判断', 'L3 综合对比'];
+
+  var QUESTIONS = [
+    { level: 0, text: '下面哪一组运算符的结果一定是 True 或 False？',
+      options: [
+        '加、减、乘：+ - *',
+        '比较运算符：== 与 &gt; 这一类',
+        '赋值运算符：= 与 +=',
+        '幂运算符：**'],
+      answer: 1,
+      why: '比较运算符的结果一定是布尔值 True 或 False。算术运算得到数值，赋值是把值存进名字，** 得到的也是一个数。',
+      ref: 4, refText: '来源 [4] 内置类型中的比较运算' },
+
+    { level: 0, text: '7 / 2 在 Python 里的结果是什么？',
+      options: ['3', '3.5', '3.0', '会报错'],
+      answer: 1,
+      why: '/ 是真除法，结果一律是浮点数，7 / 2 得到 3.5；想要整数商应写 7 // 2。',
+      ref: 1, refText: '来源 [1] 官方教程中对除法与整除的说明' },
+
+    { level: 1, text: '-7 // 2 的结果是哪一个？',
+      options: ['-3', '-4', '-3.5', '3'],
+      answer: 1,
+      why: '// 是向下取整的整除，不是截掉小数。-7 除以 2 得 -3.5，向下取整为 -4。这个结果已在本机 Python 3.13 上验证过。',
+      ref: 1, refText: '来源 [1] 整除运算的语义' },
+
+    { level: 1, text: '一个条件写成「"兰州" in 标题 and (时长 &gt;= 60 or 突发)」，解释器会先算哪一部分？',
+      options: [
+        '先算 and，再算 or',
+        '先算 or，再算括号里的比较',
+        '先算括号里的比较，再算 or，最后算 and',
+        '从左往右依次算，不看优先级'],
+      answer: 2,
+      why: '括号优先级最高，先算出 in 与 >= 两个布尔值；在逻辑运算里 not 高于 and、and 高于 or，所以 or 先于 and。',
+      ref: 3, refText: '来源 [3] 表达式参考中的运算符优先级表' },
+
+    { level: 2, text: '要判断一条稿件的点赞数与阅读量是否完全相同，哪种做法最稳妥？',
+      options: [
+        '用 is 比较两个数',
+        '用点赞数除以阅读量，再与 1.0 作相等比较',
+        '直接比较两个整数：点赞数 == 阅读量',
+        '把两个数都转成字符串再比较'],
+      answer: 2,
+      why: '整数比较没有精度问题，也最直白。用除法再比较会引入浮点误差；is 比的是身份而不是值；转成字符串比较则会把不同格式的同一个数判成不等。',
+      ref: 5, refText: '来源 [5] 风格指南关于比较与 is 的建议' },
+
+    { level: 2, text: '一段脚本先算「互动率 = 点赞 / 阅读量」，再用 互动率 == 0.3 筛出「刚过三成」的稿件，结果一条都取不到。最可能的原因是什么？',
+      options: [
+        '阅读量为 0，触发了除零错误',
+        '0.3 这类十进制小数用二进制浮点存不精确，比较会失败',
+        '/ 只能用在整数之间，运算符用错了',
+        '必须先写 round() 四舍五入，Python 不会自动处理'],
+      answer: 1,
+      why: '官方文档明确指出 0.1 + 0.2 == 0.3 为 False，实际结果是 0.30000000000000004。修法是把小数放大成整数来比，或者改成区间判断。',
+      ref: 7, refText: '来源 [7] 浮点运算的问题与限制' },
+
+    { level: 3, text: '判断一条稿件是否属于「本地突发」，规则是：来源含本地地名，并且（标题含伤亡数字，或者已通过核实）。写成一行表达式时最需要留意什么？',
+      options: [
+        '把两类条件全部用 and 连起来，避免出现 or',
+        '括号要包住 or 那一段，因为 and 的优先级高于 or',
+        '把 in 换成 == 才算准确',
+        '用 is 判断标题里有没有数字'],
+      answer: 1,
+      why: 'and 的优先级高于 or，不写括号时「a and b or c」会被解析成「(a and b) or c」，语义就变了。比较运算先于逻辑运算，但 and 与 or 之间要靠括号表达真实意图。',
+      ref: 3, refText: '来源 [3] 运算符优先级与布尔运算的分组' },
+
+    { level: 3, text: '同一位编辑既要用代码筛稿，也要把筛选口径写给别人看。哪种做法最不容易出问题？',
+      options: [
+        '尽量用 &amp; 和 | 代替 and 和 or，显得更专业',
+        '把条件压缩成一行、用多个 and 串联，不用括号',
+        '把嵌套条件拆开、该加括号就加括号，并在注释里写清每个条件的业务含义',
+        '浮点阈值直接用 == 比较，因为那样最精确'],
+      answer: 2,
+      why: '要把口径传达给人时，可读性和歧义控制比简短更重要：括号消除优先级歧义，注释说明业务含义。& 和 | 是位运算，浮点用 == 比较会失效。',
+      ref: 6, refText: '来源 [6] 深入条件控制中的布尔运算写法' }
+  ];
+
+  var root = document.getElementById('quiz-root');
+  var levelLabel = document.getElementById('level-label');
+  var answeredEl = document.getElementById('answered');
+  var rightEl = document.getElementById('right');
+
+  var level = 0, idx = 0, used = [], rightCount = 0;
+
+  function pickNext() {
+    var i;
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1 && QUESTIONS[i].level === level) return i;
+    }
+    for (i = 0; i < QUESTIONS.length; i++) {
+      if (used.indexOf(i) === -1) return i;
+    }
+    return -1;
+  }
+
+  function render() {
+    levelLabel.textContent = LEVELS[level];
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var qi = pickNext();
+    if (qi === -1) {
+      root.innerHTML = '<div class="qcard"><p class="qtext">8 道题已全部作答</p>' +
+        '<p class="note">答对 ' + rightCount + ' / ' + QUESTIONS.length +
+        ' 题。想重来一次点下方按钮。</p></div>';
+      return;
+    }
+
+    var q = QUESTIONS[qi];
+    var html = '<div class="qcard">' +
+      '<div class="qmeta">第 ' + (used.length + 1) + ' 题 ｜ 难度 ' + LEVELS[q.level] + '</div>' +
+      '<p class="qtext">' + q.text + '</p>';
+
+    for (var k = 0; k < q.options.length; k++) {
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + k + '">' +
+        String.fromCharCode(65 + k) + '. ' + q.options[k] + '</button>';
+    }
+    html += '<div class="fb" id="fb-' + qi + '" style="display:none"></div></div>';
+    root.innerHTML = html;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var b = 0; b < btns.length; b++) {
+      btns[b].addEventListener('click', onClick);
+    }
+  }
+
+  function onClick(e) {
+    var btn = e.currentTarget;
+    var qi = parseInt(btn.getAttribute('data-q'), 10);
+    var oi = parseInt(btn.getAttribute('data-o'), 10);
+    var q = QUESTIONS[qi];
+    var ok = oi === q.answer;
+
+    var btns = root.querySelectorAll('.opt');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].disabled = true;
+      var k = parseInt(btns[i].getAttribute('data-o'), 10);
+      if (k === q.answer) btns[i].classList.add('correct');
+      else if (k === oi) btns[i].classList.add('wrong');
+    }
+
+    var fb = document.getElementById('fb-' + qi);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    fb.style.display = 'block';
+    fb.innerHTML = '<span class="hd">' + (ok ? '答对了' : '答错了') + '</span>' +
+      '<div><strong>正确答案：</strong>' + String.fromCharCode(65 + q.answer) + '. ' +
+      q.options[q.answer] + '</div>' +
+      '<div style="margin-top:6px"><strong>解释：</strong>' + q.why + '</div>' +
+      '<a class="ref" href="#ref-' + q.ref + '">📎 ' + q.refText + ' →</a>';
+
+    used.push(qi);
+    if (ok) {
+      rightCount++;
+      if (level < 3) level++;
+    } else {
+      if (level > 0) level--;
+    }
+
+    answeredEl.textContent = used.length;
+    rightEl.textContent = rightCount;
+
+    var next = document.createElement('div');
+    next.className = 'qactions';
+    var nb = document.createElement('button');
+    nb.className = 'opt';
+    nb.style.width = 'auto';
+    nb.style.padding = '8px 16px';
+    nb.textContent = used.length >= QUESTIONS.length ? '查看结果' : '下一题';
+    nb.addEventListener('click', render);
+    next.appendChild(nb);
+    fb.parentNode.appendChild(next);
+
+    setTimeout(function () {
+      next.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 60);
+  }
+
+  document.getElementById('restart').addEventListener('click', function () {
+    level = 0; used = []; rightCount = 0;
+    render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
