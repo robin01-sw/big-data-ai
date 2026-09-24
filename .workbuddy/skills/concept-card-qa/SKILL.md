@@ -154,6 +154,12 @@ EDGE="/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
 - 目标 URL 里的中文与空格要做 percent-encoding；用 `pathlib.Path.as_uri()` 最省事
 - 只看某一段时，用脚本把该段 HTML 抽出来、套上原文件的 `<style>` 单独渲染成临时页，
   比截整页再裁更清楚（抽段时记得把 `<script>` 去掉，避免勾选状态干扰）
+- ⚠️ **抽段定位别用裸关键词**：`s.find("svg-box")` 会先命中 `<style>` 里的 `.svg-box`
+  选择器，起点算错后切片变成 `start > stop`，Python **静默返回空串**——临时页只剩样式，
+  截出来是一张全白的图，而脚本照旧打印「png: True」，看不出失败。
+  要用 `s.find('class="svg-box"')` 定位，并打印 `len(svg)` 与切片起止位置自证。
+  **更简单的判据：截图后瞄一眼文件大小**（2026-09-24 实测踩过：820×480 的空白 PNG 只有 2.2 KB，
+  正常渲染同尺寸是 36 KB），再 Read 一眼确认不是纯色。
 - `agent-browser` 若未安装，**不要为此拉 500MB Chromium**；Edge 已能满足静态渲染验收
 
 **几何自检**（截图之前的廉价前置检查）：解析 `<svg>` 的 `viewBox`，逐个核对所有 `<rect>` 的
