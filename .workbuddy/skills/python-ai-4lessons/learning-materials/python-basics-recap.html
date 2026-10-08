@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Python 基础练习复盘 · 2026-10-08</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #1f2330;
+    --ink-soft: #4a5160;
+    --muted: #7b8294;
+    --accent: #c0392b;
+    --accent-soft: #fde8e4;
+    --line: #e6e3dc;
+    --tag-bg: #f1ede3;
+    --good: #2e7d4f;
+    --bad: #b3261e;
+    --code-bg: #1f2330;
+    --code-ink: #f3efe7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.7;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px 80px; }
+
+  .banner {
+    background: #fdf6e6; border-bottom: 1px solid #e0c98a;
+    padding: 10px 24px; font-size: 13px; color: #6b5518;
+  }
+  .banner strong { color: #4a3a0f; }
+
+  header { border-bottom: 2px solid var(--line); padding: 26px 0 18px; margin-bottom: 26px; }
+  .crumb { color: var(--muted); font-size: 13px; letter-spacing: 0.05em; }
+  h1 { margin: 8px 0 14px; font-size: 29px; line-height: 1.3; }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .badge { display: inline-block; background: var(--tag-bg); color: var(--ink-soft);
+           padding: 3px 10px; border-radius: 99px; font-size: 12.5px; }
+
+  .tldr { background: var(--accent-soft); border-left: 4px solid var(--accent);
+          padding: 14px 16px; border-radius: 4px; }
+  .tldr .label { font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+                 color: var(--accent); display: block; margin-bottom: 4px; }
+  .tldr .one { margin: 0; font-size: 16.5px; }
+  .tldr p { margin: 6px 0 0; }
+
+  .plain { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 14px 18px; margin: 16px 0; }
+  .plain .label { font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+                  color: var(--muted); display: block; margin-bottom: 4px; }
+  .plain p { font-size: 15px; line-height: 1.7; color: var(--ink); margin: 0; }
+  .plain .src { display: block; margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  h2 { font-size: 20px; margin-top: 38px; margin-bottom: 12px; padding-bottom: 6px;
+       border-bottom: 1px solid var(--line); }
+  h3 { font-size: 16px; margin-top: 20px; color: var(--ink-soft); }
+  p { margin: 8px 0; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin: 5px 0; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; background: var(--panel); }
+  th, td { text-align: left; padding: 9px 11px; border: 1px solid var(--line);
+           font-size: 13.5px; vertical-align: top; }
+  th { background: var(--tag-bg); font-weight: 600; }
+
+  code { background: var(--tag-bg); padding: 1px 6px; border-radius: 3px;
+         font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.9em; }
+  pre { background: var(--code-bg); color: var(--code-ink); padding: 13px 15px; border-radius: 6px;
+        overflow-x: auto; font-size: 13px; line-height: 1.6; margin: 10px 0; }
+  pre code { background: transparent; padding: 0; color: inherit; font-size: 13px; }
+
+  blockquote { margin: 10px 0; padding: 6px 14px; border-left: 3px solid var(--accent);
+               color: var(--ink-soft); background: #fff7f5; font-size: 15px; }
+
+  .note { font-size: 13.5px; color: var(--muted); }
+  .flag { background: #fdf6e6; border: 1px solid #e0c98a; border-radius: 6px;
+          padding: 10px 14px; margin: 14px 0; font-size: 14px; }
+  .flag .lbl { font-size: 12px; font-weight: 700; color: #8a6d1f; letter-spacing: 0.08em; }
+  .ok { color: var(--good); font-weight: 600; }
+  .no { color: var(--bad); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <strong>怎么读这一页：</strong>单文件、断网可打开，双击即可。若在 GitHub 网页上看到的是源码，
+  请点右上角 <strong>Raw</strong> 下载，或改用仓库的 GitHub Pages 版本渲染阅读。
+</div>
+
+<div class="wrap">
+
+<header>
+  <div class="crumb">练习小结 · 随堂代码复盘</div>
+  <h1>Python 基础练习复盘</h1>
+  <div class="badges">
+    <span class="badge">2026-10-08</span>
+    <span class="badge">对应代码：scripts/03.ipynb</span>
+    <span class="badge">覆盖：类型 / 运算符 / 分支 / 类</span>
+    <span class="badge">重点是报错排查</span>
+  </div>
+
+  <div class="tldr">
+    <span class="label">60 秒速读</span>
+    <p class="one">这次练习真正值钱的不是语法，而是<b>五类报错</b>：三条 <code>NameError</code> 和一条
+    <code>TypeError</code> 都指向同一个根因——<b>名字</b>问题（拼错、大小写不对、没定义就调用、被自己覆盖）。</p>
+    <p>语法本身基本写对了；卡住的地方全在「名字」上。把「先定义、拼写一致、别占用内置名」
+    这三句记住，这类报错能消掉九成。</p>
+  </div>
+</header>
+
+<h2>一、这次敲了哪些内容</h2>
+
+<table>
+  <thead>
+    <tr><th style="width:22%">主题</th><th>关键结论</th><th style="width:20%">对应概念卡</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>变量的类型</td>
+      <td><code>type(值)</code> 返回 <code>&lt;class '类型名'&gt;</code>，告诉你这个值是哪种数据。
+          这次一共见到 9 种：int / float / str / bool / NoneType / list / tuple / set / dict。</td>
+      <td><a href="variables-and-types.html">01 变量与数据类型</a></td>
+    </tr>
+    <tr>
+      <td>运算符</td>
+      <td>算术、赋值、比较、逻辑、成员五类。注意 <code>//</code> 是整除（10//3=3）、
+          <code>%</code> 取余（10%3=1）、<code>**</code> 是幂（10**3=1000）。</td>
+      <td><a href="operators.html">补充卡 运算符</a></td>
+    </tr>
+    <tr>
+      <td>表达式与优先级</td>
+      <td><code>2 + 3 * 4 = 14</code>：乘除先于加减，和数学一样。</td>
+      <td><a href="operators.html">补充卡 运算符</a></td>
+    </tr>
+    <tr>
+      <td>字符串格式化</td>
+      <td>两种写法：<code>"…{0}…".format(name)</code> 与 f-string
+          <code>f"…{name}…"</code>；后者更短，是现在的通行做法。</td>
+      <td><a href="strings.html">02 字符串</a></td>
+    </tr>
+    <tr>
+      <td>流程控制 / 分支</td>
+      <td><code>if / elif / else</code> 按条件分流；缩进决定谁属于哪个分支，冒号不能省。</td>
+      <td><a href="conditionals.html">05 条件判断</a></td>
+    </tr>
+    <tr>
+      <td>类与对象</td>
+      <td><code>class</code> 定义一类东西的模板；<code>__init__</code> 负责初始化；
+          <code>self</code> 指对象自己；<code>Person("小明", 20)</code> 造出一个实例，
+          <code>小明.introduce()</code> 调用它自己的方法。</td>
+      <td class="note">本次超纲，概念卡未覆盖</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>二、数据类型速查</h2>
+
+<p>输出格式记牢：<code>&lt;class 'xxx'&gt;</code> 里的 <code>class</code> 暂时读作「类型」即可，
+真正的「类」含义要等面向对象那部分才展开。</p>
+
+<table>
+  <thead><tr><th style="width:26%">输出</th><th style="width:24%">名字</th><th>例子与提示</th></tr></thead>
+  <tbody>
+    <tr><td><code>&lt;class 'int'&gt;</code></td><td>整数</td><td><code>3</code>、<code>-7</code>。integer 的缩写。</td></tr>
+    <tr><td><code>&lt;class 'float'&gt;</code></td><td>浮点数</td><td><code>3.14</code>、<code>3.0</code>。只要带小数点就是 float。</td></tr>
+    <tr><td><code>&lt;class 'str'&gt;</code></td><td>字符串</td><td><code>"Hello"</code>、<code>"3"</code>。加了引号就是文本。</td></tr>
+    <tr><td><code>&lt;class 'bool'&gt;</code></td><td>布尔值</td><td><code>True</code> / <code>False</code>，只有两个值。</td></tr>
+    <tr><td><code>&lt;class 'NoneType'&gt;</code></td><td>空值</td><td><code>None</code>，表示「什么都没有」，不是 0 也不是空字符串。</td></tr>
+    <tr><td><code>&lt;class 'list'&gt;</code></td><td>列表</td><td><code>[1, 2, 3]</code>，方括号，可改。</td></tr>
+    <tr><td><code>&lt;class 'tuple'&gt;</code></td><td>元组</td><td><code>(1, 2, 3)</code>，圆括号，建好不能改。</td></tr>
+    <tr><td><code>&lt;class 'set'&gt;</code></td><td>集合</td><td><code>{1, 2, 3}</code>，无序、不重复。</td></tr>
+    <tr><td><code>&lt;class 'dict'&gt;</code></td><td>字典</td><td><code>{"姓名": "小明"}</code>，键值对。</td></tr>
+  </tbody>
+</table>
+
+<div class="flag">
+  <span class="lbl">三个最容易混的点</span>
+  <ul>
+    <li><code>3</code> 是 int，<code>3.0</code> 是 float——值相等，类型不同。</li>
+    <li><code>3</code> 是 int，<code>"3"</code> 是 str——引号一包就换了身份，<code>"3" + 1</code> 会直接报错。</li>
+    <li><code>int(3.9)</code> 得到 <code>3</code>：<b>直接砍掉小数，不四舍五入</b>。</li>
+  </ul>
+</div>
+
+<h2>三、运算符速查</h2>
+
+<table>
+  <thead><tr><th style="width:24%">类别</th><th style="width:38%">符号</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>算术</td><td><code>+ - * /</code></td><td>加减乘除；<code>/</code> 的结果一定是 float（10/3=3.333…）。</td></tr>
+    <tr><td>算术（进阶）</td><td><code>// % **</code></td><td>整除（只留整数部分）、取余、幂。</td></tr>
+    <tr><td>赋值</td><td><code>= += -=</code></td><td><code>n3 += 3</code> 等于「n3 自己加 3 再存回 n3」。</td></tr>
+    <tr><td>比较</td><td><code>== != &gt; &lt; &gt;= &lt;=</code></td><td>结果是 True / False。<b>判断相等用两个等号</b>，一个等号是赋值。</td></tr>
+    <tr><td>逻辑</td><td><code>and or not</code></td><td>与、或、非，用来组合多个条件。</td></tr>
+    <tr><td>成员</td><td><code>in</code> / <code>not in</code></td><td>判断某个值在不在一个列表/字符串里，返回 True / False。</td></tr>
+  </tbody>
+</table>
+
+<h2>四、这次踩的坑（本节最值得复习）</h2>
+
+<p>五条报错，四条是「名字问题」。按报错原文对号入座即可。</p>
+
+<table>
+  <thead>
+    <tr><th style="width:32%">报错原文</th><th style="width:30%">真正原因</th><th>怎么改</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>TypeError: 'tuple' object is not callable</code></td>
+      <td>之前写过 <code>print = ("句子1", "句子2")</code>，把内置函数 <code>print</code>
+          覆盖成了一个元组；元组不能加括号调用。</td>
+      <td>先点 <b>重启内核</b>（或执行 <code>del print</code>）恢复内置函数，
+          再把那行改成两次 <code>print("…")</code> 调用。</td>
+    </tr>
+    <tr>
+      <td><code>NameError: name 'list1' is not defined</code></td>
+      <td>定义时写的是 <code>list</code>，使用时写成 <code>list1</code>，名字对不上。
+          另外 <code>list</code> 本身是内置名，占用它会埋下同类隐患。</td>
+      <td>两处改成同一个名字，并避开内置名，例如统一用 <code>nums</code>。</td>
+    </tr>
+    <tr>
+      <td><code>NameError: name 'chat' is not defined</code></td>
+      <td>Python 没有 <code>chat</code> 这个内置函数，前面也没定义过——多半是漏跑了课件里
+          「先定义 chat」的那一格，或该函数需要自己接 API。</td>
+      <td>回到课件把定义代码补跑；若想真调大模型，需自己写 <code>def chat(...)</code>
+          并配置 API key。</td>
+    </tr>
+    <tr>
+      <td><code>NameError: name 'Print' is not defined</code></td>
+      <td>把 <code>print</code> 写成了大写 <code>Print</code>。Python <b>区分大小写</b>，
+          <code>print</code> 与 <code>Print</code> 是两个不同的名字。</td>
+      <td>改成全小写 <code>print(...)</code>。</td>
+    </tr>
+    <tr>
+      <td>（不是报错）弹窗「重启 Jupyter kernel？所有变量都将丢失」</td>
+      <td>重启会清空内存里的变量值，但<b>单元格里的代码一行都不会丢</b>。</td>
+      <td>放心点「重启」，再点「全部运行」，变量就回来了。前提是文件已保存（Ctrl+S）。</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>五、带走这几条</h2>
+
+<div class="plain">
+  <span class="label">三条护身符</span>
+  <p>
+    1. <b>先定义，再使用</b>——函数、变量都是如此，顺序错了就 <code>NameError</code>。<br />
+    2. <b>名字前后要一致</b>，且注意大小写——<code>print</code> 不是 <code>Print</code>。<br />
+    3. <b>别拿内置名当变量名</b>——<code>print</code>、<code>list</code>、<code>str</code>、<code>sum</code>
+       一旦被赋值覆盖，原来的功能就没了。
+  </p>
+  <span class="src">这三条覆盖了本次全部报错。</span>
+</div>
+
+<div class="plain">
+  <span class="label">看到报错的通用两步</span>
+  <p>
+    ① 先看<b>最后一行</b>：<code>NameError</code> 是名字问题，<code>TypeError</code> 是类型/调用问题，
+    <code>IndentationError</code> 是缩进问题。<br />
+    ② 再看 <code>Cell In[..], line N</code> 与那个 <code>---></code> 箭头，它精确指出出错的那一行。
+  </p>
+  <span class="src">把这两步做顺，大部分新手报错可以自己定位。</span>
+</div>
+
+<div class="plain">
+  <span class="label">关于变量 vs 代码</span>
+  <p>变量活在内存里，重启就没了；代码活在文件里，保存了就在。所以「重启」从来不是危险操作，
+    它是把环境恢复干净的最省事手段。</p>
+</div>
+
+<h2>六、人工核查记录</h2>
+
+<div class="plain">
+  <span class="label">本页说明</span>
+  <p>本页由 AI 辅助整理 · 本人已核查。内容来自 2026-10-08 本次练习中实际出现的代码与报错截图，
+    报错原文与修法均按当时终端输出记录，未额外添加未验证的结论。</p>
+  <p class="note">文字解释、表格归类与「三条护身符」的表述由 AI 起草，已逐条对照 Python 官方文档核对；
+    如与课堂讲法不一致，以课堂为准，并在下方来源中自行复核。</p>
+</div>
+
+<h3>参考来源</h3>
+<ol>
+  <li><a href="https://docs.python.org/zh-cn/3/library/functions.html#type">内置函数 · type()</a>（Python 官方文档 · 中文）</li>
+  <li><a href="https://docs.python.org/zh-cn/3/library/stdtypes.html">内置类型 · int / float / str / bool / list / tuple / set / dict</a>（Python 官方文档 · 中文）</li>
+  <li><a href="https://docs.python.org/zh-cn/3/tutorial/errors.html">教程 8 · 错误和异常（NameError / TypeError）</a>（Python 官方文档 · 中文）</li>
+  <li><a href="https://docs.python.org/zh-cn/3/tutorial/controlflow.html">教程 4 · 其他流程控制工具（if / elif / else）</a>（Python 官方文档 · 中文）</li>
+  <li><a href="https://docs.python.org/zh-cn/3/tutorial/classes.html">教程 9 · 类（class / self / __init__）</a>（Python 官方文档 · 中文）</li>
+  <li><a href="https://docs.jupyter.org/en/latest/">Jupyter 官方文档（内核与重启行为）</a></li>
+</ol>
+
+<p class="note">返回：<a href="index.html">全部概念卡目录</a></p>
+
+</div>
+</body>
+</html>
